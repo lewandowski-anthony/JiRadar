@@ -1,27 +1,30 @@
 package com.jiradar.jiradarback.controller;
 
-import com.jiradar.jiradarback.controller.dto.DevPerformanceResponseDto;
+import com.jiradar.jiradarback.client.jira.JiraServiceClient;
+import com.jiradar.jiradarback.controller.dto.UserMetricsDto;
+import com.jiradar.jiradarback.controller.mapper.UserMetricsDtoMapper;
+import com.jiradar.jiradarback.model.jira.JiraUserMetrics;
 import com.jiradar.jiradarback.service.JiraService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/metrics")
+@RequestMapping("/api/v1/jira/metrics")
 @RequiredArgsConstructor
 public class JiraMetricsController {
 
 	private final JiraService jiraService;
+	private final JiraServiceClient jiraServiceClient;
+	private final UserMetricsDtoMapper userMetricsDtoMapper;
 
-	@GetMapping("/performance")
-	public DevPerformanceResponseDto getDeveloperPerformance(
-			@RequestParam("developer_email") String developerEmail){
+	@GetMapping("/myself")
+	public UserMetricsDto getDeveloperPerformance(){
 
-		return null;
+		String userMail = jiraServiceClient.getMyself().getEmailAddress();
+		return userMetricsDtoMapper.mapToDto(jiraService.getMetrics(userMail, List.of("SMSUP")));
 	}
 }

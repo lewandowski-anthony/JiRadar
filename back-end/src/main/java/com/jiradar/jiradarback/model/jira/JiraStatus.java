@@ -1,4 +1,4 @@
-package com.jiradar.jiradarback.model;
+package com.jiradar.jiradarback.model.jira;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

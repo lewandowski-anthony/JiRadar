@@ -1,6 +1,6 @@
 package com.jiradar.jiradarback.controller;
 
-import com.jiradar.jiradarback.model.JiraIssue;
+import com.jiradar.jiradarback.model.jira.JiraIssue;
 import com.jiradar.jiradarback.service.JiraService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

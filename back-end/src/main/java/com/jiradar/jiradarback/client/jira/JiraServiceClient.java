@@ -18,7 +18,7 @@ public interface JiraServiceClient {
 	@GetExchange("/rest/api/3/myself")
 	UserResponseDto getMyself();
 
-	@PostExchange("/rest/api/3/search")
+	@PostExchange("/rest/api/3/search/jql")
 	SearchEnvelopeResponseDto searchTickets(@RequestBody SearchRequestRequestDto request);
 
 	@GetExchange("/rest/api/3/issue/{issueKey}")

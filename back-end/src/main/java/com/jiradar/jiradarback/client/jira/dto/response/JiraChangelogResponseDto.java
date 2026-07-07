@@ -5,6 +5,8 @@ import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -13,5 +15,5 @@ public class JiraChangelogResponseDto {
     private Integer startAt;
     private Integer maxResults;
     private Integer total;
-    private java.util.List<ChangelogHistoryResponseDto> histories;
+    private List<ChangelogHistoryResponseDto> histories;
 }

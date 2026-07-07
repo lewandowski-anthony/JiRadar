@@ -5,19 +5,21 @@ import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
+import java.time.ZonedDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class IssueFieldsResponseDto {
     private String summary;
-    private java.time.ZonedDateTime created;
-    private java.time.ZonedDateTime updated;
-    private Long timespent;
-    private Long timeoriginalestimate;
+    private ZonedDateTime created;
+    private ZonedDateTime updated;
+    private Long timeSpent;
+    private Long originalTimeEstimate;
     private Double storyPointEstimate;
     private JiraStatusResponseDto status;
     private JiraProjectResponseDto project;
     private UserResponseDto assignee;
-    private JiraIssueTypeResponseDto issuetype;
+    private JiraIssueTypeResponseDto issueType;
 }
