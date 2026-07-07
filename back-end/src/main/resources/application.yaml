@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: Jiradar Back
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+
+jira:
+  config:
+    user: ${JIRA_USER_MAIL:}
+    url: ${JIRA_URL:http:\\localhost:8080}
+    token: ${JIRA_TOKEN:}
