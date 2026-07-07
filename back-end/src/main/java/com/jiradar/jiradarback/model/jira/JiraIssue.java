@@ -11,6 +11,7 @@ import java.time.ZonedDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -38,6 +39,15 @@ public class JiraIssue {
 	public boolean isDoneIn(DateRange range) {
 		return this.changes.stream()
 				.anyMatch(change -> range.contains(change.getDate()) && change.isDoneChange());
+	}
+
+	public boolean isActiveOn(ZonedDateTime date) {
+		return this.changes.stream()
+				.filter(change -> change.getDate().isBefore(date))
+				.filter(change -> change.isStartedChange() || change.isDoneChange())
+				.max(Comparator.comparing(JiraChangeLog::getDate))
+				.map(JiraChangeLog::isStartedChange)
+				.orElse(false);
 	}
 
 	public long getReviewReopenedCount(DateRange range) {

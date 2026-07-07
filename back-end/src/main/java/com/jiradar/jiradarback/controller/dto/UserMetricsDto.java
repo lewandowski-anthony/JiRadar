@@ -19,7 +19,8 @@ public record UserMetricsDto(
 		Long numberOfReviewDone,
 		Double deliverySuccessRate,
 		Double teamReviewParticipationRate,
-		Double pingPongReviewRate
+		Double pingPongReviewRate,
+		Double parallelJiraInProgressRate
 )
 {
 
