@@ -12,8 +12,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class JiraChangelogResponseDto {
-    private Integer startAt;
-    private Integer maxResults;
-    private Integer total;
-    private List<ChangelogHistoryResponseDto> histories;
+
+	private String issueId;
+	private Integer startAt;
+	private Integer maxResults;
+	private Integer total;
+	private List<ChangelogHistoryResponseDto> changeHistories;
 }

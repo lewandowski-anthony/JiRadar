@@ -18,24 +18,24 @@ import java.util.stream.Collectors;
 public interface JiraChangelogMapper {
 
 	default List<JiraChangeLog> toModelList(JiraChangelogResponseDto changelogResponseDto) {
-		if (changelogResponseDto == null || changelogResponseDto.getHistories() == null) {
+		if (changelogResponseDto == null || changelogResponseDto.getChangeHistories() == null) {
 			return Collections.emptyList();
 		}
 
-		return changelogResponseDto.getHistories().stream()
+		return changelogResponseDto.getChangeHistories().stream()
 				.filter(history -> history.getItems() != null)
 				.flatMap(history -> history.getItems().stream()
 						.map(item -> toJiraChangeLog(item, history.getCreated(), history.getAuthor())))
 				.collect(Collectors.toList());
 	}
 
-	@Mapping(target = "date", source = "createdDate")
 	@Mapping(target = "field", source = "itemDto.field")
 	@Mapping(target = "fieldType", source = "itemDto.field", qualifiedByName = "stringToJiraFieldId")
 	@Mapping(target = "previousValue", source = "itemDto.fromString")
 	@Mapping(target = "newValue", source = "itemDto.toString")
 	@Mapping(target = "author", source = "userResponseDto")
-	JiraChangeLog toJiraChangeLog(ChangelogItemResponseDto itemDto, ZonedDateTime createdDate, UserResponseDto userResponseDto);
+	@Mapping(target = "date", source = "createdDate", qualifiedByName = "mapMillisToZonedDateTime")
+	JiraChangeLog toJiraChangeLog(ChangelogItemResponseDto itemDto, long createdDate, UserResponseDto userResponseDto);
 
 	@Named("stringToJiraFieldId")
 	default JiraFieldId stringToJiraFieldId(String field) {
@@ -47,5 +47,12 @@ public interface JiraChangelogMapper {
 		} catch (IllegalArgumentException e) {
 			return null;
 		}
+	}
+
+	@Named("mapMillisToZonedDateTime")
+	default ZonedDateTime mapMillisToZonedDateTime(Long millis) {
+		if (millis == null) return null;
+		return java.time.Instant.ofEpochMilli(millis)
+				.atZone(java.time.ZoneId.systemDefault());
 	}
 }

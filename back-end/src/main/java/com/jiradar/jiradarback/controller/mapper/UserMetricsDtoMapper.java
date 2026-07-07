@@ -3,7 +3,6 @@ package com.jiradar.jiradarback.controller.mapper;
 import com.jiradar.jiradarback.controller.dto.UserMetricsDto;
 import com.jiradar.jiradarback.model.jira.JiraUserMetrics;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 import java.time.Duration;
 

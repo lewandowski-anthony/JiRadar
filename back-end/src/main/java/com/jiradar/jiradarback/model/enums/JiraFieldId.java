@@ -31,13 +31,10 @@ public enum JiraFieldId {
 
 	public static List<JiraFieldId> getMandatoryFields() {
 		return Arrays.asList(
-				JiraFieldId.SUMMARY,
 				JiraFieldId.STATUS,
 				JiraFieldId.ASSIGNEE,
 				JiraFieldId.CREATED,
-				JiraFieldId.UPDATED,
-				JiraFieldId.ISSUETYPE,
-				JiraFieldId.PRIORITY
+				JiraFieldId.UPDATED
 		);
 	}
 

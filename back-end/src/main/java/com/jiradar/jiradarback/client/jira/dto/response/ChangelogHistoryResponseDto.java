@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ChangelogHistoryResponseDto {
     private String id;
-    private ZonedDateTime created;
+	private Long created;;
     private UserResponseDto author;
     private List<ChangelogItemResponseDto> items;
 }

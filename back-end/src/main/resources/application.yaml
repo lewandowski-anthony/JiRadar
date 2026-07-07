@@ -1,4 +1,6 @@
 spring:
+  codec:
+    max-in-memory-size: 10MB
   application:
     name: Jiradar Back
   jackson:
@@ -7,5 +9,5 @@ spring:
 jira:
   config:
     user: ${JIRA_USER_MAIL:}
-    url: ${JIRA_URL:http:\\localhost:8080}
+    url: ${JIRA_URL:http://localhost:8080}
     token: ${JIRA_TOKEN:}

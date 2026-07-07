@@ -1,6 +1,8 @@
 package com.jiradar.jiradarback.client.jira;
 
+import com.jiradar.jiradarback.client.jira.dto.request.BulkChangelogRequestDto;
 import com.jiradar.jiradarback.client.jira.dto.request.SearchRequestRequestDto;
+import com.jiradar.jiradarback.client.jira.dto.response.BulkChangelogResponseDto;
 import com.jiradar.jiradarback.client.jira.dto.response.JiraIssueResponseDto;
 import com.jiradar.jiradarback.client.jira.dto.response.JiraStatusResponseDto;
 import com.jiradar.jiradarback.client.jira.dto.response.SearchEnvelopeResponseDto;
@@ -29,4 +31,7 @@ public interface JiraServiceClient {
 
 	@GetExchange("/rest/api/3/status/{statusId}")
 	JiraStatusResponseDto getStatus(@PathVariable("statusId") String statusId);
+
+	@PostExchange("/rest/api/3/changelog/bulkfetch")
+	BulkChangelogResponseDto bulkFetchChangelogs(@RequestBody BulkChangelogRequestDto request);
 }
