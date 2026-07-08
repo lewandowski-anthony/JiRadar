@@ -5,6 +5,8 @@ import com.jiradar.jiradarback.controller.mapper.UserDtoMapper;
 import com.jiradar.jiradarback.controller.dto.UserMetricsDto;
 import com.jiradar.jiradarback.controller.mapper.UserMetricsDtoMapper;
 import com.jiradar.jiradarback.core.IssueTrackerService;
+import com.jiradar.jiradarback.core.model.command.MetricsQueryCommand;
+import com.jiradar.jiradarback.core.model.enums.TimeGranularity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,8 +36,13 @@ public class UserController {
 			@RequestParam List<String> projectsKey,
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+			@RequestParam(required = false) String historyGranularity,
 			IssueTrackerService tracker) {
 
-		return userMetricsDtoMapper.mapToDto(tracker.getMetrics(projectsKey, startDate, endDate));
+		return userMetricsDtoMapper.mapToDto(
+				tracker.getMetrics(
+						new MetricsQueryCommand(projectsKey, startDate, endDate, TimeGranularity.fromString(historyGranularity))
+				)
+		);
 	}
 }

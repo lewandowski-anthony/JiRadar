@@ -1,6 +1,7 @@
 package com.jiradar.jiradarback.infrastructure.jira;
 
 import com.jiradar.jiradarback.core.IssueTrackerService;
+import com.jiradar.jiradarback.core.model.command.MetricsQueryCommand;
 import com.jiradar.jiradarback.core.model.datetime.DateRange;
 import com.jiradar.jiradarback.core.model.enums.AvailableProviders;
 import com.jiradar.jiradarback.core.model.issuetracker.Issue;
@@ -54,21 +55,13 @@ public class JiraIssueTrackerAdapter implements IssueTrackerService {
 	}
 
 	@Override
-	public UserMetrics getMetrics(List<String> projects, DateRange dateRange) {
-		if (dateRange == null) {
-			throw new IllegalArgumentException("dateRange cannot be null");
-		}
-		return getMetrics(projects, dateRange.from().toLocalDate(), dateRange.to().toLocalDate());
-	}
-
-	@Override
-	public UserMetrics getMetrics(List<String> projects, LocalDate startDate, LocalDate endDate) {
-		if (CollectionUtils.isEmpty(projects)) {
+	public UserMetrics getMetrics(MetricsQueryCommand command) {
+		if (CollectionUtils.isEmpty(command.projectKeys())) {
 			throw new IllegalArgumentException("projects is empty");
 		}
 
-		LocalDate start = startDate != null ? startDate : LocalDate.now().minusDays(30);
-		LocalDate end = endDate != null ? endDate : LocalDate.now();
+		LocalDate start = command.startDate() != null ? command.startDate() : LocalDate.now().minusDays(30);
+		LocalDate end = command.endDate() != null ? command.endDate() : LocalDate.now();
 
 		if (start.plusYears(1).isBefore(end)) {
 			throw new IllegalArgumentException("dateRange is more than one year");
@@ -77,19 +70,19 @@ public class JiraIssueTrackerAdapter implements IssueTrackerService {
 		List<Issue> allIssues;
 
 		if (ChronoUnit.DAYS.between(start, end) < 30) {
-			allIssues = jiraIssueRepository.getIssuesForCustomRange(projects, start, end);
+			allIssues = jiraIssueRepository.getIssuesForCustomRange(command.projectKeys(), start, end);
 		} else {
 			List<YearMonth> months = getMonthsInInterval(start, end);
 			allIssues = new ArrayList<>();
 			for (YearMonth month : months) {
-				allIssues.addAll(jiraIssueRepository.getIssuesForSpecificMonth(projects, month));
+				allIssues.addAll(jiraIssueRepository.getIssuesForSpecificMonth(command.projectKeys(), month));
 			}
 		}
 
 		ZoneId zone = ZoneId.systemDefault();
 		DateRange finalRange = new DateRange(start.atStartOfDay(zone), end.plusDays(1).atStartOfDay(zone).minusNanos(1));
 		User currentUser = jiraUserMapper.toDomainModel(jiraClient.getMyself());
-		return UserMetrics.generate(currentUser, allIssues, finalRange);
+		return UserMetrics.generate(currentUser, allIssues, finalRange, command.historyGranularity());
 	}
 
 	private List<YearMonth> getMonthsInInterval(LocalDate start, LocalDate end) {
