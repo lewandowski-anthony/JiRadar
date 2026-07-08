@@ -1,25 +1,24 @@
 package com.jiradar.jiradarback.infrastructure.jira;
 
-import com.jiradar.jiradarback.core.model.enums.AvailableProviders;
-import com.jiradar.jiradarback.infrastructure.jira.dto.request.BulkChangelogRequestDto;
-import com.jiradar.jiradarback.infrastructure.jira.dto.request.SearchRequestRequestDto;
-import com.jiradar.jiradarback.infrastructure.jira.dto.response.JiraChangelogResponseDto;
-import com.jiradar.jiradarback.infrastructure.jira.dto.response.JiraIssueResponseDto;
-import com.jiradar.jiradarback.infrastructure.jira.dto.response.SearchEnvelopeResponseDto;
-import com.jiradar.jiradarback.infrastructure.jira.dto.response.UserResponseDto;
-import com.jiradar.jiradarback.infrastructure.jira.mapper.JiraIssueMapper;
-import com.jiradar.jiradarback.infrastructure.jira.mapper.JiraUserMapper;
+import com.jiradar.jiradarback.core.IssueTrackerService;
 import com.jiradar.jiradarback.core.model.datetime.DateRange;
+import com.jiradar.jiradarback.core.model.enums.AvailableProviders;
 import com.jiradar.jiradarback.core.model.issuetracker.Issue;
 import com.jiradar.jiradarback.core.model.issuetracker.User;
 import com.jiradar.jiradarback.core.model.issuetracker.UserMetrics;
+import com.jiradar.jiradarback.infrastructure.jira.dto.request.BulkChangelogRequestDto;
+import com.jiradar.jiradarback.infrastructure.jira.dto.request.SearchRequestRequestDto;
+import com.jiradar.jiradarback.infrastructure.jira.dto.response.BulkChangelogResponseDto;
+import com.jiradar.jiradarback.infrastructure.jira.dto.response.JiraChangelogResponseDto;
+import com.jiradar.jiradarback.infrastructure.jira.dto.response.JiraIssueResponseDto;
+import com.jiradar.jiradarback.infrastructure.jira.dto.response.SearchEnvelopeResponseDto;
 import com.jiradar.jiradarback.infrastructure.jira.enums.JiraFieldId;
-import com.jiradar.jiradarback.core.IssueTrackerService;
+import com.jiradar.jiradarback.infrastructure.jira.mapper.JiraIssueMapper;
+import com.jiradar.jiradarback.infrastructure.jira.mapper.JiraUserMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
@@ -51,28 +50,32 @@ public class JiraIssueTrackerAdapter implements IssueTrackerService {
 		return jiraUserMapper.toDomainModel(jiraClient.getMyself());
 	}
 
+	@Override
 	public Issue getIssueByKey(String issueKey){
 		JiraIssueResponseDto jiraIssue = jiraClient.getIssue(issueKey, JiraFieldId.CHANGELOG.name());
 		return issueMapper.toModel(jiraIssue);
 	}
 
+	@Override
 	public UserMetrics getMetrics(List<String> projects) {
-
-		if(CollectionUtils.isEmpty(projects)){
+		if (CollectionUtils.isEmpty(projects)) {
 			throw new IllegalArgumentException("projects is empty");
 		}
 
-		String jqlFormat = "project IN (%1$s) AND updated >= -30d";
+		try (ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
+			CompletableFuture<User> userFuture = CompletableFuture.supplyAsync(
+					() -> jiraUserMapper.toDomainModel(jiraClient.getMyself()), executor);
 
-		List<Issue> issues =  getJiraIssuesFromJQL(String.format(jqlFormat, String.join(",", projects)));
+			String jqlFormat = "project IN (%1$s) AND updated >= -30d";
+			List<Issue> issues = getJiraIssuesFromJQL(String.format(jqlFormat, String.join(",", projects)), executor);
 
-		UserResponseDto userResponseDto = jiraClient.getMyself();
-		User jiraUser = jiraUserMapper.toDomainModel(userResponseDto);
+			User jiraUser = userFuture.join();
 
-		return UserMetrics.generate(jiraUser, issues, new DateRange(ZonedDateTime.now().minusDays(30), ZonedDateTime.now()));
+			return UserMetrics.generate(jiraUser, issues, new DateRange(ZonedDateTime.now().minusDays(30), ZonedDateTime.now()));
+		}
 	}
 
-	private List<Issue> getJiraIssuesFromJQL(String jql) {
+	private List<Issue> getJiraIssuesFromJQL(String jql, ExecutorService executor) {
 		List<SearchEnvelopeResponseDto> envelopes = new ArrayList<>();
 		String nextPageToken = null;
 		SearchEnvelopeResponseDto jiraIssues;
@@ -88,7 +91,7 @@ public class JiraIssueTrackerAdapter implements IssueTrackerService {
 				.map(JiraIssueResponseDto::getId)
 				.toList();
 
-		Map<String, JiraChangelogResponseDto> changelogResponseDtoMap = getChangeLogsByJiraIds(jiraIds);
+		Map<String, JiraChangelogResponseDto> changelogResponseDtoMap = getChangeLogsByJiraIds(jiraIds, executor);
 
 		envelopes.forEach(envelope -> envelope.getIssues().removeIf(jiraIssue -> {
 			JiraChangelogResponseDto changeLog = changelogResponseDtoMap.get(jiraIssue.getId());
@@ -105,31 +108,31 @@ public class JiraIssueTrackerAdapter implements IssueTrackerService {
 				SearchRequestRequestDto.builder()
 						.jql(jql)
 						.fields(JiraFieldId.getMandatoryFieldNames())
-						.maxResults(50)
+						.maxResults(100)
 						.nextPageToken(token)
 						.build()
 		);
 	}
 
-	private Map<String, JiraChangelogResponseDto> getChangeLogsByJiraIds(List<String> issueIds) {
-
+	private Map<String, JiraChangelogResponseDto> getChangeLogsByJiraIds(List<String> issueIds, ExecutorService executor) {
 		List<List<String>> chunks = ListUtils.partition(issueIds, 5);
 
-		try(ExecutorService httpExecutor = Executors.newFixedThreadPool(20)) {
-			return chunks.stream()
-					.map(chunk -> CompletableFuture.supplyAsync(() -> jiraClient.bulkFetchChangelogs(
-							BulkChangelogRequestDto.builder()
-									.issueIdsOrKeys(chunk)
-									.fieldIds(List.of("status"))
-									.build()
-					), httpExecutor))
-					.map(CompletableFuture::join)
-					.flatMap(bulk -> bulk.issueChangeLogs().stream())
-					.collect(Collectors.toMap(
-							JiraChangelogResponseDto::getIssueId,
-							Function.identity(),
-							(existing, replacement) -> existing
-					));
-		}
+		List<CompletableFuture<BulkChangelogResponseDto>> futures = chunks.stream()
+				.map(chunk -> CompletableFuture.supplyAsync(() -> jiraClient.bulkFetchChangelogs(
+						BulkChangelogRequestDto.builder()
+								.issueIdsOrKeys(chunk)
+								.fieldIds(List.of("status"))
+								.build()
+				), executor))
+				.toList();
+
+		return futures.stream()
+				.map(CompletableFuture::join)
+				.flatMap(bulk -> bulk.issueChangeLogs().stream())
+				.collect(Collectors.toMap(
+						JiraChangelogResponseDto::getIssueId,
+						Function.identity(),
+						(existing, replacement) -> existing
+				));
 	}
 }
