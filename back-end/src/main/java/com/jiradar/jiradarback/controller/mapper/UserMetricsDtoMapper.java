@@ -1,15 +1,27 @@
 package com.jiradar.jiradarback.controller.mapper;
 
 import com.jiradar.jiradarback.controller.dto.UserMetricsDto;
-import com.jiradar.jiradarback.model.jira.JiraUserMetrics;
+import com.jiradar.jiradarback.model.issuetracker.UserMetrics;
 import org.mapstruct.Mapper;
 
 import java.time.Duration;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 @Mapper(componentModel = "spring")
 public interface UserMetricsDtoMapper {
 
-	UserMetricsDto mapToDto(JiraUserMetrics jiraUserMetrics);
+	UserMetricsDto mapToDto(UserMetrics jiraUserMetrics);
+
+	default List<UserMetricsDto.UserJiraByTypeDto> mapIssuesDistribution(Map<String, Double> distribution) {
+		if (distribution == null) {
+			return Collections.emptyList();
+		}
+		return distribution.entrySet().stream()
+				.map(entry -> new UserMetricsDto.UserJiraByTypeDto(entry.getKey(), entry.getValue()))
+				.toList();
+	}
 
 	default String formatDuration(Duration duration) {
 		if (duration == null || duration.isZero()) {

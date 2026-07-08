@@ -1,5 +1,6 @@
 package com.jiradar.jiradarback.client.jira.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
@@ -21,5 +22,6 @@ public class IssueFieldsResponseDto {
     private JiraStatusResponseDto status;
     private JiraProjectResponseDto project;
     private UserResponseDto assignee;
-    private JiraIssueTypeResponseDto issueType;
+    @JsonProperty("issuetype")
+	private JiraIssueTypeResponseDto issueType;
 }

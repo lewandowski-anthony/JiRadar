@@ -1,14 +1,14 @@
 package com.jiradar.jiradarback.controller.dto;
 
-import com.jiradar.jiradarback.model.jira.JiraUser;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 
 import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Map;
 
 @Builder
 public record UserMetricsDto(
-		JiraUser user,
+
 		ZonedDateTime from,
 		ZonedDateTime to,
 		String averageCycleTime,
@@ -20,8 +20,14 @@ public record UserMetricsDto(
 		Double deliverySuccessRate,
 		Double teamReviewParticipationRate,
 		Double pingPongReviewRate,
-		Double parallelJiraInProgressRate
+		Double parallelJiraInProgressRate,
+		List<UserJiraByTypeDto> jiraRateByType
 )
 {
+
+	public record UserJiraByTypeDto(
+			String jiraType,
+			Double rate
+	) {}
 
 }

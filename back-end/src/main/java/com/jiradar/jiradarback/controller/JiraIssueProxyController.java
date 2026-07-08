@@ -1,7 +1,8 @@
 package com.jiradar.jiradarback.controller;
 
-import com.jiradar.jiradarback.model.jira.JiraIssue;
-import com.jiradar.jiradarback.service.JiraService;
+import com.jiradar.jiradarback.model.issuetracker.Issue;
+import com.jiradar.jiradarback.client.service.JiraService;
+import com.jiradar.jiradarback.service.IssueTrackerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,10 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/jira/issues")
 public class JiraIssueProxyController {
 
-	private final JiraService jiraService;
+	private final IssueTrackerService jiraService;
 
 	@GetMapping("/{issueKey}")
-	public JiraIssue getIssue(@PathVariable("issueKey") String issueKey) {
+	public Issue getIssue(@PathVariable("issueKey") String issueKey) {
 		return jiraService.getIssueByKey(issueKey);
 	}
 }

@@ -1,4 +1,4 @@
-package com.jiradar.jiradarback.model.enums;
+package com.jiradar.jiradarback.client.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,7 +19,7 @@ public enum JiraFieldId {
 	UPDATED("updated"),
 	SUMMARY("summary"),
 	PROJECT("project"),
-	ISSUETYPE("issueType"),
+	ISSUETYPE("issuetype"),
 	COMMENT("comment"),
 	DESCRIPTION("description"),
 	PRIORITY("priority"),
@@ -34,6 +34,8 @@ public enum JiraFieldId {
 				JiraFieldId.STATUS,
 				JiraFieldId.ASSIGNEE,
 				JiraFieldId.CREATED,
+				JiraFieldId.PROJECT,
+				JiraFieldId.ISSUETYPE,
 				JiraFieldId.UPDATED
 		);
 	}

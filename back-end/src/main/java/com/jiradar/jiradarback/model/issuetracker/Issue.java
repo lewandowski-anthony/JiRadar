@@ -1,4 +1,4 @@
-package com.jiradar.jiradarback.model.jira;
+package com.jiradar.jiradarback.model.issuetracker;
 
 import com.jiradar.jiradarback.model.datetime.DateRange;
 import lombok.AllArgsConstructor;
@@ -11,19 +11,19 @@ import java.time.ZonedDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.function.Predicate;
 
 @Getter
 @Setter
 @AllArgsConstructor
-public class JiraIssue {
+public class Issue {
 
 	private String key;
 	private String projectKey;
-	private JiraUser assignee;
+	private User assignee;
 	private String summary;
-	private JiraStatus jiraStatus;
-	private List<JiraChangeLog> changes;
+	private IssueType type;
+	private List<ChangeLog> changes;
 
 	public boolean isAssignedTo(String email) {
 		return this.assignee != null
@@ -45,24 +45,24 @@ public class JiraIssue {
 		return this.changes.stream()
 				.filter(change -> change.getDate().isBefore(date))
 				.filter(change -> change.isStartedChange() || change.isDoneChange())
-				.max(Comparator.comparing(JiraChangeLog::getDate))
-				.map(JiraChangeLog::isStartedChange)
+				.max(Comparator.comparing(ChangeLog::getDate))
+				.map(ChangeLog::isStartedChange)
 				.orElse(false);
 	}
 
 	public long getReviewReopenedCount(DateRange range) {
-		List<JiraChangeLog> reviewRequests = this.changes.stream()
+		List<ChangeLog> reviewRequests = this.changes.stream()
 				.filter(change -> range.contains(change.getDate()))
-				.filter(JiraChangeLog::isReviewRequested)
-				.sorted(Comparator.comparing(JiraChangeLog::getDate))
+				.filter(ChangeLog::isReviewRequested)
+				.sorted(Comparator.comparing(ChangeLog::getDate))
 				.toList();
 
 		return reviewRequests.size() <= 1 ? 0L : reviewRequests.size() - 1;
 	}
 
-	public List<Duration> getReviewDurations(DateRange range, java.util.function.Predicate<JiraChangeLog> filterPredicate) {
-		List<JiraChangeLog> sortedChanges = this.changes.stream()
-				.sorted(Comparator.comparing(JiraChangeLog::getDate))
+	public List<Duration> getReviewDurations(DateRange range, Predicate<ChangeLog> filterPredicate) {
+		List<ChangeLog> sortedChanges = this.changes.stream()
+				.sorted(Comparator.comparing(ChangeLog::getDate))
 				.toList();
 
 		return sortedChanges.stream()
@@ -76,11 +76,11 @@ public class JiraIssue {
 				.toList();
 	}
 
-	private ZonedDateTime findLastReviewRequestedDateBefore(List<JiraChangeLog> changes, ZonedDateTime actionDate) {
+	private ZonedDateTime findLastReviewRequestedDateBefore(List<ChangeLog> changes, ZonedDateTime actionDate) {
 		return changes.stream()
 				.filter(change -> change.getDate().isBefore(actionDate))
-				.filter(JiraChangeLog::isReviewRequested)
-				.map(JiraChangeLog::getDate)
+				.filter(ChangeLog::isReviewRequested)
+				.map(ChangeLog::getDate)
 				.max(ZonedDateTime::compareTo)
 				.orElse(null);
 	}
@@ -88,14 +88,14 @@ public class JiraIssue {
 	public Duration calculateCycleTimeForIssue() {
 
 		ZonedDateTime startedDate = this.getChanges().stream()
-				.filter(JiraChangeLog::isStartedChange)
-				.map(JiraChangeLog::getDate)
+				.filter(ChangeLog::isStartedChange)
+				.map(ChangeLog::getDate)
 				.min(ZonedDateTime::compareTo)
 				.orElse(null);
 
 		ZonedDateTime doneDate = this.getChanges().stream()
-				.filter(JiraChangeLog::isDoneChange)
-				.map(JiraChangeLog::getDate)
+				.filter(ChangeLog::isDoneChange)
+				.map(ChangeLog::getDate)
 				.min(ZonedDateTime::compareTo)
 				.orElse(null);
 

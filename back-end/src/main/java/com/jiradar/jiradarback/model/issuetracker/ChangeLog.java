@@ -1,6 +1,6 @@
-package com.jiradar.jiradarback.model.jira;
+package com.jiradar.jiradarback.model.issuetracker;
 
-import com.jiradar.jiradarback.model.enums.JiraFieldId;
+import com.jiradar.jiradarback.model.enums.TransitionType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,35 +15,29 @@ import java.time.ZonedDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class JiraChangeLog {
+public class ChangeLog {
 
-	private JiraUser author;
+	private User author;
 	private ZonedDateTime date;
-	private String field;
-	private JiraFieldId fieldType;
-	private String previousValue;
-	private String newValue;
+	private TransitionType transitionType;
 
 	public boolean isStartedChange() {
-		return "In Progress".equals(newValue);
+		return transitionType == TransitionType.START_DEVELOPMENT;
 	}
 
 	public boolean isDoneChange() {
-		return "Done".equals(newValue);
+		return transitionType == TransitionType.DONE;
 	}
 
 	public boolean isReviewRequested() {
-		return JiraFieldId.STATUS == fieldType
-				&& "In Review".equalsIgnoreCase(newValue);
+		return TransitionType.REQUEST_REVIEW == transitionType;
 	}
 
 	public boolean isReviewActionBy(String devEmail) {
 		return StringUtils.isNotBlank(this.author.getEmail())
 				&& StringUtils.isNotBlank(devEmail)
 				&& this.author.getEmail().equalsIgnoreCase(devEmail)
-				&& JiraFieldId.STATUS == this.fieldType
-				&& "In Review".equalsIgnoreCase(this.previousValue)
-				&& !"In Review".equalsIgnoreCase(this.newValue);
+				&& TransitionType.END_REVIEW == this.transitionType;
 	}
 
 	private boolean hasHappenedBetweenPeriod(ZonedDateTime start, ZonedDateTime end) {

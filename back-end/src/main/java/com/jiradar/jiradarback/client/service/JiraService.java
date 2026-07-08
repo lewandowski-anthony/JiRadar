@@ -1,22 +1,22 @@
-package com.jiradar.jiradarback.service;
+package com.jiradar.jiradarback.client.service;
 
 import com.jiradar.jiradarback.client.jira.JiraServiceClient;
 import com.jiradar.jiradarback.client.jira.dto.request.BulkChangelogRequestDto;
 import com.jiradar.jiradarback.client.jira.dto.request.SearchRequestRequestDto;
-import com.jiradar.jiradarback.client.jira.dto.response.BulkChangelogResponseDto;
 import com.jiradar.jiradarback.client.jira.dto.response.JiraChangelogResponseDto;
 import com.jiradar.jiradarback.client.jira.dto.response.JiraIssueResponseDto;
 import com.jiradar.jiradarback.client.jira.dto.response.SearchEnvelopeResponseDto;
 import com.jiradar.jiradarback.client.jira.dto.response.UserResponseDto;
-import com.jiradar.jiradarback.mapper.JiraChangelogMapper;
 import com.jiradar.jiradarback.mapper.JiraIssueMapper;
 import com.jiradar.jiradarback.mapper.JiraUserMapper;
 import com.jiradar.jiradarback.model.datetime.DateRange;
-import com.jiradar.jiradarback.model.jira.JiraIssue;
-import com.jiradar.jiradarback.model.jira.JiraUser;
-import com.jiradar.jiradarback.model.jira.JiraUserMetrics;
-import com.jiradar.jiradarback.model.enums.JiraFieldId;
+import com.jiradar.jiradarback.model.issuetracker.Issue;
+import com.jiradar.jiradarback.model.issuetracker.User;
+import com.jiradar.jiradarback.model.issuetracker.UserMetrics;
+import com.jiradar.jiradarback.client.enums.JiraFieldId;
+import com.jiradar.jiradarback.service.IssueTrackerService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.springframework.stereotype.Service;
 
@@ -27,38 +27,40 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 // TODO: Clean this mess
 @Service
 @RequiredArgsConstructor
-public class JiraService {
+public class JiraService implements IssueTrackerService {
 
 	private final JiraServiceClient jiraClient;
 	private final JiraIssueMapper jiraIssueMapper;
 	private final JiraUserMapper jiraUserMapper;
-	private final JiraChangelogMapper jiraChangelogMapper;
 
-	public JiraIssue getIssueByKey(String issueKey){
+	public Issue getIssueByKey(String issueKey){
 		JiraIssueResponseDto jiraIssue = jiraClient.getIssue(issueKey, JiraFieldId.CHANGELOG.name());
 		return jiraIssueMapper.toModel(jiraIssue);
 	}
 
-	public JiraUserMetrics getMetrics(String user, List<String> projects) {
+	public UserMetrics getMetrics(List<String> projects) {
+
+		if(CollectionUtils.isEmpty(projects)){
+			throw new IllegalArgumentException("projects is empty");
+		}
 
 		String jqlFormat = "project IN (%1$s) AND updated >= -30d";
 
-		List<JiraIssue> jiraIssues =  getJiraIssuesFromJQL(String.format(jqlFormat, String.join(",", projects)));
+		List<Issue> issues =  getJiraIssuesFromJQL(String.format(jqlFormat, String.join(",", projects)));
 
 		UserResponseDto userResponseDto = jiraClient.getMyself();
-		JiraUser jiraUser = jiraUserMapper.toDomainModel(userResponseDto);
+		User jiraUser = jiraUserMapper.toDomainModel(userResponseDto);
 
-		return JiraUserMetrics.generate(jiraUser, jiraIssues, new DateRange(ZonedDateTime.now().minusDays(30), ZonedDateTime.now()));
+		return UserMetrics.generate(jiraUser, issues, new DateRange(ZonedDateTime.now().minusDays(30), ZonedDateTime.now()));
 	}
 
-	private List<JiraIssue> getJiraIssuesFromJQL(String jql) {
+	private List<Issue> getJiraIssuesFromJQL(String jql) {
 		List<SearchEnvelopeResponseDto> envelopes = new ArrayList<>();
 		String nextPageToken = null;
 		SearchEnvelopeResponseDto jiraIssues;

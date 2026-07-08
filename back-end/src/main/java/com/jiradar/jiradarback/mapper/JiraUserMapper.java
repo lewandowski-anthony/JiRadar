@@ -1,7 +1,7 @@
 package com.jiradar.jiradarback.mapper;
 
 import com.jiradar.jiradarback.client.jira.dto.response.UserResponseDto;
-import com.jiradar.jiradarback.model.jira.JiraUser;
+import com.jiradar.jiradarback.model.issuetracker.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -10,5 +10,5 @@ public interface JiraUserMapper {
 
 	@Mapping(source="emailAddress", target="email")
 	@Mapping(source = "displayName", target = "name")
-	JiraUser toDomainModel(UserResponseDto jiraResponseDto);
+	User toDomainModel(UserResponseDto jiraResponseDto);
 }

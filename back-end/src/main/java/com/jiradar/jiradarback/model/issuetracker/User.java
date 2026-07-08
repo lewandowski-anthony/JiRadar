@@ -1,4 +1,4 @@
-package com.jiradar.jiradarback.model.jira;
+package com.jiradar.jiradarback.model.issuetracker;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class JiraUser {
+public class User {
 
 	private String email;
 	private String name;
