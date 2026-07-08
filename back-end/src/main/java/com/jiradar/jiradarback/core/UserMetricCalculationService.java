@@ -32,7 +32,7 @@ public class UserMetricCalculationService {
                 .toList();
 
         this.userIssues = projectIssuesInDateRange.stream()
-                .filter(issue -> issue.isAssignedTo("nicolas.tirode@decathlon.com"))
+                .filter(issue -> issue.isAssignedTo(user.getEmail()))
                 .toList();
 
         this.devReviewDurations = projectIssuesInDateRange.stream()
