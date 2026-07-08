@@ -1,10 +1,13 @@
 package com.jiradar.jiradarback.core;
 
+import com.jiradar.jiradarback.core.model.datetime.DateRange;
 import com.jiradar.jiradarback.core.model.issuetracker.Issue;
 import com.jiradar.jiradarback.core.model.issuetracker.User;
 import com.jiradar.jiradarback.core.model.issuetracker.UserMetrics;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface IssueTrackerService {
 
@@ -14,5 +17,7 @@ public interface IssueTrackerService {
 
 	Issue getIssueByKey(String issueKey);
 
-	UserMetrics getMetrics(List<String> projects);
+	UserMetrics getMetrics(List<String> projects, LocalDate startDate, LocalDate endDate);
+
+	UserMetrics getMetrics(List<String> projects, DateRange dateRange);
 }

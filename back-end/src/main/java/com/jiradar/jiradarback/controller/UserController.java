@@ -6,12 +6,14 @@ import com.jiradar.jiradarback.controller.dto.UserMetricsDto;
 import com.jiradar.jiradarback.controller.mapper.UserMetricsDtoMapper;
 import com.jiradar.jiradarback.core.IssueTrackerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -28,7 +30,12 @@ public class UserController {
 	}
 
 	@GetMapping("/metrics")
-	public UserMetricsDto getDeveloperPerformance(@RequestParam List<String> projectsKey, IssueTrackerService tracker){
-		return userMetricsDtoMapper.mapToDto(tracker.getMetrics(projectsKey));
+	public UserMetricsDto getDeveloperPerformance(
+			@RequestParam List<String> projectsKey,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+			IssueTrackerService tracker) {
+
+		return userMetricsDtoMapper.mapToDto(tracker.getMetrics(projectsKey, startDate, endDate));
 	}
 }

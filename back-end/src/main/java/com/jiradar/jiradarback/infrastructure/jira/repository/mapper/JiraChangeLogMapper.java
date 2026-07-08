@@ -1,4 +1,4 @@
-package com.jiradar.jiradarback.infrastructure.jira.mapper;
+package com.jiradar.jiradarback.infrastructure.jira.repository.mapper;
 
 import com.jiradar.jiradarback.infrastructure.jira.dto.response.ChangelogItemResponseDto;
 import com.jiradar.jiradarback.infrastructure.jira.dto.response.JiraChangelogResponseDto;

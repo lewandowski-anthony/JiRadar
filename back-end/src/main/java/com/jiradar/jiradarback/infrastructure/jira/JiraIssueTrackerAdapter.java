@@ -6,38 +6,31 @@ import com.jiradar.jiradarback.core.model.enums.AvailableProviders;
 import com.jiradar.jiradarback.core.model.issuetracker.Issue;
 import com.jiradar.jiradarback.core.model.issuetracker.User;
 import com.jiradar.jiradarback.core.model.issuetracker.UserMetrics;
-import com.jiradar.jiradarback.infrastructure.jira.dto.request.BulkChangelogRequestDto;
-import com.jiradar.jiradarback.infrastructure.jira.dto.request.SearchRequestRequestDto;
-import com.jiradar.jiradarback.infrastructure.jira.dto.response.BulkChangelogResponseDto;
-import com.jiradar.jiradarback.infrastructure.jira.dto.response.JiraChangelogResponseDto;
+import com.jiradar.jiradarback.infrastructure.cache.config.AvailableCache;
 import com.jiradar.jiradarback.infrastructure.jira.dto.response.JiraIssueResponseDto;
-import com.jiradar.jiradarback.infrastructure.jira.dto.response.SearchEnvelopeResponseDto;
 import com.jiradar.jiradarback.infrastructure.jira.enums.JiraFieldId;
-import com.jiradar.jiradarback.infrastructure.jira.mapper.JiraIssueMapper;
-import com.jiradar.jiradarback.infrastructure.jira.mapper.JiraUserMapper;
+import com.jiradar.jiradarback.infrastructure.jira.repository.mapper.JiraUserMapper;
+import com.jiradar.jiradarback.infrastructure.jira.repository.JiraIssueRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.YearMonth;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class JiraIssueTrackerAdapter implements IssueTrackerService {
 
 	private final JiraServiceClient jiraClient;
-	private final JiraIssueMapper issueMapper;
 	private final JiraUserMapper jiraUserMapper;
+	private final JiraIssueRepository jiraIssueRepository;
 
 	@Override
 	public boolean supports(String provider) {
@@ -46,6 +39,7 @@ public class JiraIssueTrackerAdapter implements IssueTrackerService {
 	}
 
 	@Override
+	@Cacheable(cacheNames = AvailableCache.JIRA_USER)
 	public User getMyself() {
 		return jiraUserMapper.toDomainModel(jiraClient.getMyself());
 	}
@@ -53,86 +47,59 @@ public class JiraIssueTrackerAdapter implements IssueTrackerService {
 	@Override
 	public Issue getIssueByKey(String issueKey){
 		JiraIssueResponseDto jiraIssue = jiraClient.getIssue(issueKey, JiraFieldId.CHANGELOG.name());
-		return issueMapper.toModel(jiraIssue);
+		return jiraIssueRepository.getIssuesForCustomRange(List.of(), LocalDate.now(), LocalDate.now()).stream()
+				.filter(issue -> issue.getKey().equals(issueKey))
+				.findFirst()
+				.orElse(null);
 	}
 
 	@Override
-	public UserMetrics getMetrics(List<String> projects) {
+	public UserMetrics getMetrics(List<String> projects, DateRange dateRange) {
+		if (dateRange == null) {
+			throw new IllegalArgumentException("dateRange cannot be null");
+		}
+		return getMetrics(projects, dateRange.from().toLocalDate(), dateRange.to().toLocalDate());
+	}
+
+	@Override
+	public UserMetrics getMetrics(List<String> projects, LocalDate startDate, LocalDate endDate) {
 		if (CollectionUtils.isEmpty(projects)) {
 			throw new IllegalArgumentException("projects is empty");
 		}
 
-		try (ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
-			CompletableFuture<User> userFuture = CompletableFuture.supplyAsync(
-					() -> jiraUserMapper.toDomainModel(jiraClient.getMyself()), executor);
+		LocalDate start = startDate != null ? startDate : LocalDate.now().minusDays(30);
+		LocalDate end = endDate != null ? endDate : LocalDate.now();
 
-			String jqlFormat = "project IN (%1$s) AND updated >= -30d";
-			List<Issue> issues = getJiraIssuesFromJQL(String.format(jqlFormat, String.join(",", projects)), executor);
-
-			User jiraUser = userFuture.join();
-
-			return UserMetrics.generate(jiraUser, issues, new DateRange(ZonedDateTime.now().minusDays(30), ZonedDateTime.now()));
+		if (start.plusYears(1).isBefore(end)) {
+			throw new IllegalArgumentException("dateRange is more than one year");
 		}
+
+		List<Issue> allIssues;
+
+		if (ChronoUnit.DAYS.between(start, end) < 30) {
+			allIssues = jiraIssueRepository.getIssuesForCustomRange(projects, start, end);
+		} else {
+			List<YearMonth> months = getMonthsInInterval(start, end);
+			allIssues = new ArrayList<>();
+			for (YearMonth month : months) {
+				allIssues.addAll(jiraIssueRepository.getIssuesForSpecificMonth(projects, month));
+			}
+		}
+
+		ZoneId zone = ZoneId.systemDefault();
+		DateRange finalRange = new DateRange(start.atStartOfDay(zone), end.plusDays(1).atStartOfDay(zone).minusNanos(1));
+		User currentUser = jiraUserMapper.toDomainModel(jiraClient.getMyself());
+		return UserMetrics.generate(currentUser, allIssues, finalRange);
 	}
 
-	private List<Issue> getJiraIssuesFromJQL(String jql, ExecutorService executor) {
-		List<SearchEnvelopeResponseDto> envelopes = new ArrayList<>();
-		String nextPageToken = null;
-		SearchEnvelopeResponseDto jiraIssues;
-
-		do {
-			jiraIssues = getIssueFromJiraPage(jql, nextPageToken);
-			envelopes.add(jiraIssues);
-			nextPageToken = jiraIssues.getNextPageToken();
-		} while (!jiraIssues.getIsLast());
-
-		List<String> jiraIds = envelopes.stream()
-				.flatMap(envelope -> envelope.getIssues().stream())
-				.map(JiraIssueResponseDto::getId)
-				.toList();
-
-		Map<String, JiraChangelogResponseDto> changelogResponseDtoMap = getChangeLogsByJiraIds(jiraIds, executor);
-
-		envelopes.forEach(envelope -> envelope.getIssues().removeIf(jiraIssue -> {
-			JiraChangelogResponseDto changeLog = changelogResponseDtoMap.get(jiraIssue.getId());
-			if (changeLog != null)
-				jiraIssue.setChangelog(changeLog);
-			return changeLog == null;
-		}));
-
-		return issueMapper.toModelList(envelopes);
-	}
-
-	private SearchEnvelopeResponseDto getIssueFromJiraPage(String jql, String token) {
-		return jiraClient.searchTickets(
-				SearchRequestRequestDto.builder()
-						.jql(jql)
-						.fields(JiraFieldId.getMandatoryFieldNames())
-						.maxResults(100)
-						.nextPageToken(token)
-						.build()
-		);
-	}
-
-	private Map<String, JiraChangelogResponseDto> getChangeLogsByJiraIds(List<String> issueIds, ExecutorService executor) {
-		List<List<String>> chunks = ListUtils.partition(issueIds, 5);
-
-		List<CompletableFuture<BulkChangelogResponseDto>> futures = chunks.stream()
-				.map(chunk -> CompletableFuture.supplyAsync(() -> jiraClient.bulkFetchChangelogs(
-						BulkChangelogRequestDto.builder()
-								.issueIdsOrKeys(chunk)
-								.fieldIds(List.of("status"))
-								.build()
-				), executor))
-				.toList();
-
-		return futures.stream()
-				.map(CompletableFuture::join)
-				.flatMap(bulk -> bulk.issueChangeLogs().stream())
-				.collect(Collectors.toMap(
-						JiraChangelogResponseDto::getIssueId,
-						Function.identity(),
-						(existing, replacement) -> existing
-				));
+	private List<YearMonth> getMonthsInInterval(LocalDate start, LocalDate end) {
+		List<YearMonth> months = new ArrayList<>();
+		YearMonth current = YearMonth.from(start);
+		YearMonth last = YearMonth.from(end);
+		while (!current.isAfter(last)) {
+			months.add(current);
+			current = current.plusMonths(1);
+		}
+		return months;
 	}
 }
