@@ -4,12 +4,14 @@ spring:
   jackson:
     property-naming-strategy: SNAKE_CASE
 
-jira:
-  config:
-    user: ${JIRA_USER_MAIL:}
-    url: ${JIRA_URL:http://localhost:8080}
-    token: ${JIRA_TOKEN:}
-    statuses:
-      start-development: ${JIRA_STATUS_START_DEV:In Progress,En cours}
-      request-review: ${JIRA_STATUS_REQUEST_REVIEW:In Review,Peer Review}
-      done: ${JIRA_STATUS_DONE:Done,Terminé,Validé}
+issue-tracker:
+  jira:
+    config:
+      enabled: ${JIRA_ENABLED:true}
+      user: ${JIRA_USER_MAIL:}
+      url: ${JIRA_URL:http://localhost:8080}
+      token: ${JIRA_TOKEN:}
+      statuses:
+        start-development: ${JIRA_STATUS_START_DEV:In Progress,En cours}
+        request-review: ${JIRA_STATUS_REQUEST_REVIEW:In Review,Peer Review}
+        done: ${JIRA_STATUS_DONE:Done,Terminé,Validé}

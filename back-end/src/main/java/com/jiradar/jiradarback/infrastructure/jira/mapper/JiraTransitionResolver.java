@@ -1,7 +1,6 @@
 package com.jiradar.jiradarback.infrastructure.jira.mapper;
 
 import com.jiradar.jiradarback.core.model.enums.TransitionType;
-import com.jiradar.jiradarback.infrastructure.jira.config.JiraClientConfig;
 import com.jiradar.jiradarback.infrastructure.jira.config.JiraProperties;
 import com.jiradar.jiradarback.infrastructure.jira.dto.response.ChangelogItemResponseDto;
 import lombok.RequiredArgsConstructor;

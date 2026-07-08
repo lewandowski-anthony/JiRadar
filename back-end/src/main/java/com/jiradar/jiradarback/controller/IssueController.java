@@ -10,13 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/issues")
+@RequestMapping("/api/v1/tracker/{issueTracker}/issues")
 public class IssueController {
 
-	private final IssueTrackerService jiraService;
-
 	@GetMapping("/{issueKey}")
-	public Issue getIssue(@PathVariable("issueKey") String issueKey) {
+	public Issue getIssue(@PathVariable("issueKey") String issueKey, IssueTrackerService jiraService) {
 		return jiraService.getIssueByKey(issueKey);
 	}
 }

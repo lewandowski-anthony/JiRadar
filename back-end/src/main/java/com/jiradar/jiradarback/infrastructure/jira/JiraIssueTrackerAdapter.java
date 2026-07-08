@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
@@ -31,7 +32,6 @@ import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-// TODO: Clean this mess
 @Service
 @RequiredArgsConstructor
 public class JiraIssueTrackerAdapter implements IssueTrackerService {

@@ -1,15 +1,12 @@
 package com.jiradar.jiradarback.infrastructure.jira.mapper;
 
-import com.jiradar.jiradarback.infrastructure.jira.config.JiraClientConfig;
 import com.jiradar.jiradarback.infrastructure.jira.dto.response.ChangelogItemResponseDto;
 import com.jiradar.jiradarback.infrastructure.jira.dto.response.JiraChangelogResponseDto;
 import com.jiradar.jiradarback.infrastructure.jira.dto.response.UserResponseDto;
-import com.jiradar.jiradarback.core.model.enums.TransitionType;
 import com.jiradar.jiradarback.core.model.issuetracker.ChangeLog;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.ZonedDateTime;
 import java.util.Collections;

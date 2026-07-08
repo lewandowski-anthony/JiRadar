@@ -1,0 +1,72 @@
+package com.jiradar.jiradarback.infrastructure.common.config;
+
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
+
+import java.util.HashSet;
+import java.util.Set;
+
+@Component
+public class ModuleDisablerPostProcessor implements BeanDefinitionRegistryPostProcessor, EnvironmentAware {
+
+	private Environment environment;
+
+	private static final String INFRA_BASE_PACKAGE = "com.jiradar.jiradarback.infrastructure.";
+	private static final String COMMON_PACKAGE_MODULE = "common";
+
+	@Override
+	public void setEnvironment(Environment environment) {
+		this.environment = environment;
+	}
+
+	@Override
+	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
+		String[] beanNames = registry.getBeanDefinitionNames();
+		Set<String> beansToRemove = new HashSet<>();
+
+		for (String beanName : beanNames) {
+			BeanDefinition beanDef = registry.getBeanDefinition(beanName);
+			String beanClassName = beanDef.getBeanClassName();
+
+			if (beanClassName != null && beanClassName.startsWith(INFRA_BASE_PACKAGE)) {
+				String remainingPath = beanClassName.substring(INFRA_BASE_PACKAGE.length());
+				int firstDotIndex = remainingPath.indexOf('.');
+				if (firstDotIndex == -1) continue;
+
+				String moduleName = remainingPath.substring(0, firstDotIndex);
+
+				if (COMMON_PACKAGE_MODULE.equals(moduleName)) {
+					continue;
+				}
+
+				String propertyKey = "issue-tracker." + moduleName + ".config.enabled";
+				Boolean isModuleEnabled = environment.getProperty(propertyKey, Boolean.class, true);
+
+				if (!isModuleEnabled) {
+					beansToRemove.add(beanName);
+				}
+			}
+		}
+
+		for (String beanName : beanNames) {
+			BeanDefinition beanDef = registry.getBeanDefinition(beanName);
+			String factoryBeanName = beanDef.getFactoryBeanName();
+
+			if (factoryBeanName != null && beansToRemove.contains(factoryBeanName)) {
+				beansToRemove.add(beanName);
+			}
+		}
+
+		beansToRemove.forEach(registry::removeBeanDefinition);
+	}
+
+	@Override
+	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+	}
+}

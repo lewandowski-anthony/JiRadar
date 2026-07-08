@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Setter
-@ConfigurationProperties("jira.config")
+@ConfigurationProperties("issue-tracker.jira.config")
 public class JiraProperties {
 
     private String user;
