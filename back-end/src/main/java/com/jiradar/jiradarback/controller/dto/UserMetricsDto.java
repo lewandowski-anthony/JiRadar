@@ -4,7 +4,6 @@ import lombok.Builder;
 
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Map;
 
 @Builder
 public record UserMetricsDto(
@@ -20,13 +19,13 @@ public record UserMetricsDto(
 		Double deliverySuccessRate,
 		Double teamReviewParticipationRate,
 		Double pingPongReviewRate,
-		Double parallelJiraInProgressRate,
-		List<UserJiraByTypeDto> jiraRateByType
+		Double parallelIssuesInProgressRate,
+		List<UserIssueByTypeDto> issueRateByType
 )
 {
 
-	public record UserJiraByTypeDto(
-			String jiraType,
+	public record UserIssueByTypeDto(
+			String type,
 			Double rate
 	) {}
 
