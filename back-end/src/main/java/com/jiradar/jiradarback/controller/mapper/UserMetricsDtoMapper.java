@@ -12,7 +12,9 @@ import java.time.Duration;
 public interface UserMetricsDtoMapper {
 
 	UserMetricsDto mapToDto(UserMetrics jiraUserMetrics);
+
 	UserMetricsDto.MetricDto mapMetric(UserMetrics.Metric metric);
+
 	UserMetricsDto.PeriodicUserMetricsDto mapPeriodicMetric(UserMetrics.PeriodicUserMetrics periodicUserMetrics);
 
 	default String formatDuration(Duration duration) {

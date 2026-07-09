@@ -32,13 +32,23 @@ public class Issue {
 	}
 
 	public boolean isStartedIn(DateRange range) {
-		return this.changes.stream()
-				.anyMatch(change -> range.contains(change.getDate()) && change.isStartedChange());
+		ZonedDateTime firstStart = this.changes.stream()
+				.filter(ChangeLog::isStartedChange)
+				.map(ChangeLog::getDate)
+				.min(ZonedDateTime::compareTo)
+				.orElse(null);
+
+		return range.contains(firstStart);
 	}
 
 	public boolean isDoneIn(DateRange range) {
-		return this.changes.stream()
-				.anyMatch(change -> range.contains(change.getDate()) && change.isDoneChange());
+		ZonedDateTime lastDone = this.changes.stream()
+				.filter(ChangeLog::isDoneChange)
+				.map(ChangeLog::getDate)
+				.max(ZonedDateTime::compareTo)
+				.orElse(null);
+
+		return range.contains(lastDone);
 	}
 
 	public boolean isActiveOn(ZonedDateTime date) {
@@ -51,13 +61,20 @@ public class Issue {
 	}
 
 	public long getReviewReopenedCount(DateRange range) {
-		List<ChangeLog> reviewRequests = this.changes.stream()
-				.filter(change -> range.contains(change.getDate()))
-				.filter(ChangeLog::isReviewRequested)
-				.sorted(Comparator.comparing(ChangeLog::getDate))
-				.toList();
 
-		return reviewRequests.size() <= 1 ? 0L : reviewRequests.size() - 1;
+		ZonedDateTime absoluteFirst = this.changes.stream()
+				.filter(ChangeLog::isReviewRequested)
+				.map(ChangeLog::getDate)
+				.min(ZonedDateTime::compareTo)
+				.orElse(null);
+
+		if (absoluteFirst == null) return 0L;
+
+		return this.changes.stream()
+				.filter(ChangeLog::isReviewRequested)
+				.filter(change -> change.getDate().isAfter(absoluteFirst))
+				.filter(change -> range.contains(change.getDate()))
+				.count();
 	}
 
 	public List<Duration> getReviewDurations(DateRange range, Predicate<ChangeLog> filterPredicate) {

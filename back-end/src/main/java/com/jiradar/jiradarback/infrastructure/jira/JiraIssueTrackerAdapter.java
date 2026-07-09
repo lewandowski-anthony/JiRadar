@@ -62,10 +62,10 @@ public class JiraIssueTrackerAdapter implements IssueTrackerService {
 
 		LocalDate start = command.startDate() != null ? command.startDate() : LocalDate.now().minusDays(30);
 		LocalDate end = command.endDate() != null ? command.endDate() : LocalDate.now();
-
+		/**
 		if (start.plusYears(1).isBefore(end)) {
 			throw new IllegalArgumentException("dateRange is more than one year");
-		}
+		}**/
 
 		List<Issue> allIssues;
 

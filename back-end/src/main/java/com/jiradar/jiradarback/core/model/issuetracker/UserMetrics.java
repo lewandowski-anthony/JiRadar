@@ -7,12 +7,8 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
 
-import java.time.Duration;
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +20,7 @@ public class UserMetrics {
 	private final ZonedDateTime from;
 	private final ZonedDateTime to;
 	private final Metric metric;
-	private final List<PeriodicUserMetrics> history;
+	private final List<PeriodicUserMetrics> userMetricsByGranularity;
 
 	public static UserMetrics generate(User user, List<Issue> projectIssues, DateRange range) {
 		return UserMetrics.generate(user, projectIssues, range, null);
@@ -42,7 +38,7 @@ public class UserMetrics {
 				.from(range.from())
 				.to(range.to())
 				.metric(globalMetric)
-				.history(periodicHistory)
+				.userMetricsByGranularity(periodicHistory)
 				.build();
 	}
 

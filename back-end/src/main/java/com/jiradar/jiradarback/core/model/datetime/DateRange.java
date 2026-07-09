@@ -13,7 +13,7 @@ import java.util.Locale;
 public record DateRange(ZonedDateTime from, ZonedDateTime to) {
 
 	public boolean contains(ZonedDateTime date) {
-		return date != null && date.isAfter(from) && date.isBefore(to);
+		return date != null && !date.isBefore(from) && date.isBefore(to);
 	}
 
 	public boolean isMoreThanOneYear() {
@@ -38,18 +38,5 @@ public record DateRange(ZonedDateTime from, ZonedDateTime to) {
 		}
 
 		return subRanges;
-	}
-
-	public String toLabel(ChronoUnit unit) {
-		String pattern = switch (unit) {
-			case DAYS -> "dd MMM yyyy";
-			case WEEKS -> "w - yyyy";
-			case MONTHS -> "MMMM yyyy";
-			case YEARS -> "yyyy";
-			default -> throw new IllegalArgumentException("Unsupported unit: " + unit);
-		};
-
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern, Locale.FRANCE);
-		return unit == ChronoUnit.WEEKS ? "Sem. " + this.from.format(formatter) : this.from.format(formatter);
 	}
 }
