@@ -4,30 +4,28 @@ import java.time.DayOfWeek;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Locale;
 import java.util.function.UnaryOperator;
 
+import static com.jiradar.jiradarback.core.constant.DateConstant.DAY_LABEL_PATTERN;
+import static com.jiradar.jiradarback.core.constant.DateConstant.MONTH_LABEL_PATTERN;
+import static com.jiradar.jiradarback.core.constant.DateConstant.WEEK_LABEL_PATTERN;
+import static com.jiradar.jiradarback.core.constant.DateConstant.YEAR_LABEL_PATTERN;
+
 public enum TimeGranularity {
 
-	DAY(ChronoUnit.DAYS, "dd MMM yyyy", date -> date.plusDays(1)),
-	WEEK(ChronoUnit.WEEKS, "w - yyyy", date -> date.with(TemporalAdjusters.next(DayOfWeek.MONDAY))),
-	MONTH(ChronoUnit.MONTHS, "MMMM yyyy", date -> date.with(TemporalAdjusters.firstDayOfNextMonth())),
-	YEAR(ChronoUnit.YEARS, "yyyy", date -> date.with(TemporalAdjusters.firstDayOfNextYear()));
+	DAY(DAY_LABEL_PATTERN, date -> date.plusDays(1)),
+	WEEK(WEEK_LABEL_PATTERN, date -> date.with(TemporalAdjusters.next(DayOfWeek.MONDAY))),
+	MONTH(MONTH_LABEL_PATTERN, date -> date.with(TemporalAdjusters.firstDayOfNextMonth())),
+	YEAR(YEAR_LABEL_PATTERN, date -> date.with(TemporalAdjusters.firstDayOfNextYear()));
 
-	private final ChronoUnit chronoUnit;
 	private final DateTimeFormatter formatter;
 	private final UnaryOperator<ZonedDateTime> adjuster;
 
-	TimeGranularity(ChronoUnit chronoUnit, String pattern, UnaryOperator<ZonedDateTime> adjuster) {
-		this.chronoUnit = chronoUnit;
+	TimeGranularity(String pattern, UnaryOperator<ZonedDateTime> adjuster) {
 		this.formatter = DateTimeFormatter.ofPattern(pattern, Locale.getDefault());
 		this.adjuster = adjuster;
-	}
-
-	public ChronoUnit toChronoUnit() {
-		return this.chronoUnit;
 	}
 
 	public ZonedDateTime getEndOfPeriod(ZonedDateTime period) {

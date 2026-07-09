@@ -7,8 +7,11 @@ import com.jiradar.jiradarback.controller.dto.UserMetricsDto;
 import com.jiradar.jiradarback.controller.mapper.UserHistoryEventDtoMapper;
 import com.jiradar.jiradarback.controller.mapper.UserMetricsDtoMapper;
 import com.jiradar.jiradarback.core.IssueTrackerService;
+import com.jiradar.jiradarback.core.factory.IssueTrackerFactory;
 import com.jiradar.jiradarback.core.model.command.ProjectSearchParamCommand;
 import com.jiradar.jiradarback.core.model.enums.TimeGranularity;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,42 +27,47 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/tracker/{issueTracker}/users/myself")
+@RequestMapping("/api/v1/tracker/{issueTracker}/users")
+@Tag(name = "User Management", description = "${openapi.endpoint.user.tag.description}")
 public class UserController {
 
 	private final UserMetricsDtoMapper userMetricsDtoMapper;
 	private final UserDtoMapper userDtoMapper;
 	private final UserHistoryEventDtoMapper userHistoryEventDtoMapper;
+	private final IssueTrackerFactory issueTrackerFactory;
 
-	@GetMapping
-	public UserDto getMyself(IssueTrackerService tracker) {
-		return userDtoMapper.toDto(tracker.getMyself());
+	@GetMapping("/me")
+	@Operation(summary = "${openapi.endpoint.user.me.summary}", description = "${openapi.endpoint.user.me.description}")
+	public UserDto getMyself(@RequestParam String issueTracker) {
+		return userDtoMapper.toDto(issueTrackerFactory.getService(issueTracker).getMyself());
 	}
 
-	@GetMapping("/metrics")
+	@GetMapping("/me/metrics")
+	@Operation(summary = "${openapi.endpoint.user.metrics.summary}", description = "${openapi.endpoint.user.metrics.description}")
 	public UserMetricsDto getDeveloperPerformance(
-			@RequestParam List<String> projectsKey,
+			@RequestParam List<String> projectKeys,
+			@RequestParam String issueTracker,
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-			@RequestParam(required = false) String historyGranularity,
-			IssueTrackerService tracker) {
+			@RequestParam(required = false) String historyGranularity) {
 
 		return userMetricsDtoMapper.mapToDto(
-				tracker.getMetrics(
-						new ProjectSearchParamCommand(projectsKey, startDate, endDate), TimeGranularity.fromString(historyGranularity)
+				issueTrackerFactory.getService(issueTracker).getMetrics(
+						new ProjectSearchParamCommand(projectKeys, startDate, endDate), TimeGranularity.fromString(historyGranularity)
 				)
 		);
 	}
 
-	@GetMapping("/history")
+	@GetMapping("/me/history")
+	@Operation(summary = "${openapi.endpoint.user.history.summary}", description = "${openapi.endpoint.user.history.description}")
 	public Page<UserHistoryEventDto> getDeveloperHistory(
 			@RequestParam List<String> projectsKey,
+			@RequestParam String issueTracker,
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-			@PageableDefault(page = 0, size = 20) Pageable pageable,
-			IssueTrackerService tracker) {
+			@PageableDefault(page = 0, size = 20) Pageable pageable) {
 
-		return tracker.getHistory(
+		return issueTrackerFactory.getService(issueTracker).getHistory(
 				new ProjectSearchParamCommand(projectsKey, startDate, endDate), pageable
 		).map(userHistoryEventDtoMapper::toDto);
 	}

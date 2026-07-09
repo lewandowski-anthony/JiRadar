@@ -12,7 +12,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
-    private final IssueTrackerServiceResolver issueTrackerServiceResolver;
 
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
@@ -22,9 +21,4 @@ public class WebConfig implements WebMvcConfigurer {
 				.allowCredentials(false)
 				.maxAge(3600);
 	}
-
-    @Override
-    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(issueTrackerServiceResolver);
-    }
 }

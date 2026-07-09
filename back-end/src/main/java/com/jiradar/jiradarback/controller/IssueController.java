@@ -1,5 +1,8 @@
 package com.jiradar.jiradarback.controller;
 
+import com.jiradar.jiradarback.controller.dto.IssueDto;
+import com.jiradar.jiradarback.controller.mapper.IssueDtoMapper;
+import com.jiradar.jiradarback.core.factory.IssueTrackerFactory;
 import com.jiradar.jiradarback.core.model.issuetracker.Issue;
 import com.jiradar.jiradarback.core.IssueTrackerService;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/tracker/{issueTracker}/issues")
 public class IssueController {
 
+	private final IssueDtoMapper issueDtoMapper;
+
+	private final IssueTrackerFactory issueTrackerFactory;
+
 	@GetMapping("/{issueKey}")
-	public Issue getIssue(@PathVariable("issueKey") String issueKey, IssueTrackerService jiraService) {
-		return jiraService.getIssueByKey(issueKey);
+	public IssueDto getIssue(@PathVariable("issueKey") String issueKey, @PathVariable("issueTracker") String issueTracker) {
+		return issueDtoMapper.toDto(issueTrackerFactory.getService(issueTracker).getIssueByKey(issueKey));
 	}
 }

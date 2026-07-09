@@ -1,4 +1,7 @@
 spring:
+  messages:
+    basename:
+      - i18n/openapi/openapi
   application:
     name: Jiradar Back
   jackson:
@@ -15,3 +18,8 @@ issue-tracker:
         start-development: ${JIRA_STATUS_START_DEV:In Progress,En cours}
         request-review: ${JIRA_STATUS_REQUEST_REVIEW:In Review,Peer Review}
         done: ${JIRA_STATUS_DONE:Done,Terminé,Validé}
+
+springdoc:
+  show-actuator: false
+  cache:
+    disabled: true

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-import static com.jiradar.jiradarback.core.model.constant.UserConstant.UNASSIGNED_USER;
+import static com.jiradar.jiradarback.core.constant.UserConstant.UNASSIGNED_USER;
 
 @Getter
 @Setter

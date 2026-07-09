@@ -1,4 +1,4 @@
-package com.jiradar.jiradarback.core.model.constant;
+package com.jiradar.jiradarback.core.constant;
 
 import com.jiradar.jiradarback.core.model.issuetracker.User;
 
