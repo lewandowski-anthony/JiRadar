@@ -1,14 +1,16 @@
 package com.jiradar.jiradarback.core;
 
-import com.jiradar.jiradarback.core.model.command.MetricsQueryCommand;
-import com.jiradar.jiradarback.core.model.datetime.DateRange;
+import com.jiradar.jiradarback.core.model.command.ProjectSearchParamCommand;
+import com.jiradar.jiradarback.core.model.enums.TimeGranularity;
 import com.jiradar.jiradarback.core.model.issuetracker.Issue;
 import com.jiradar.jiradarback.core.model.issuetracker.User;
+import com.jiradar.jiradarback.core.model.issuetracker.UserHistoryEvent;
 import com.jiradar.jiradarback.core.model.issuetracker.UserMetrics;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 public interface IssueTrackerService {
 
@@ -18,5 +20,7 @@ public interface IssueTrackerService {
 
 	Issue getIssueByKey(String issueKey);
 
-	UserMetrics getMetrics(MetricsQueryCommand command);
+	UserMetrics getMetrics(ProjectSearchParamCommand command, TimeGranularity historyGranularity);
+
+	Page<UserHistoryEvent> getHistory(ProjectSearchParamCommand command, Pageable pageable);
 }

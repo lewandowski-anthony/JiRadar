@@ -32,6 +32,7 @@ public enum JiraFieldId {
 	public static List<JiraFieldId> getMandatoryFields() {
 		return Arrays.asList(
 				JiraFieldId.STATUS,
+				JiraFieldId.SUMMARY,
 				JiraFieldId.ASSIGNEE,
 				JiraFieldId.CREATED,
 				JiraFieldId.PROJECT,

@@ -3,6 +3,8 @@ package com.jiradar.jiradarback.core.model.datetime;
 import com.jiradar.jiradarback.core.model.enums.TimeGranularity;
 
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.format.DateTimeFormatter;
@@ -18,6 +20,11 @@ public record DateRange(ZonedDateTime from, ZonedDateTime to) {
 
 	public boolean isMoreThanOneYear() {
 		return Duration.between(from, to).toDays() > 366;
+	}
+
+	public static DateRange from(LocalDate start, LocalDate end) {
+		ZoneId zone = ZoneId.systemDefault();
+		return new DateRange(start.atStartOfDay(zone), end.plusDays(1).atStartOfDay(zone).minusNanos(1));
 	}
 
 	public List<DateRange> splitBy(TimeGranularity unit) {

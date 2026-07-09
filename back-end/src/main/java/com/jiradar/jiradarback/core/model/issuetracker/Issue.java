@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
+import static com.jiradar.jiradarback.core.model.constant.UserConstant.UNASSIGNED_USER;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -25,7 +27,17 @@ public class Issue {
 	private IssueType type;
 	private List<ChangeLog> changes;
 
+	public void setAssignee(User assignee) {
+		this.assignee = StringUtils.isNotBlank(assignee.getEmail()) ? assignee : UNASSIGNED_USER;
+	}
+
 	public boolean isAssignedTo(String email) {
+		return this.assignee != null
+				&& StringUtils.isNotBlank(this.assignee.getEmail())
+				&& this.assignee.getEmail().equalsIgnoreCase(email);
+	}
+
+	public boolean isAuthor(String email) {
 		return this.assignee != null
 				&& StringUtils.isNotBlank(this.assignee.getEmail())
 				&& this.assignee.getEmail().equalsIgnoreCase(email);
