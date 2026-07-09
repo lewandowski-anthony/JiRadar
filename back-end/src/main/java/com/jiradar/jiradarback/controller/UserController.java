@@ -6,7 +6,7 @@ import com.jiradar.jiradarback.controller.mapper.UserDtoMapper;
 import com.jiradar.jiradarback.controller.dto.UserMetricsDto;
 import com.jiradar.jiradarback.controller.mapper.UserHistoryEventDtoMapper;
 import com.jiradar.jiradarback.controller.mapper.UserMetricsDtoMapper;
-import com.jiradar.jiradarback.core.IssueTrackerService;
+import org.springframework.web.bind.annotation.PathVariable;
 import com.jiradar.jiradarback.core.factory.IssueTrackerFactory;
 import com.jiradar.jiradarback.core.model.command.ProjectSearchParamCommand;
 import com.jiradar.jiradarback.core.model.enums.TimeGranularity;
@@ -38,15 +38,15 @@ public class UserController {
 
 	@GetMapping("/me")
 	@Operation(summary = "${openapi.endpoint.user.me.summary}", description = "${openapi.endpoint.user.me.description}")
-	public UserDto getMyself(@RequestParam String issueTracker) {
+	public UserDto getMyself(@PathVariable("issueTracker") String issueTracker) {
 		return userDtoMapper.toDto(issueTrackerFactory.getService(issueTracker).getMyself());
 	}
 
 	@GetMapping("/me/metrics")
 	@Operation(summary = "${openapi.endpoint.user.metrics.summary}", description = "${openapi.endpoint.user.metrics.description}")
 	public UserMetricsDto getDeveloperPerformance(
+			@PathVariable("issueTracker") String issueTracker,
 			@RequestParam List<String> projectKeys,
-			@RequestParam String issueTracker,
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
 			@RequestParam(required = false) String historyGranularity) {
@@ -62,7 +62,7 @@ public class UserController {
 	@Operation(summary = "${openapi.endpoint.user.history.summary}", description = "${openapi.endpoint.user.history.description}")
 	public Page<UserHistoryEventDto> getDeveloperHistory(
 			@RequestParam List<String> projectsKey,
-			@RequestParam String issueTracker,
+			@PathVariable("issueTracker") String issueTracker,
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
 			@PageableDefault(page = 0, size = 20) Pageable pageable) {
