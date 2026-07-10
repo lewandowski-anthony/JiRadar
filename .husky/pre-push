@@ -1,12 +1,16 @@
 #!/bin/bash
 set -e
 
+cd ..
+
+ROOT_DIR=$(pwd)
+
 echo "🔍 [Jiradar] Starting global code coverage checks..."
 
 echo "☕ [1/2] Validating Back-end coverage (Spring Boot)..."
-cd back-end && mvn clean verify && cd ..
+cd "$ROOT_DIR/back-end" && mvn clean verify
 
 echo "📦 [2/2] Validating Front-end coverage (Angular 22 + Vitest)..."
-cd front-end && npm run test:coverage && cd ..
+cd "$ROOT_DIR/front-end" && npm run test:coverage
 
 echo "✅ [Jiradar] Everything is perfect! Push is authorized."
