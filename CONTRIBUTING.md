@@ -58,7 +58,6 @@ git pull upstream main
 # Initialize a dedicated, descriptively named development branch
 git checkout -b feature/your-feature-name
 ```
-
 ---
 
 ## 5. Local Verification and Quality Gates
