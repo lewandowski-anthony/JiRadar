@@ -1,7 +1,6 @@
 # Jiradar Backend
 
 Jiradar Backend is a Spring Boot application designed to extract, process, and analyze project metrics from issue trackers like Jira. By integrating directly with tracker APIs and processing issue changelogs, the platform generates developer performance analytics, including cycle times, review rates, and work-in-progress statistics.
-
 ---
 
 ## Technical Architecture
