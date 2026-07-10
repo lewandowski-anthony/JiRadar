@@ -4,7 +4,6 @@
     <div>
       <h1 class="text-3xl font-bold tracking-tight text-white flex items-center gap-3">
         <img src="jiradar_logo.svg" alt="JiRadar Logo" class="w-9 h-9 object-contain" />
-
         <span>JiRadar Dashboard</span>
       </h1>
       <p class="text-sm text-slate-400 mt-1">Team flow performance & history analytics</p>
@@ -21,26 +20,26 @@
     <form [formGroup]="searchForm" (ngSubmit)="loadDashboardData()" class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
 
       <div>
-        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Project Key</label>
-        <input type="text" formControlName="projectKey" placeholder="e.g., SMSUP"
+        <label for="projectKey" class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Project Key</label>
+        <input id="projectKey" type="text" formControlName="projectKey" placeholder="e.g., SMSUP"
                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors uppercase" />
       </div>
 
       <div>
-        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Start Date</label>
-        <input type="date" formControlName="startDate"
+        <label for="startDate" class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Start Date</label>
+        <input id="startDate" type="date" formControlName="startDate"
                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors" />
       </div>
 
       <div>
-        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">End Date</label>
-        <input type="date" formControlName="endDate"
+        <label for="endDate" class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">End Date</label>
+        <input id="endDate" type="date" formControlName="endDate"
                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors" />
       </div>
 
       <div>
-        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Granularity</label>
-        <select formControlName="granularity"
+        <label for="granularity" class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Granularity</label>
+        <select id="granularity" formControlName="granularity"
                 class="w-full bg-slate-900 border border-slate-700 rounded-xl px-5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors">
           <option value="">No granularity</option>
           <option value="DAY">Daily</option>

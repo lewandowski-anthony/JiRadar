@@ -1,0 +1,12 @@
+#!/bin/bash
+set -e
+
+echo "🔍 [Jiradar] Starting global code coverage checks..."
+
+echo "☕ [1/2] Validating Back-end coverage (Spring Boot)..."
+cd back-end && mvn clean verify && cd ..
+
+echo "📦 [2/2] Validating Front-end coverage (Angular 22 + Vitest)..."
+cd front-end && npm run test:coverage && cd ..
+
+echo "✅ [Jiradar] Everything is perfect! Push is authorized."

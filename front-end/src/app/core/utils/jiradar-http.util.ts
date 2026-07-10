@@ -1,20 +1,15 @@
 import { HttpParams } from '@angular/common/http';
+import {ApiParams} from '@core/constants/api-params.constant';
 
 export function buildTrackerParams(projects: string[], startDate?: string, endDate?: string): HttpParams {
   let params = new HttpParams();
 
   projects.forEach(project => {
-    params = params.append('project_keys', project);
+    params = params.append(ApiParams.TRACKER.PROJECT_KEYS, project);
   });
 
-  if (startDate) params = params.set('start_date', startDate);
-  if (endDate) params = params.set('end_date', endDate);
+  if (startDate) params = params.set(ApiParams.TRACKER.START_DATE, startDate);
+  if (endDate) params = params.set(ApiParams.TRACKER.END_DATE, endDate);
 
   return params;
-}
-
-export function buildPageParams(page: number, size: number, existingParams: HttpParams = new HttpParams()): HttpParams {
-  return existingParams
-    .set('page', page)
-    .set('size', size);
 }
