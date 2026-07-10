@@ -24,6 +24,9 @@ export class DashboardComponent {
   readonly metricsData = this.metricsService.userMetrics;
   readonly historyData = this.historyService.history;
 
+  historyPage = 0;
+  historySize = 5;
+
   readonly searchForm = this.fb.group({
     projectKey: ['', [Validators.required, Validators.minLength(2)]],
     startDate: [''],
@@ -31,18 +34,40 @@ export class DashboardComponent {
     granularity: ['']
   });
 
+  loadHistoryPage(page: number): void {
+    if (this.searchForm.invalid) return;
+
+    this.historyPage = page;
+
+    const { projectKey, startDate, endDate } = this.searchForm.value;
+    const projectsArray = [projectKey!];
+    const tracker = 'jira';
+
+    this.historyService.getUserHistories(tracker, projectsArray, startDate!, endDate!, this.historyPage, this.historySize).subscribe({
+      error: (err) => {
+        this.errorMessage.set(err.message || 'Failed to load history');
+        this.isLoading.set(false);
+      }
+    });
+  }
+
+  updateHistorySize(size: number): void {
+    this.historySize = size;
+  }
+
   loadDashboardData(): void {
     if (this.searchForm.invalid) return;
 
     this.isLoading.set(true);
     this.errorMessage.set(null);
+    this.historyPage = 0;
 
-    const { projectKey, startDate, endDate } = this.searchForm.value;
+    const { projectKey, startDate, endDate, granularity } = this.searchForm.value;
 
     const projectsArray = [projectKey!];
     const tracker = 'jira';
 
-    this.metricsService.getUserMetrics(tracker, projectsArray, startDate!, endDate!).subscribe({
+    this.metricsService.getUserMetrics(tracker, projectsArray, startDate!, endDate!, granularity!).subscribe({
       next: () => this.isLoading.set(false),
       error: (err) => {
         this.errorMessage.set(err.message || 'Failed to load metrics');
@@ -50,7 +75,7 @@ export class DashboardComponent {
       }
     });
 
-    this.historyService.getUserHistories(tracker, projectsArray, startDate!, endDate!).subscribe({
+    this.historyService.getUserHistories(tracker, projectsArray, startDate!, endDate!, this.historyPage, this.historySize).subscribe({
       error: (err) => {
         this.errorMessage.set(err.message || 'Failed to load history');
         this.isLoading.set(false);

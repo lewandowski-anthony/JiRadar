@@ -15,9 +15,12 @@ export class MetricsService {
 
   readonly userMetrics = this.userMetricsSignal.asReadonly();
 
-  getUserMetrics(tracker: string, projects: string[], startDate: string, endDate: string): Observable<UserMetrics> {
+  getUserMetrics(tracker: string, projects: string[], startDate: string, endDate: string, granularity: string): Observable<UserMetrics> {
     const url = `${environment.apiUrl}/api/v1/tracker/${tracker}/users/me/metrics`;
-    const params = buildTrackerParams(projects, startDate, endDate);
+    let params = buildTrackerParams(projects, startDate, endDate);
+    if (granularity) {
+      params = params.set("history_granularity", granularity);
+    }
 
     return this.httpClient.get<unknown>(url, { params }).pipe(
       map(rawJson => autoMapSnakeToCamel<UserMetrics>(rawJson)),

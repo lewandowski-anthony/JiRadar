@@ -7,7 +7,7 @@
     <div class="max-w-3xl mx-auto">
       <ul class="relative border-l-2 border-slate-700 ml-3 space-y-8">
 
-        @for (history of historyPage; track $index) {
+        @for (history of historyPage.content; track $index) {
           <li class="pl-8 relative">
             <div class="absolute w-4 h-4 bg-blue-500 rounded-full -left-[9px] top-1.5 ring-4 ring-slate-900"></div>
 
@@ -64,6 +64,41 @@
           </div>
         }
       </ul>
+
+      @if (historyPage.content && historyPage.content.length > 0) {
+        <div class="mt-8 pt-6 border-t border-slate-700/50 flex flex-wrap items-center justify-between gap-4">
+
+          <div class="flex items-center gap-2">
+            <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Items per page:</label>
+            <select (change)="onSizeChange($event)"
+                    class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:border-blue-500 focus:outline-none transition-colors">
+              <option [value]="5" [selected]="historyPage.size === 5">5</option>
+              <option [value]="10" [selected]="historyPage.size === 10">10</option>
+              <option [value]="20" [selected]="historyPage.size === 20">20</option>
+            </select>
+          </div>
+
+          <div class="text-xs text-slate-400">
+            Page <span class="font-bold text-slate-200">{{ historyPage.number + 1 }}</span> of <span class="font-bold text-slate-200">{{ historyPage.totalPages }}</span>
+            <span class="mx-2 text-slate-600">|</span>
+            Total: <span class="font-bold text-slate-200">{{ historyPage.totalElements }}</span>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button (click)="onPageChange(historyPage.number - 1)"
+                    [disabled]="historyPage.number === 0"
+                    class="px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm">
+              Previous
+            </button>
+            <button (click)="onPageChange(historyPage.number + 1)"
+                    [disabled]="historyPage.number >= historyPage.totalPages - 1"
+                    class="px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-sm">
+              Next
+            </button>
+          </div>
+
+        </div>
+      }
     </div>
   </div>
 }

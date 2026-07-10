@@ -12,3 +12,9 @@ export function buildTrackerParams(projects: string[], startDate?: string, endDa
 
   return params;
 }
+
+export function buildPageParams(page: number, size: number, existingParams: HttpParams = new HttpParams()): HttpParams {
+  return existingParams
+    .set('page', page)
+    .set('size', size);
+}

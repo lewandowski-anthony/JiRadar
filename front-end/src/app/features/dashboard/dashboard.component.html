@@ -41,9 +41,10 @@
         <select formControlName="granularity"
                 class="w-full bg-slate-900 border border-slate-700 rounded-xl px-5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors">
           <option value="">Select granularity</option>
-          <option value="daily">Daily</option>
-          <option value="weekly">Weekly</option>
-          <option value="monthly">Monthly</option>
+          <option value="DAY">Daily</option>
+          <option value="WEEK">Weekly</option>
+          <option value="MONTH">Monthly</option>
+          <option value="YEAR">Yearly</option>
         </select>
       </div>
 
@@ -96,7 +97,10 @@
 
     @if (historyData(); as history) {
       <div>
-        <app-history-list [data]="history" />
+        <app-history-list
+          [data]="history"
+          (pageChange)="loadHistoryPage($event)"
+          (sizeChange)="updateHistorySize($event)" />
       </div>
     }
 

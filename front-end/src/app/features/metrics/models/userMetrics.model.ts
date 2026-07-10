@@ -1,6 +1,7 @@
-import {IssueTypeRate} from './issueTypeRate.model';
+import { IssueTypeRate } from './issueTypeRate.model';
 
-export interface UserMetrics {
+export interface CoreMetrics {
+
   from: string;
   to: string;
 
@@ -18,4 +19,12 @@ export interface UserMetrics {
   parallelIssuesInProgressRate: number;
 
   issueRateByType: IssueTypeRate[];
+}
+
+export interface PeriodicUserMetrics extends CoreMetrics {
+  label: string;
+}
+
+export interface UserMetrics extends CoreMetrics {
+  userMetricsByGranularity: PeriodicUserMetrics[];
 }

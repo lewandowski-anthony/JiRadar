@@ -22,7 +22,9 @@ public class ChangeLog {
 	private TransitionType transitionType;
 
 	public boolean isAuthor(String userEmail) {
-		return author != null && StringUtils.isNotBlank(userEmail)
+		return author != null &&
+				StringUtils.isNotBlank(author.getEmail())
+				&& StringUtils.isNotBlank(userEmail)
 				&& author.getEmail().equalsIgnoreCase(userEmail);
 	}
 
