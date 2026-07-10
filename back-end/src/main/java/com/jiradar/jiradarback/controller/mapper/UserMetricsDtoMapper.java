@@ -7,6 +7,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
 import java.time.Duration;
+import java.util.List;
+import java.util.Map;
 
 @Mapper(componentModel = "spring")
 public interface UserMetricsDtoMapper {
@@ -16,6 +18,15 @@ public interface UserMetricsDtoMapper {
 	UserMetricsDto.MetricDto mapMetric(UserMetrics.Metric metric);
 
 	UserMetricsDto.PeriodicUserMetricsDto mapPeriodicMetric(UserMetrics.PeriodicUserMetrics periodicUserMetrics);
+
+	default List<UserMetricsDto.IssueRateByTypeDto> mapIssueRateByType(Map<String, Double> map) {
+		if (map == null) {
+			return null;
+		}
+		return map.entrySet().stream()
+				.map(entry -> new UserMetricsDto.IssueRateByTypeDto(entry.getKey(), entry.getValue()))
+				.toList();
+	}
 
 	default String formatDuration(Duration duration) {
 		if (duration == null || duration.isZero()) {

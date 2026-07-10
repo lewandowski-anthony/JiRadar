@@ -1,0 +1,100 @@
+@if (data(); as metrics) {
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+    <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-6 shadow-xl hover:border-slate-600 transition-colors">
+      <div class="flex justify-between items-start">
+        <p class="text-sm font-semibold text-slate-400 uppercase tracking-wider">Avg Cycle Time</p>
+        <span class="p-2 bg-blue-500/10 text-blue-400 rounded-lg text-xs">🏎️ Flow</span>
+      </div>
+      <p class="text-3xl font-bold text-white mt-4 tracking-tight">{{ metrics.averageCycleTime }}</p>
+      <p class="text-xs text-slate-500 mt-2">Time spent from "In Progress" to "Done"</p>
+    </div>
+
+    <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-6 shadow-xl hover:border-slate-600 transition-colors">
+      <div class="flex justify-between items-start">
+        <p class="text-sm font-semibold text-slate-400 uppercase tracking-wider">Avg Review Time</p>
+        <span class="p-2 bg-purple-500/10 text-purple-400 rounded-lg text-xs">👀 Code Review</span>
+      </div>
+      <p class="text-3xl font-bold text-white mt-4 tracking-tight">{{ metrics.averageReviewTime }}</p>
+      <p class="text-xs text-slate-500 mt-2">Time spent in Peer Review stage</p>
+    </div>
+
+    <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-6 shadow-xl hover:border-slate-600 transition-colors">
+      <div class="flex justify-between items-start">
+        <p class="text-sm font-semibold text-slate-400 uppercase tracking-wider">Delivery Success Rate</p>
+        <span class="p-2 bg-emerald-500/10 text-emerald-400 rounded-lg text-xs">🎯 Predictability</span>
+      </div>
+      <p class="text-3xl font-bold text-emerald-400 mt-4 tracking-tight">{{ metrics.deliverySuccessRate }}%</p>
+      <div class="w-full bg-slate-700 h-1.5 rounded-full mt-3 overflow-hidden">
+        <div class="bg-emerald-500 h-full transition-all duration-500" [style.width.%]="metrics.deliverySuccessRate"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+    <div class="bg-slate-800/40 border border-slate-800 rounded-2xl p-6">
+      <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+        <span class="text-sm text-blue-400">■</span> Activity & Collaboration
+      </h2>
+      <div class="divide-y divide-slate-800">
+        <div class="py-3.5 flex justify-between items-center">
+          <span class="text-sm text-slate-400">Issues Started / Done</span>
+          <span class="font-mono bg-slate-800 px-2.5 py-1 border border-slate-700 rounded text-sm text-slate-200">
+            {{ metrics.numberOfIssueStarted }} / <strong>{{ metrics.numberOfIssueDone }}</strong>
+          </span>
+        </div>
+        <div class="py-3.5 flex justify-between items-center">
+          <span class="text-sm text-slate-400">Total Completed Reviews</span>
+          <span class="font-mono text-sm font-semibold text-slate-200">{{ metrics.numberOfReviewDone }}</span>
+        </div>
+        <div class="py-3.5 flex justify-between items-center">
+          <span class="text-sm text-slate-400">Reopened Reviews</span>
+          <span class="font-mono text-sm px-2 py-0.5 rounded text-xs font-semibold bg-slate-800 text-slate-400">
+            {{ metrics.numberOfReviewReopened }}
+          </span>
+        </div>
+        <div class="py-3.5 flex justify-between items-center">
+          <span class="text-sm text-slate-400">Team Review Participation</span>
+          <span class="font-mono text-sm text-blue-400 font-semibold">{{ metrics.teamReviewParticipationRate }}%</span>
+        </div>
+        <div class="py-3.5 flex justify-between items-center">
+          <span class="text-sm text-slate-400">Ping-Pong Review Rate</span>
+          <span class="font-mono text-sm text-slate-300">{{ metrics.pingPongReviewRate }}%</span>
+        </div>
+        <div class="py-3.5 flex justify-between items-center">
+          <span class="text-sm text-slate-400">Parallel Issues In Progress (WIP)</span>
+          <span class="font-mono text-sm text-slate-300">{{ metrics.parallelIssuesInProgressRate }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-slate-800/40 border border-slate-800 rounded-2xl p-6">
+      <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+        <span class="text-sm text-purple-400">■</span> Work Allocation (Type Rate)
+      </h2>
+      <div class="space-y-4">
+        @for (item of metrics.issueRateByType; track item.type) {
+          <div>
+            <div class="flex justify-between items-center mb-1 text-sm">
+              <span class="font-medium text-slate-300">{{ item.type }}</span>
+              <span class="font-mono font-bold text-slate-400">{{ item.rate }}%</span>
+            </div>
+            <div class="w-full bg-slate-900 h-2 rounded-full overflow-hidden border border-slate-800">
+              <div class="h-full rounded-full transition-all duration-500"
+                   [ngClass]="{
+                     'bg-red-500': item.type === 'Bug' || item.type === 'Defect',
+                     'bg-blue-500': item.type === 'Story',
+                     'bg-slate-500': item.type === 'Sous-tâche'
+                   }"
+                   [style.width.%]="item.rate">
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+  </div>
+}

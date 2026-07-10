@@ -1,0 +1,115 @@
+<div class="min-h-screen bg-slate-900 text-slate-100 p-6">
+
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-800 pb-5 mb-8">
+    <div>
+      <h1 class="text-3xl font-bold tracking-tight text-white flex items-center gap-2">
+        <span class="text-blue-500">📊</span> JiRadar Dashboard
+      </h1>
+      <p class="text-sm text-slate-400 mt-1">Team flow performance & history analytics</p>
+    </div>
+
+    @if (metricsData(); as data) {
+      <div class="mt-4 md:mt-0 px-4 py-2 bg-slate-800 rounded-lg text-xs font-mono text-slate-300 border border-slate-700">
+        PERIOD: {{ data.from | date:'yyyy-MM-dd' }} ➔ {{ data.to | date:'yyyy-MM-dd' }}
+      </div>
+    }
+  </div>
+
+  <div class="bg-slate-800/40 border border-slate-800 rounded-2xl p-5 mb-8">
+    <form [formGroup]="searchForm" (ngSubmit)="loadDashboardData()" class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+
+      <div>
+        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Project Key</label>
+        <input type="text" formControlName="projectKey" placeholder="e.g., SMSUP"
+               class="w-full bg-slate-900 border border-slate-700 rounded-xl px-5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors uppercase" />
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Start Date</label>
+        <input type="date" formControlName="startDate"
+               class="w-full bg-slate-900 border border-slate-700 rounded-xl px-5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors" />
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">End Date</label>
+        <input type="date" formControlName="endDate"
+               class="w-full bg-slate-900 border border-slate-700 rounded-xl px-5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors" />
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Granularity</label>
+        <select formControlName="granularity"
+                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors">
+          <option value="">Select granularity</option>
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+        </select>
+      </div>
+
+      <div>
+        <button type="submit" [disabled]="searchForm.invalid || isLoading()"
+                class="w-full bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 disabled:cursor-not-allowed text-white font-medium text-sm px-4 py-2.5 rounded-xl transition-colors shadow-lg shadow-blue-600/10">
+          @if (isLoading()) {
+            <span>Loading...</span>
+          } @else {
+            <span>Update Dashboard</span>
+          }
+        </button>
+      </div>
+    </form>
+
+    @if (searchForm.get('projectKey')?.touched && searchForm.get('projectKey')?.invalid) {
+      <p class="text-xs text-red-400 mt-2 pl-1"> Project key is required (minimum 2 characters).</p>
+    }
+  </div>
+
+  @if (isLoading()) {
+    <div class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-950/80 backdrop-blur-sm animate-fade-in">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl flex flex-col items-center max-w-xs w-full mx-4">
+        <div class="relative flex items-center justify-center mb-4">
+          <div class="animate-spin rounded-full h-12 w-12 border-4 border-slate-800 border-t-blue-500"></div>
+        </div>
+        <h3 class="text-white font-semibold text-base mb-1">Loading Data</h3>
+        <p class="text-slate-400 text-xs text-center font-medium">Fetching Jira data, please wait...</p>
+      </div>
+    </div>
+  }
+
+  @if (errorMessage(); as error) {
+    <div class="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-xl flex items-center gap-3 max-w-2xl mx-auto my-10">
+      <span class="text-xl">⚠️</span>
+      <div>
+        <p class="font-semibold">An error occurred</p>
+        <p class="text-sm text-red-300/90">{{ error }}</p>
+      </div>
+    </div>
+  }
+
+  @if (!isLoading() && !errorMessage() && metricsData()) {
+
+    @if (metricsData(); as metrics) {
+      <div class="mb-12">
+        <app-metrics-display [data]="metrics" />
+      </div>
+    }
+
+    @if (historyData(); as history) {
+      <div>
+        <app-history-list [data]="history" />
+      </div>
+    }
+
+  } @else if (!isLoading() && !errorMessage()) {
+
+    <div class="flex flex-col items-center justify-center border-2 border-dashed border-slate-800 rounded-2xl py-20 text-center px-4">
+      <div class="text-4xl mb-4">🔍</div>
+      <h3 class="text-lg font-semibold text-white">No data loaded yet</h3>
+      <p class="text-sm text-slate-400 mt-1 max-w-sm mx-auto">
+        Please fill out the form above with your project key and date range, then click "Update Dashboard".
+      </p>
+    </div>
+
+  }
+
+</div>

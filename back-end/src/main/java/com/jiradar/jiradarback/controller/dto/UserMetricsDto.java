@@ -60,7 +60,12 @@ public record UserMetricsDto(
 			double parallelIssuesInProgressRate,
 
 			@Schema(description = "${openapi.dto.metric.issueRateByType}")
-			Map<String, Double> issueRateByType
+			List<IssueRateByTypeDto> issueRateByType
+	) {}
+
+	public record IssueRateByTypeDto (
+			String type,
+			Double rate
 	) {}
 
 	@Schema(description = "${openapi.dto.periodic.description}")

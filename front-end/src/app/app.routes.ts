@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 
-import {MetricsDashboard} from '@features/metrics/pages/metrics-dashboard/metrics-dashboard';
+import {DashboardComponent} from '@features/dashboard/dashboard.component';
 
 export const routes: Routes = [
-  { path: '', component: MetricsDashboard }
+  { path: '', component: DashboardComponent }
 ];

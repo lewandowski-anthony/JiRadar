@@ -61,14 +61,14 @@ public class UserController {
 	@GetMapping("/me/history")
 	@Operation(summary = "${openapi.endpoint.user.history.summary}", description = "${openapi.endpoint.user.history.description}")
 	public Page<UserHistoryEventDto> getDeveloperHistory(
-			@RequestParam List<String> projectsKey,
+			@RequestParam List<String> projectKeys,
 			@PathVariable("issueTracker") String issueTracker,
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
 			@PageableDefault(page = 0, size = 20) Pageable pageable) {
 
 		return issueTrackerFactory.getService(issueTracker).getHistory(
-				new ProjectSearchParamCommand(projectsKey, startDate, endDate), pageable
+				new ProjectSearchParamCommand(projectKeys, startDate, endDate), pageable
 		).map(userHistoryEventDtoMapper::toDto);
 	}
 }
