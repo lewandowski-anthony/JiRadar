@@ -22,7 +22,7 @@ export class MetricsService {
       params = params.set("history_granularity", granularity);
     }
 
-    return this.httpClient.get<unknown>(url, { params }).pipe(
+    return this.httpClient.get<UserMetrics>(url, { params }).pipe(
       map(rawJson => autoMapSnakeToCamel<UserMetrics>(rawJson)),
       tap(metrics => this.userMetricsSignal.set(metrics))
     );

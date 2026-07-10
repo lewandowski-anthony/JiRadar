@@ -53,6 +53,7 @@ export class DashboardComponent {
 
   updateHistorySize(size: number): void {
     this.historySize = size;
+    this.loadHistoryPage(0);
   }
 
   loadDashboardData(): void {

@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "lint": "ng lint"
   },
   "private": true,
   "packageManager": "npm@11.17.0",
@@ -27,12 +28,16 @@
     "@angular/build": "^22.0.5",
     "@angular/cli": "^22.0.5",
     "@angular/compiler-cli": "^22.0.0",
+    "@eslint/js": "^10.0.1",
     "@tailwindcss/postcss": "^4.1.12",
+    "angular-eslint": "22.0.0",
+    "eslint": "^10.3.0",
     "jsdom": "^28.0.0",
     "postcss": "^8.5.3",
     "prettier": "^3.8.1",
     "tailwindcss": "^4.1.12",
     "typescript": "~6.0.2",
+    "typescript-eslint": "8.60.1",
     "vitest": "^4.0.8"
   }
 }

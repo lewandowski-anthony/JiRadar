@@ -1,5 +1,6 @@
 import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {IssueHistory} from '@features/history/models/history.model';
 
 @Component({
   selector: 'app-history-list',
@@ -8,7 +9,13 @@ import { CommonModule } from '@angular/common';
   templateUrl: './history-list.component.html'
 })
 export class HistoryListComponent {
-  readonly data = input<any>();
+  readonly data = input.required<{
+    content: IssueHistory[];
+    number: number;
+    size: number;
+    totalElements: number;
+    totalPages: number;
+  }>();
 
   readonly pageChange = output<number>();
   readonly sizeChange = output<number>();

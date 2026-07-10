@@ -1,6 +1,6 @@
 import {User} from '@core/models/user.model';
 
-export interface History {
+export interface IssueHistory {
   issueKey: string;
   issueSummary: string;
   issueType: string;
