@@ -6,11 +6,12 @@ import { MetricsService } from '../metrics/services/metrics.service';
 import { HistoryService } from '../history/services/history.service';
 import { MetricsDisplayComponent } from '../metrics/components/metrics-display.component';
 import { HistoryListComponent } from '../history/components/history-list.component';
+import {PeriodicChartsComponent} from '@features/metrics/components/periodic-charts.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [ReactiveFormsModule, DatePipe, MetricsDisplayComponent, HistoryListComponent],
+  imports: [ReactiveFormsModule, DatePipe, MetricsDisplayComponent, HistoryListComponent, PeriodicChartsComponent],
   templateUrl: './dashboard.component.html'
 })
 export class DashboardComponent {
@@ -20,6 +21,8 @@ export class DashboardComponent {
 
   readonly isLoading = signal<boolean>(false);
   readonly errorMessage = signal<string | null>(null);
+
+  readonly activeTab = signal<'global' | 'periodic'>('global');
 
   readonly metricsData = this.metricsService.userMetrics;
   readonly historyData = this.historyService.history;
@@ -38,12 +41,9 @@ export class DashboardComponent {
     if (this.searchForm.invalid) return;
 
     this.historyPage = page;
-
     const { projectKey, startDate, endDate } = this.searchForm.value;
-    const projectsArray = [projectKey!];
-    const tracker = 'jira';
 
-    this.historyService.getUserHistories(tracker, projectsArray, startDate!, endDate!, this.historyPage, this.historySize).subscribe({
+    this.historyService.getUserHistories('jira', [projectKey!], startDate!, endDate!, this.historyPage, this.historySize).subscribe({
       error: (err) => {
         this.errorMessage.set(err.message || 'Failed to load history');
         this.isLoading.set(false);
@@ -64,10 +64,11 @@ export class DashboardComponent {
 
     const { projectKey, startDate, endDate, granularity } = this.searchForm.value;
 
-    const projectsArray = [projectKey!];
-    const tracker = 'jira';
+    if (!granularity && this.activeTab() === 'periodic') {
+      this.activeTab.set('global');
+    }
 
-    this.metricsService.getUserMetrics(tracker, projectsArray, startDate!, endDate!, granularity!).subscribe({
+    this.metricsService.getUserMetrics('jira', [projectKey!], startDate!, endDate!, granularity!).subscribe({
       next: () => this.isLoading.set(false),
       error: (err) => {
         this.errorMessage.set(err.message || 'Failed to load metrics');
@@ -75,7 +76,7 @@ export class DashboardComponent {
       }
     });
 
-    this.historyService.getUserHistories(tracker, projectsArray, startDate!, endDate!, this.historyPage, this.historySize).subscribe({
+    this.historyService.getUserHistories('jira', [projectKey!], startDate!, endDate!, this.historyPage, this.historySize).subscribe({
       error: (err) => {
         this.errorMessage.set(err.message || 'Failed to load history');
         this.isLoading.set(false);
