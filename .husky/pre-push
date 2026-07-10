@@ -1,4 +1,3 @@
-cat << 'EOF' > .husky/pre-push
 #!/bin/bash
 set -e
 
@@ -11,6 +10,3 @@ echo "📦 [2/2] Validating Front-end coverage (Angular 22 + Vitest)..."
 cd front-end && npm run test:coverage && cd ..
 
 echo "✅ [Jiradar] Everything is perfect! Push is authorized."
-EOF
-
-chmod +x .husky/pre-push
