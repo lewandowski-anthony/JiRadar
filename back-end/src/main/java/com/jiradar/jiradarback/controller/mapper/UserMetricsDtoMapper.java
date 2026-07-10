@@ -3,9 +3,10 @@ package com.jiradar.jiradarback.controller.mapper;
 import com.jiradar.jiradarback.controller.dto.UserMetricsDto;
 import com.jiradar.jiradarback.core.model.issuetracker.UserMetrics;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import java.time.Duration;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -14,12 +15,16 @@ public interface UserMetricsDtoMapper {
 
 	UserMetricsDto mapToDto(UserMetrics jiraUserMetrics);
 
-	default List<UserMetricsDto.UserIssueByTypeDto> mapIssuesDistribution(Map<String, Double> distribution) {
-		if (distribution == null) {
-			return Collections.emptyList();
+	UserMetricsDto.MetricDto mapMetric(UserMetrics.Metric metric);
+
+	UserMetricsDto.PeriodicUserMetricsDto mapPeriodicMetric(UserMetrics.PeriodicUserMetrics periodicUserMetrics);
+
+	default List<UserMetricsDto.IssueRateByTypeDto> mapIssueRateByType(Map<String, Double> map) {
+		if (map == null) {
+			return null;
 		}
-		return distribution.entrySet().stream()
-				.map(entry -> new UserMetricsDto.UserIssueByTypeDto(entry.getKey(), entry.getValue()))
+		return map.entrySet().stream()
+				.map(entry -> new UserMetricsDto.IssueRateByTypeDto(entry.getKey(), entry.getValue()))
 				.toList();
 	}
 

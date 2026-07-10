@@ -21,6 +21,13 @@ public class ChangeLog {
 	private ZonedDateTime date;
 	private TransitionType transitionType;
 
+	public boolean isAuthor(String userEmail) {
+		return author != null &&
+				StringUtils.isNotBlank(author.getEmail())
+				&& StringUtils.isNotBlank(userEmail)
+				&& author.getEmail().equalsIgnoreCase(userEmail);
+	}
+
 	public boolean isStartedChange() {
 		return transitionType == TransitionType.START_DEVELOPMENT;
 	}
@@ -31,6 +38,10 @@ public class ChangeLog {
 
 	public boolean isReviewRequested() {
 		return TransitionType.REQUEST_REVIEW == transitionType;
+	}
+
+	public boolean isReviewDone() {
+		return TransitionType.END_REVIEW == transitionType;
 	}
 
 	public boolean isReviewActionBy(String devEmail) {

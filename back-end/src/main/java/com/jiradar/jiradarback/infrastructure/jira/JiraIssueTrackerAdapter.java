@@ -1,28 +1,38 @@
 package com.jiradar.jiradarback.infrastructure.jira;
 
 import com.jiradar.jiradarback.core.IssueTrackerService;
+import com.jiradar.jiradarback.core.mapper.UserHistoryMapper;
+import com.jiradar.jiradarback.core.model.command.ProjectSearchParamCommand;
 import com.jiradar.jiradarback.core.model.datetime.DateRange;
 import com.jiradar.jiradarback.core.model.enums.AvailableProviders;
+import com.jiradar.jiradarback.core.model.enums.TimeGranularity;
+import com.jiradar.jiradarback.core.model.issuetracker.ChangeLog;
 import com.jiradar.jiradarback.core.model.issuetracker.Issue;
 import com.jiradar.jiradarback.core.model.issuetracker.User;
+import com.jiradar.jiradarback.core.model.issuetracker.UserHistoryEvent;
 import com.jiradar.jiradarback.core.model.issuetracker.UserMetrics;
+import com.jiradar.jiradarback.core.util.PageUtils;
 import com.jiradar.jiradarback.infrastructure.cache.config.AvailableCache;
-import com.jiradar.jiradarback.infrastructure.jira.dto.response.JiraIssueResponseDto;
 import com.jiradar.jiradarback.infrastructure.jira.enums.JiraFieldId;
 import com.jiradar.jiradarback.infrastructure.jira.repository.mapper.JiraUserMapper;
 import com.jiradar.jiradarback.infrastructure.jira.repository.JiraIssueRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.YearMonth;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
+
+import static com.jiradar.jiradarback.core.model.enums.TransitionType.OTHER;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +40,7 @@ public class JiraIssueTrackerAdapter implements IssueTrackerService {
 
 	private final JiraServiceClient jiraClient;
 	private final JiraUserMapper jiraUserMapper;
+	private final UserHistoryMapper userHistoryMapper;
 	private final JiraIssueRepository jiraIssueRepository;
 
 	@Override
@@ -45,8 +56,8 @@ public class JiraIssueTrackerAdapter implements IssueTrackerService {
 	}
 
 	@Override
-	public Issue getIssueByKey(String issueKey){
-		JiraIssueResponseDto jiraIssue = jiraClient.getIssue(issueKey, JiraFieldId.CHANGELOG.name());
+	public Issue getIssueByKey(String issueKey) {
+		jiraClient.getIssue(issueKey, JiraFieldId.CHANGELOG.name());
 		return jiraIssueRepository.getIssuesForCustomRange(List.of(), LocalDate.now(), LocalDate.now()).stream()
 				.filter(issue -> issue.getKey().equals(issueKey))
 				.findFirst()
@@ -54,52 +65,35 @@ public class JiraIssueTrackerAdapter implements IssueTrackerService {
 	}
 
 	@Override
-	public UserMetrics getMetrics(List<String> projects, DateRange dateRange) {
-		if (dateRange == null) {
-			throw new IllegalArgumentException("dateRange cannot be null");
-		}
-		return getMetrics(projects, dateRange.from().toLocalDate(), dateRange.to().toLocalDate());
+	public UserMetrics getMetrics(ProjectSearchParamCommand command, TimeGranularity historyGranularity) {
+		List<Issue> allIssues = fetchIssuesForRange(command.projectKeys(), command.startDate(), command.endDate());
+		return UserMetrics.generate(getMyself(), allIssues, DateRange.from(command.startDate(), command.endDate()), historyGranularity);
 	}
 
 	@Override
-	public UserMetrics getMetrics(List<String> projects, LocalDate startDate, LocalDate endDate) {
-		if (CollectionUtils.isEmpty(projects)) {
-			throw new IllegalArgumentException("projects is empty");
-		}
+	public Page<UserHistoryEvent> getHistory(ProjectSearchParamCommand command, Pageable pageable) {
+		List<Issue> allIssues = fetchIssuesForRange(command.projectKeys(), command.startDate(), command.endDate());
+		String userEmail = getMyself().getEmail();
+		DateRange finalRange = DateRange.from(command.startDate(), command.endDate());
 
-		LocalDate start = startDate != null ? startDate : LocalDate.now().minusDays(30);
-		LocalDate end = endDate != null ? endDate : LocalDate.now();
+		List<UserHistoryEvent> allUserEvents = allIssues.stream()
+				.flatMap(issue -> issue.getChanges().stream()
+						.filter(change -> issue.isAuthor(userEmail) || (change.isAuthor(userEmail) && change.isReviewDone()))
+						.filter(change -> change.getTransitionType() != OTHER && finalRange.contains(change.getDate()))
+						.map(change -> userHistoryMapper.toHistoryEvent(issue, change))
+				)
+				.sorted(Comparator.comparing(UserHistoryEvent::getDate).reversed())
+				.toList();
 
-		if (start.plusYears(1).isBefore(end)) {
-			throw new IllegalArgumentException("dateRange is more than one year");
-		}
-
-		List<Issue> allIssues;
-
-		if (ChronoUnit.DAYS.between(start, end) < 30) {
-			allIssues = jiraIssueRepository.getIssuesForCustomRange(projects, start, end);
-		} else {
-			List<YearMonth> months = getMonthsInInterval(start, end);
-			allIssues = new ArrayList<>();
-			for (YearMonth month : months) {
-				allIssues.addAll(jiraIssueRepository.getIssuesForSpecificMonth(projects, month));
-			}
-		}
-
-		ZoneId zone = ZoneId.systemDefault();
-		DateRange finalRange = new DateRange(start.atStartOfDay(zone), end.plusDays(1).atStartOfDay(zone).minusNanos(1));
-		User currentUser = jiraUserMapper.toDomainModel(jiraClient.getMyself());
-		return UserMetrics.generate(currentUser, allIssues, finalRange);
+		return PageUtils.toPage(allUserEvents, pageable);
 	}
 
-	private List<YearMonth> getMonthsInInterval(LocalDate start, LocalDate end) {
-		List<YearMonth> months = new ArrayList<>();
-		YearMonth current = YearMonth.from(start);
-		YearMonth last = YearMonth.from(end);
-		while (!current.isAfter(last)) {
-			months.add(current);
-			current = current.plusMonths(1);
+	private List<Issue> fetchIssuesForRange(List<String> projectKeys, LocalDate start, LocalDate end) {
+		if (ChronoUnit.DAYS.between(start, end) < 30) {
+			return jiraIssueRepository.getIssuesForCustomRange(projectKeys, start, end);
 		}
-		return months;
+		return Stream.iterate(YearMonth.from(start), month -> !month.isAfter(YearMonth.from(end)), month -> month.plusMonths(1))
+				.flatMap(month -> jiraIssueRepository.getIssuesForSpecificMonth(projectKeys, month).stream())
+				.toList();
 	}
 }

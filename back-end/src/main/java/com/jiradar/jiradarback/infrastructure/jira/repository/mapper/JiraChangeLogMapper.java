@@ -8,10 +8,13 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.time.ZoneOffset.UTC;
 
 @Mapper(componentModel = "spring", uses = { JiraUserMapper.class, JiraTransitionResolver.class })
 public interface JiraChangeLogMapper {
@@ -38,6 +41,6 @@ public interface JiraChangeLogMapper {
 	default ZonedDateTime mapMillisToZonedDateTime(Long millis) {
 		if (millis == null) return null;
 		return java.time.Instant.ofEpochMilli(millis)
-				.atZone(java.time.ZoneId.systemDefault());
+				.atZone(ZoneId.systemDefault());
 	}
 }

@@ -26,6 +26,9 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.jiradar.jiradarback.core.constant.DateConstant.DATE_TIME_MINUTE_PATTERN;
+import static java.time.ZoneOffset.UTC;
+
 @Component
 @RequiredArgsConstructor
 public class JiraIssueRepository {
@@ -43,15 +46,14 @@ public class JiraIssueRepository {
 
     @Cacheable(cacheNames = AvailableCache.JIRA_METRICS, key = "{#projects, #startDate, #endDate}")
     public List<Issue> getIssuesForCustomRange(List<String> projects, LocalDate startDate, LocalDate endDate) {
-        ZoneId zone = ZoneId.systemDefault();
-        ZonedDateTime start = startDate.atStartOfDay(zone);
-        ZonedDateTime end = endDate.plusDays(1).atStartOfDay(zone).minusNanos(1);
+       	ZonedDateTime start = startDate.atStartOfDay(ZoneId.systemDefault());
+        ZonedDateTime end = endDate.plusDays(1).atStartOfDay(ZoneId.systemDefault()).minusNanos(1);
 
         return getJiraIssuesFromRange(projects, start, end);
     }
 
     private List<Issue> getJiraIssuesFromRange(List<String> projects, ZonedDateTime start, ZonedDateTime end) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_MINUTE_PATTERN);
         String jql = String.format("project IN (%s) AND updated >= \"%s\" AND updated <= \"%s\"",
                 String.join(",", projects), start.format(formatter), end.format(formatter));
 
@@ -108,7 +110,7 @@ public class JiraIssueRepository {
                 .collect(Collectors.toMap(
                     JiraChangelogResponseDto::getIssueId,
                     Function.identity(),
-                    (existing, replacement) -> existing
+                    (existing, _) -> existing
                 ));
     }
 }
