@@ -2,6 +2,7 @@ import type { PeriodicUserMetricsDto } from '@core/models/dashboard';
 import { BaseLineChart } from '@core/components/BaseLineChart.tsx';
 import { BaseBarChart } from '@core/components/BaseBarChart.tsx';
 import { CHARTS_REGISTRY } from '@core/constants/chartConfig';
+import { useTranslation } from '@core/hooks/useTranslation';
 
 interface PeriodicChartsProps {
     granularityData: PeriodicUserMetricsDto[];
@@ -9,20 +10,20 @@ interface PeriodicChartsProps {
 
 export function PeriodicCharts({ granularityData }: PeriodicChartsProps) {
     const labels = granularityData.map((item) => item.label);
+    const t = useTranslation();
 
-    const renderChart = (chart: typeof CHARTS_REGISTRY[0]) => {
+    const renderChart = (chart: any) => {
         const datasets = chart.getDynamicDatasets
-            ? chart.getDynamicDatasets(granularityData)
-            : (chart.staticDatasets || []).map((d) => ({
-                label: d.label,
+            ? chart.getDynamicDatasets(granularityData, t)
+            : (chart.staticDatasets || []).map((d: any) => ({
+                label: d.label(t),
                 borderColor: d.borderColor,
                 backgroundColor: d.backgroundColor,
                 data: granularityData.map(d.getValue),
             }));
 
         const props = {
-            key: chart.id,
-            title: chart.title,
+            title: chart.title(t),
             labels,
             yMax: chart.yMax,
             maxWidth: "max-w-full",
@@ -31,10 +32,10 @@ export function PeriodicCharts({ granularityData }: PeriodicChartsProps) {
 
         switch (chart.type) {
             case 'bar':
-                return <BaseBarChart {...props} />;
+                return <BaseBarChart key={chart.id} {...props} />;
             case 'line':
             default:
-                return <BaseLineChart {...props} />;
+                return <BaseLineChart key={chart.id} {...props} />;
         }
     };
 

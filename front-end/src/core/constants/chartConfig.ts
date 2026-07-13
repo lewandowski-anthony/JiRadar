@@ -1,8 +1,9 @@
 import type { PeriodicUserMetricsDto } from '@core/models/dashboard';
-import {parseDurationToHours} from "@core/utils/time.ts";
+import { parseDurationToHours } from '@core/utils/time';
+import type { TranslationKeys } from './locales';
 
 export interface ChartDatasetConfig {
-    label: string;
+    label: (t: TranslationKeys) => string;
     borderColor: string;
     backgroundColor: string;
     getValue: (item: PeriodicUserMetricsDto) => number;
@@ -10,12 +11,12 @@ export interface ChartDatasetConfig {
 
 export interface ChartConfig {
     id: string;
-    title: string;
-    type: 'line' | 'bar' | 'pie';
+    title: (t: TranslationKeys) => string;
+    type: 'line' | 'bar';
     yMax?: number;
     fullWidth?: boolean;
     staticDatasets?: ChartDatasetConfig[];
-    getDynamicDatasets?: (data: PeriodicUserMetricsDto[]) => {
+    getDynamicDatasets?: (data: PeriodicUserMetricsDto[], t: TranslationKeys) => {
         label: string;
         borderColor: string;
         backgroundColor: string;
@@ -26,17 +27,17 @@ export interface ChartConfig {
 export const CHARTS_REGISTRY: ChartConfig[] = [
     {
         id: 'flow',
-        title: "Flux d'Activité (Issues Flow)",
+        title: (t) => t.charts.flowTitle,
         type: 'line',
         staticDatasets: [
             {
-                label: 'Tickets Commencés',
+                label: (t) => t.charts.issuesStarted,
                 borderColor: '#3b82f6',
                 backgroundColor: 'rgba(59, 130, 246, 0.1)',
                 getValue: (item) => item.numberOfIssueStarted,
             },
             {
-                label: 'Tickets Terminés',
+                label: (t) => t.charts.issuesDone,
                 borderColor: '#10b981',
                 backgroundColor: 'rgba(16, 185, 129, 0.1)',
                 getValue: (item) => item.numberOfIssueDone,
@@ -44,79 +45,8 @@ export const CHARTS_REGISTRY: ChartConfig[] = [
         ],
     },
     {
-        id: 'lead-times',
-        title: 'Délais de Traitement Moyens (en heures)',
-        type: 'line',
-        staticDatasets: [
-            {
-                label: 'Temps de Cycle (Cycle Time)',
-                borderColor: '#a855f7',
-                backgroundColor: 'rgba(168, 85, 247, 0.1)',
-                getValue: (item) => parseDurationToHours(item.averageCycleTime),
-            },
-            {
-                label: 'Temps de Revue (Review Time)',
-                borderColor: '#f59e0b',
-                backgroundColor: 'rgba(245, 158, 11, 0.1)',
-                getValue: (item) => parseDurationToHours(item.averageReviewTime),
-            },
-        ],
-    },
-    {
-        id: 'review-health',
-        title: 'Efficacité & Retours de Revue',
-        type: 'bar',
-        staticDatasets: [
-            {
-                label: 'Revues Validées',
-                borderColor: '#10b981',
-                backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                getValue: (item) => item.numberOfReviewDone,
-            },
-            {
-                label: 'Retours / Réouvertures',
-                borderColor: '#ef4444',
-                backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                getValue: (item) => item.numberOfReviewReopened,
-            },
-        ],
-    },
-    {
-        id: 'wip-rate',
-        title: 'Tickets en Parallèle Moyen (WIP)',
-        type: 'line',
-        staticDatasets: [
-            {
-                label: 'Tickets en Cours Simultanément',
-                borderColor: '#3b82f6',
-                backgroundColor: 'rgba(59, 130, 246, 0.05)',
-                getValue: (item) => item.parallelIssuesInProgressRate,
-            },
-        ],
-    },
-    {
-        id: 'team-collaboration',
-        title: 'Collaboration & Succès des Livraisons (%)',
-        type: 'line',
-        yMax: 100,
-        staticDatasets: [
-            {
-                label: 'Participation aux Reviews (%)',
-                borderColor: '#6366f1',
-                backgroundColor: 'rgba(99, 102, 241, 0.05)',
-                getValue: (item) => item.teamReviewParticipationRate,
-            },
-            {
-                label: 'Succès des Livraisons (%)',
-                borderColor: '#10b981',
-                backgroundColor: 'rgba(16, 185, 129, 0.05)',
-                getValue: (item) => item.deliverySuccessRate,
-            },
-        ],
-    },
-    {
         id: 'types',
-        title: 'Répartition des Types de Tickets (%)',
+        title: (t) => t.charts.typesTitle,
         type: 'bar',
         yMax: 100,
         getDynamicDatasets: (data) => {
@@ -138,5 +68,78 @@ export const CHARTS_REGISTRY: ChartConfig[] = [
                 };
             });
         },
+    },
+    {
+        id: 'review-health',
+        title: (t) => t.charts.reviewHealthTitle,
+        type: 'bar',
+        staticDatasets: [
+            {
+                label: (t) => t.charts.reviewsDone,
+                borderColor: '#10b981',
+                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                getValue: (item) => item.numberOfReviewDone,
+            },
+            {
+                label: (t) => t.charts.reviewsReopened,
+                borderColor: '#ef4444',
+                backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                getValue: (item) => item.numberOfReviewReopened,
+            },
+        ],
+    },
+    {
+        id: 'wip-rate',
+        title: (t) => t.charts.wipTitle,
+        type: 'line',
+        staticDatasets: [
+            {
+                label: (t) => t.charts.concurrentIssues,
+                borderColor: '#3b82f6',
+                backgroundColor: 'rgba(59, 130, 246, 0.05)',
+                getValue: (item) => item.parallelIssuesInProgressRate,
+            },
+        ],
+    },
+    {
+        id: 'lead-times',
+        title: (t) => t.charts.leadTimesTitle,
+        type: 'line',
+        fullWidth: true,
+        staticDatasets: [
+            {
+                label: (t) => t.charts.cycleTime,
+                borderColor: '#a855f7',
+                backgroundColor: 'rgba(168, 85, 247, 0.1)',
+                getValue: (item) => parseDurationToHours(item.averageCycleTime),
+            },
+            {
+                label: (t) => t.charts.reviewTime,
+                borderColor: '#f59e0b',
+                backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                getValue: (item) => parseDurationToHours(item.averageReviewTime),
+            },
+        ],
+    },
+    {
+        id: 'team-collaboration',
+        title: (t) => t.charts.collaborationTitle,
+        type: 'line',
+        yMax: 100,
+        fullWidth: true,
+        staticDatasets: [
+            {
+                label: (t) => t.charts.participationRate,
+                borderColor: '#6366f1',
+                backgroundColor: 'rgba(99, 102, 241, 0.05)',
+                getValue: (item) => item.teamReviewParticipationRate,
+            },
+            {
+                label: (t) => t.charts.deliverySuccess,
+                borderColor: '#10b981',
+                backgroundColor: 'rgba(16, 185, 129, 0.05)',
+                getValue: (item) => item.deliverySuccessRate,
+            },
+        ],
     },
 ];
