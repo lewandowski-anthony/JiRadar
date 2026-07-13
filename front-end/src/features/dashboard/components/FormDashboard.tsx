@@ -1,0 +1,110 @@
+import React, { useState } from 'react';
+import type {DashboardFilters} from '@core/models/dashboard.ts';
+
+interface DashboardFormProps {
+  onSubmit: (filters: DashboardFilters) => void;
+  isLoading: boolean;
+}
+
+export function FormDashboard({ onSubmit, isLoading }: DashboardFormProps) {
+
+  const [filters, setFilters] = useState<DashboardFilters>({
+    projectKey: '',
+    startDate: '',
+    endDate: '',
+    granularity: 'NONE',
+  });
+
+  const [error, setError] = useState<string | null>(null);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!filters.projectKey || filters.projectKey.trim().length < 2) {
+      setError('Le code du projet est requis (minimum 2 caractères).');
+      return;
+    }
+    setError(null);
+    onSubmit(filters);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="bg-slate-900 p-6 rounded-xl border border-slate-800 space-y-4 mx-auto">
+  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+
+    <div className="flex flex-col">
+  <label className="text-slate-400 text-sm mb-1" htmlFor="projectKey">Code Projet</label>
+  <input
+  type="text"
+  id="projectKey"
+  name="projectKey"
+  placeholder="Ex: JIRA"
+  value={filters.projectKey}
+  onChange={handleChange}
+  className="bg-slate-950 border border-slate-800 rounded p-2 text-slate-200 focus:outline-none focus:border-blue-500"
+    />
+    </div>
+
+  <div className="flex flex-col">
+  <label className="text-slate-400 text-sm mb-1" htmlFor="startDate">Date Début</label>
+  <input
+  type="date"
+  id="startDate"
+  name="startDate"
+  value={filters.startDate}
+  onChange={handleChange}
+  className="bg-slate-950 border border-slate-800 rounded p-2 text-slate-200 focus:outline-none focus:border-blue-500"
+    />
+    </div>
+
+  <div className="flex flex-col">
+  <label className="text-slate-400 text-sm mb-1" htmlFor="endDate">Date Fin</label>
+  <input
+  type="date"
+  id="endDate"
+  name="endDate"
+  value={filters.endDate}
+  onChange={handleChange}
+  className="bg-slate-950 border border-slate-800 rounded p-2 text-slate-200 focus:outline-none focus:border-blue-500"
+    />
+    </div>
+
+  <div className="flex flex-col">
+  <label className="text-slate-400 text-sm mb-1" htmlFor="granularity">Granularité</label>
+    <select
+  id="granularity"
+  name="granularity"
+  value={filters.granularity}
+  onChange={handleChange}
+  className="bg-slate-950 border border-slate-800 rounded p-2 text-slate-200 focus:outline-none focus:border-blue-500"
+  >
+  <option value="NONE">Pas de granularité</option>
+  <option value="DAILY">Journalier</option>
+    <option value="WEEKLY">Hebdomadaire</option>
+    <option value="MONTHLY">Mensuel</option>
+    <option value="YEARLY">Annuel</option>
+    </select>
+    </div>
+    </div>
+
+  {error && <p className="text-red-500 text-sm">{error}</p>}
+
+    <div className="flex justify-end">
+    <button
+      type="submit"
+    disabled={isLoading}
+    className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded transition-colors disabled:opacity-50"
+      >
+      {isLoading ? 'Chargement...' : 'Mettre à jour le Dashboard'}
+      </button>
+      </div>
+      </form>
+  );
+  }

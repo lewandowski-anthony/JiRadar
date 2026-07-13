@@ -1,0 +1,55 @@
+import { useState } from 'react';
+
+interface KpiCardProps {
+  title: string;
+  value: string | number;
+  description: string;
+  color: string;
+  borderColor: string;
+}
+
+export function KpiCard({ title, value, description, color, borderColor }: KpiCardProps) {
+  const [showDesc, setShowDesc] = useState(false);
+
+  return (
+    <div className={`bg-slate-900 p-6 rounded-xl border ${borderColor} space-y-2 flex flex-col justify-between transition-all duration-200`}>
+      <div>
+        <h3 className="text-sm font-medium text-slate-400">
+          {title}
+        </h3>
+        <p className={`text-2xl font-bold tracking-tight ${color} mt-1`}>
+          {value ?? '—'}
+        </p>
+      </div>
+
+      <div className="pt-2 border-t border-slate-800/60 mt-2">
+        <button
+          onClick={() => setShowDesc(!showDesc)}
+          className="w-full flex items-center justify-between text-xs font-medium text-slate-500 hover:text-slate-300 transition-colors focus:outline-none"
+        >
+
+          <svg
+            className={`w-3 h-3 transform transition-transform duration-200 ${showDesc ? 'rotate-180' : ''}`}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        <div
+          className={`grid transition-all duration-200 ease-in-out ${
+            showDesc ? 'grid-rows-[1fr] opacity-100 mt-2' : 'grid-rows-[0fr] opacity-0'
+          }`}
+        >
+          <div className="overflow-hidden">
+            <p className="text-xs italic text-slate-400 leading-relaxed bg-slate-950/40 p-2 rounded border border-slate-800/30">
+              {description}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

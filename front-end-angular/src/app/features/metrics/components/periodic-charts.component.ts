@@ -45,8 +45,8 @@ export class PeriodicChartsComponent {
     return {
       labels: periodicMetrics.map(periodicMetric => periodicMetric.label),
       datasets: [
-        {data: periodicMetrics.map(periodicMetric => periodicMetric.numberOfIssueStarted), label: 'Started', backgroundColor: 'rgba(59, 130, 246, 0.8)', borderRadius: 4},
-        {data: periodicMetrics.map(periodicMetric => periodicMetric.numberOfIssueDone), label: 'Done', backgroundColor: 'rgba(16, 185, 129, 0.8)', borderRadius: 4}
+        {userMetrics: periodicMetrics.map(periodicMetric => periodicMetric.numberOfIssueStarted), label: 'Started', backgroundColor: 'rgba(59, 130, 246, 0.8)', borderRadius: 4},
+        {userMetrics: periodicMetrics.map(periodicMetric => periodicMetric.numberOfIssueDone), label: 'Done', backgroundColor: 'rgba(16, 185, 129, 0.8)', borderRadius: 4}
       ]
     };
   });
@@ -56,8 +56,8 @@ export class PeriodicChartsComponent {
     return {
       labels: periodicMetrics.map(periodicMetric => periodicMetric.label),
       datasets: [
-        {data: periodicMetrics.map(periodicMetric => periodicMetric.numberOfReviewDone), label: 'Done', backgroundColor: 'rgba(139, 92, 246, 0.8)', borderRadius: 4},
-        {data: periodicMetrics.map(periodicMetric => periodicMetric.numberOfReviewReopened), label: 'Reopened', backgroundColor: 'rgba(239, 68, 68, 0.8)', borderRadius: 4}
+        {userMetrics: periodicMetrics.map(periodicMetric => periodicMetric.numberOfReviewDone), label: 'Done', backgroundColor: 'rgba(139, 92, 246, 0.8)', borderRadius: 4},
+        {userMetrics: periodicMetrics.map(periodicMetric => periodicMetric.numberOfReviewReopened), label: 'Reopened', backgroundColor: 'rgba(239, 68, 68, 0.8)', borderRadius: 4}
       ]
     };
   });
@@ -67,8 +67,8 @@ export class PeriodicChartsComponent {
     return {
       labels: periodicMetrics.map(periodicMetric => periodicMetric.label),
       datasets: [
-        {data: periodicMetrics.map(periodicMetric => periodicMetric.deliverySuccessRate), label: 'Delivery %', backgroundColor: 'rgba(234, 179, 8, 0.8)', borderRadius: 4},
-        {data: periodicMetrics.map(periodicMetric => periodicMetric.teamReviewParticipationRate), label: 'Review %', backgroundColor: 'rgba(236, 72, 153, 0.8)', borderRadius: 4}
+        {userMetrics: periodicMetrics.map(periodicMetric => periodicMetric.deliverySuccessRate), label: 'Delivery %', backgroundColor: 'rgba(234, 179, 8, 0.8)', borderRadius: 4},
+        {userMetrics: periodicMetrics.map(periodicMetric => periodicMetric.teamReviewParticipationRate), label: 'Review %', backgroundColor: 'rgba(236, 72, 153, 0.8)', borderRadius: 4}
       ]
     };
   });
@@ -82,7 +82,7 @@ export class PeriodicChartsComponent {
       labels: distribution.map(item => item.type),
       datasets: [
         {
-          data: distribution.map(item => item.rate),
+          userMetrics: distribution.map(item => item.rate),
           backgroundColor: [
             'rgba(59, 130, 246, 0.8)',
             'rgba(16, 185, 129, 0.8)',
