@@ -3,6 +3,8 @@ import { KpiCard } from '@features/kpis/components/KpiCard.tsx';
 import { PeriodicCharts } from '@features/devCharts/components/PeriodicCharts';
 import { HistoryList } from '@features/history/components/HistoryList';
 import { useDashboard } from './hooks/useDashboard';
+import { KPI_CONFIGS } from './constants/kpiConfig';
+import { Tabs, Tab } from "@core/components/Tab.tsx";
 
 export default function Dashboard() {
   const { userMetrics, history, loading, error, fetchDashboardData } = useDashboard();
@@ -27,79 +29,46 @@ export default function Dashboard() {
         </div>
       )}
 
-      {!loading && (
-        <>
+      {!loading && (userMetrics || history) && (
+        <Tabs>
           {userMetrics && (
-            <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full">
-                <KpiCard
-                  title="Temps de Cycle Moyen"
-                  value={userMetrics.averageCycleTime}
-                  color="text-blue-400"
-                  description="Le temps moyen nécessaire pour compléter un cycle de travail."
-                  borderColor="border-blue-500/20"
-                />
-                <KpiCard
-                  title="Temps de Revue Moyen"
-                  value={userMetrics.averageReviewTime}
-                  color="text-purple-400"
-                  description="Le temps moyen nécessaire pour effectuer une revue."
-                  borderColor="border-purple-500/20"
-                />
-                <KpiCard
-                  title="Taux de Réussite de Livraison"
-                  value={`${userMetrics.deliverySuccessRate}%`}
-                  color="text-emerald-400"
-                  description="Le pourcentage de livraisons réussies par rapport au total des livraisons."
-                  borderColor="border-emerald-500/20"
-                />
-                <KpiCard
-                  title="Nombre de Tickets Terminés"
-                  value={`${userMetrics.numberOfIssueDone}`}
-                  color="text-emerald-400"
-                  description="Le nombre total de tickets terminés."
-                  borderColor="border-emerald-500/20"
-                />
-                <KpiCard
-                  title="Nombre de Tickets Commencés"
-                  value={`${userMetrics.numberOfIssueStarted}`}
-                  color="text-emerald-400"
-                  description="Le nombre total de tickets commencés."
-                  borderColor="border-emerald-500/20"
-                />
-                <KpiCard
-                  title="Nombre de Retour Review"
-                  value={`${userMetrics.numberOfReviewReopened}`}
-                  color="text-red-400"
-                  description="Le nombre total de retours en revue."
-                  borderColor="border-red-500/20"
-                />
-                <KpiCard
-                  title="Moyenne de ticket en parallele"
-                  value={`${userMetrics.parallelIssuesInProgressRate}`}
-                  color="text-red-400"
-                  description="La moyenne de tickets en parallèle."
-                  borderColor="border-red-500/20"
-                />
-                <KpiCard
-                  title="Moyenne de ticket en parallele"
-                  value={`${userMetrics.pingPongReviewRate}%`}
-                  color="text-red-400"
-                  description="Le pourcentage de tickets en revue ping-pong."
-                  borderColor="border-red-500/20"
-                />
-              </div>
+            <Tab id="metrics" label="Métriques & KPIs" icon="fa-solid fa-chart-simple">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full animate-fadeIn">
+                {KPI_CONFIGS.map((metricConfig) => {
+                  const metric = (userMetrics as any)[metricConfig.key];
+                  const displayValue = metricConfig.format ? metricConfig.format(metric) : String(metric ?? '');
 
-              {userMetrics.userMetricsByGranularity && (
-                <PeriodicCharts granularityData={userMetrics.userMetricsByGranularity} />
-              )}
-            </>
+                  return (
+                    <KpiCard
+                      key={metricConfig.key}
+                      title={metricConfig.title}
+                      value={displayValue}
+                      color={metricConfig.color}
+                      description={metricConfig.description}
+                      borderColor={metricConfig.borderColor}
+                    />
+                  );
+                })}
+              </div>
+            </Tab>
           )}
 
           {history && (
-            <HistoryList historyPage={history} onPageChange={handlePageChange} />
+            <Tab id="history" label="Historique" icon="fa-solid fa-clock-rotate-left">
+              <div className="animate-fadeIn">
+                <HistoryList historyPage={history} onPageChange={handlePageChange} />
+              </div>
+            </Tab>
           )}
-        </>
+
+          {userMetrics?.userMetricsByGranularity && (
+            <Tab id="charts" label="Graphiques" icon="fa-solid fa-chart-bar">
+              <div className="animate-fadeIn">
+                <PeriodicCharts granularityData={userMetrics.userMetricsByGranularity} />
+              </div>
+            </Tab>
+          )}
+        </Tabs>
       )}
     </div>
   );

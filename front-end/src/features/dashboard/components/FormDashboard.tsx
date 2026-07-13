@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type {DashboardFilters} from '@core/models/dashboard.ts';
+import {getCurrentDateStr, getPastMonthDateStr} from "@core/utils/date-calculator.ts";
 
 interface DashboardFormProps {
   onSubmit: (filters: DashboardFilters) => void;
@@ -10,8 +11,8 @@ export function FormDashboard({ onSubmit, isLoading }: DashboardFormProps) {
 
   const [filters, setFilters] = useState<DashboardFilters>({
     projectKey: '',
-    startDate: '',
-    endDate: '',
+    startDate: getPastMonthDateStr(),
+    endDate: getCurrentDateStr(),
     granularity: 'NONE',
   });
 
@@ -86,10 +87,10 @@ export function FormDashboard({ onSubmit, isLoading }: DashboardFormProps) {
   className="bg-slate-950 border border-slate-800 rounded p-2 text-slate-200 focus:outline-none focus:border-blue-500"
   >
   <option value="NONE">Pas de granularité</option>
-  <option value="DAILY">Journalier</option>
-    <option value="WEEKLY">Hebdomadaire</option>
-    <option value="MONTHLY">Mensuel</option>
-    <option value="YEARLY">Annuel</option>
+  <option value="DAY">Journalier</option>
+    <option value="WEEK">Hebdomadaire</option>
+    <option value="MONTH">Mensuel</option>
+    <option value="YEAR">Annuel</option>
     </select>
     </div>
     </div>

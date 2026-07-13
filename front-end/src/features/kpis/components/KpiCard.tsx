@@ -27,6 +27,7 @@ export function KpiCard({ title, value, description, color, borderColor }: KpiCa
           onClick={() => setShowDesc(!showDesc)}
           className="w-full flex items-center justify-between text-xs font-medium text-slate-500 hover:text-slate-300 transition-colors focus:outline-none"
         >
+          <span className="text-xs font-medium text-slate-500"> Description </span>
 
           <svg
             className={`w-3 h-3 transform transition-transform duration-200 ${showDesc ? 'rotate-180' : ''}`}

@@ -1,77 +1,88 @@
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  Filler
-} from 'chart.js';
-import { Line } from 'react-chartjs-2';
 import type { PeriodicUserMetricsDto } from '@core/models/dashboard';
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  Filler
-);
+import { BaseLineChart } from '@core/components/BaseLineChart.tsx';
 
 interface PeriodicChartsProps {
-  granularityData: PeriodicUserMetricsDto[];
+    granularityData: PeriodicUserMetricsDto[];
 }
 
 export function PeriodicCharts({ granularityData }: PeriodicChartsProps) {
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top' as const,
-        labels: { color: '#94a3b8' }
-      },
-    },
-    scales: {
-      x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
-      y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
-    },
-  };
+    const labels = granularityData.map((item) => item.label);
 
-  const labels = granularityData.map((item) => item.label);
-  const issuesStarted = granularityData.map((item) => item.numberOfIssueStarted);
-  const issuesDone = granularityData.map((item) => item.numberOfIssueDone);
+    const flowDatasets = [
+        {
+            label: 'Tickets Commencés',
+            data: granularityData.map((item) => item.numberOfIssueStarted),
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        },
+        {
+            label: 'Tickets Terminés',
+            data: granularityData.map((item) => item.numberOfIssueDone),
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+        },
+    ];
 
-  const data = {
-    labels,
-    datasets: [
-      {
-        label: 'Tickets Commencés',
-        data: issuesStarted,
-        borderColor: '#3b82f6',
-        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-        fill: true,
-        tension: 0.3,
-      },
-      {
-        label: 'Tickets Terminés',
-        data: issuesDone,
-        borderColor: '#10b981',
-        backgroundColor: 'rgba(16, 185, 129, 0.1)',
-        fill: true,
-        tension: 0.3,
-      },
-    ],
-  };
+    const uniqueTypes = Array.from(
+        new Set(
+            granularityData.flatMap((item) =>
+                (item.issueRateByType || []).map((t) => t.type)
+            )
+        )
+    );
 
-  return (
-    <div className="bg-slate-900 p-6 rounded-xl border border-slate-800 max-w-4xl mx-auto">
-      <h2 className="text-xl font-bold text-white mb-4">Flux des Tickets (Issues Flow)</h2>
-      <Line options={options} data={data} />
-    </div>
-  );
+    const typeColorPalette = ['#10b981', '#ef4444', '#a855f7', '#f59e0b', '#3b82f6'];
+
+    const typeDatasets = uniqueTypes.map((type, index) => {
+        const color = typeColorPalette[index % typeColorPalette.length];
+        return {
+            label: type,
+            data: granularityData.map((item) => {
+                const target = (item.issueRateByType || []).find((t) => t.type === type);
+                return target ? target.rate : 0;
+            }),
+            borderColor: color,
+            backgroundColor: `${color}1A`,
+        };
+    });
+
+    const healthDatasets = [
+        {
+            label: 'Succès Livraison (%)',
+            data: granularityData.map((item) => item.deliverySuccessRate),
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.05)',
+        },
+        {
+            label: 'Ping-Pong Rate (%)',
+            data: granularityData.map((item) => item.pingPongReviewRate),
+            borderColor: '#ef4444',
+            backgroundColor: 'rgba(239, 68, 68, 0.05)',
+        },
+    ];
+
+    return (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full max-w-7xl mx-auto">
+            <BaseLineChart
+                title="Flux d'Activité (Issues Flow)"
+                labels={labels}
+                datasets={flowDatasets}
+                maxWidth="max-w-full"
+            />
+            <BaseLineChart
+                title="Répartition des Types de Tickets (%)"
+                labels={labels}
+                datasets={typeDatasets}
+                maxWidth="max-w-full"
+                yMax={100}
+            />
+            <BaseLineChart
+                title="Santé du Flux & Qualité (Delivery vs Friction)"
+                labels={labels}
+                datasets={healthDatasets}
+                maxWidth="max-w-full"
+                yMax={100}
+            />
+        </div>
+    );
 }

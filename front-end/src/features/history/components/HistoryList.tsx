@@ -38,7 +38,7 @@ export function HistoryList({
               {content.map((event) => (
                 <tr key={event.issueKey} className="hover:bg-slate-950/40 transition-colors">
                   <td className="py-3 px-4 font-mono text-blue-400">{event.issueKey}</td>
-                  <td className="py-3 px-4 font-mono text-blue-400">{event.issueSummary}</td>
+                  <td className="py-3 px-4 font-mono text-blue-200">{event.issueSummary}</td>
                   <td className="py-3 px-4">
                     <div className="font-medium text-slate-200">{event.issueAssignee?.name}</div>
                     <div className="text-xs text-slate-500">{event.issueAssignee?.email || 'Système'}</div>
