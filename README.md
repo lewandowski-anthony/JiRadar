@@ -1,6 +1,6 @@
 # Jiradar - Analytics & Visualization Workspace
 
-![JiRadar Logo](front-end/public/jiradar_logo.svg)
+![JiRadar Logo](front-end-angular/public/jiradar_logo.svg)
 
 Jiradar is a full-stack platform designed to extract, process, and visualize software delivery lifecycle data from issue tracking ecosystems like Jira. By evaluating issue transitions and raw
 changelog streams, the system provides real-time developer productivity engineering analytics, including flow predictability metrics, cycle times, review behavior metrics, and work-in-progress
