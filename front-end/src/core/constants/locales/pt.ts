@@ -39,7 +39,7 @@ export const pt = {
     // ---------------------------------------------------------
     // FORMS & FILTERS
     // ---------------------------------------------------------
-    form: {
+    dashboardForm: {
         endDate: "Data de término",
         granularity: {
             daily: "Diário",
@@ -71,6 +71,17 @@ export const pt = {
         modificationDate: "Data de modificação",
         name: "Tarefa",
         title: "Título"
+    },
+
+    // ---------------------------------------------------------
+    // LOGIN
+    // ---------------------------------------------------------
+    loginForm: {
+        token: "Token",
+        issueTracker: "Gerenciador de tarefas",
+        selectIssueTracker: "Selecionar gerenciador de tarefas",
+        logIn: "Entrar",
+        currentUser: "Usuário atual"
     },
 
     // ---------------------------------------------------------

@@ -39,7 +39,7 @@ export const fr = {
     // ---------------------------------------------------------
     // FORMS & FILTERS
     // ---------------------------------------------------------
-    form: {
+    dashboardForm: {
         endDate: "Date de fin",
         granularity: {
             daily: "Journalier",
@@ -71,6 +71,17 @@ export const fr = {
         modificationDate: "Date de modification",
         name: "Ticket",
         title: "Titre"
+    },
+
+    // ---------------------------------------------------------
+    // LOGIN
+    // ---------------------------------------------------------
+    loginForm: {
+        token: "Token",
+        issueTracker: "Outil de gestion des tickets",
+        selectIssueTracker: "Gestionnaire de tickets",
+        logIn: "Se connecter",
+        currentUser: "Utilisateur actuel"
     },
 
     // ---------------------------------------------------------

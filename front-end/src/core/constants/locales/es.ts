@@ -39,7 +39,7 @@ export const es = {
     // ---------------------------------------------------------
     // FORMS & FILTERS
     // ---------------------------------------------------------
-    form: {
+    dashboardForm: {
         endDate: "Fecha de finalización",
         granularity: {
             daily: "Diario",
@@ -71,6 +71,16 @@ export const es = {
         modificationDate: "Fecha de modificación",
         name: "Tarea",
         title: "Título"
+    },
+    // ---------------------------------------------------------
+    // LOGIN
+    // ---------------------------------------------------------
+    loginForm: {
+        token: "Token",
+        issueTracker: "Rastreador de problemas",
+        selectIssueTracker: "Seleccionar gestor de incidencias",
+        logIn: "Iniciar sesión",
+        currentUser: "Usuario actual"
     },
 
     // ---------------------------------------------------------

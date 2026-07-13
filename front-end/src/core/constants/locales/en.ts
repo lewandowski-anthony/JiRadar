@@ -39,7 +39,7 @@ export const en = {
     // ---------------------------------------------------------
     // FORMS & FILTERS
     // ---------------------------------------------------------
-    form: {
+    dashboardForm: {
         endDate: "End Date",
         granularity: {
             daily: "Daily",
@@ -72,7 +72,16 @@ export const en = {
         name: "Issue",
         title: "Title"
     },
-
+    // ---------------------------------------------------------
+    // LOGIN
+    // ---------------------------------------------------------
+    loginForm: {
+        token: "Token",
+        issueTracker: "Issue Tracker",
+        selectIssueTracker: "Select Issue Tracker",
+        logIn: "Log In",
+        currentUser: "Current User"
+    },
     // ---------------------------------------------------------
     // KEY PERFORMANCE INDICATORS (KPIs)
     // ---------------------------------------------------------
