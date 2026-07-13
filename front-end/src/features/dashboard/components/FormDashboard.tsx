@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type {DashboardFilters} from '@core/models/dashboard.ts';
-import {getCurrentDateStr, getPastMonthDateStr} from "@core/utils/date-calculator.ts";
+import {getCurrentDateStr, getPastMonthDateStr} from "@core/utils/time.ts";
 
 interface DashboardFormProps {
   onSubmit: (filters: DashboardFilters) => void;

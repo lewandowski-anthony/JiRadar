@@ -3,7 +3,7 @@ import { KpiCard } from '@features/kpis/components/KpiCard.tsx';
 import { PeriodicCharts } from '@features/devCharts/components/PeriodicCharts';
 import { HistoryList } from '@features/history/components/HistoryList';
 import { useDashboard } from './hooks/useDashboard';
-import { KPI_CONFIGS } from './constants/kpiConfig';
+import { KPI_CONFIGS } from '@core/constants/kpiConfig';
 import { Tabs, Tab } from "@core/components/Tab.tsx";
 
 export default function Dashboard() {

@@ -48,6 +48,7 @@ export function BaseLineChart({
                               }: BaseLineChartProps) {
     const options = {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: {
                 position: 'top' as const,
@@ -75,9 +76,11 @@ export function BaseLineChart({
     };
 
     return (
-        <div className={`bg-slate-900 p-6 rounded-xl border border-slate-800 w-full ${maxWidth} mx-auto`}>
-            <h2 className="text-lg font-bold text-white mb-4">{title}</h2>
-            <Line options={options} data={data} />
+        <div className={`bg-slate-900 p-4 sm:p-6 rounded-xl border border-slate-800 w-full ${maxWidth} mx-auto`}>
+            <h2 className="text-base sm:text-lg font-bold text-white mb-4">{title}</h2>
+            <div className="h-[260px] sm:h-[320px] w-full">
+                <Line options={options} data={data} />
+            </div>
         </div>
     );
 }
