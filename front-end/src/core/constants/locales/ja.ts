@@ -139,6 +139,6 @@ export const ja = {
     tabs: {
         periodic: "定期分析",
         reviews: "コードレビュー",
-        wip: "仕掛品タスク"
+        workHistory: "作業履歴"
     }
 };

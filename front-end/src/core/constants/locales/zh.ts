@@ -139,6 +139,6 @@ export const zh = {
     tabs: {
         periodic: "周期性分析",
         reviews: "代码评审",
-        wip: "在制品追踪"
+        workHistory: "工作历史"
     }
 };

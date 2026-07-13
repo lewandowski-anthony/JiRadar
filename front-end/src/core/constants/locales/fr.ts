@@ -139,6 +139,6 @@ export const fr = {
     tabs: {
         periodic: "Analyse Périodique",
         reviews: "Revues de Code",
-        wip: "Travail En Cours"
+        workHistory: "Historique de tâches"
     }
 };

@@ -4,7 +4,7 @@ import type { DashboardFilters, UserMetricsDto } from '@core/models/dashboard.ts
 import type { Page } from '@core/models/pages.ts';
 import type {UserHistoryEventDto} from '@core/models/history.ts';
 
-export function useDashboard() {
+export function useFetchDashboardDatas() {
   const [userMetrics, setUserMetrics] = useState<UserMetricsDto | null>(null);
   const [userHistory, setUserHistory] = useState<Page<UserHistoryEventDto> | null>(null);
   const [loading, setLoading] = useState<boolean>(false);

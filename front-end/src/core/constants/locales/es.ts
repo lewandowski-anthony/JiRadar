@@ -138,6 +138,6 @@ export const es = {
     tabs: {
         periodic: "Análisis Periódico",
         reviews: "Revisiones de Código",
-        wip: "Trabajo En Progreso"
+        workHistory: "Historial de trabajo"
     }
 };

@@ -2,14 +2,14 @@ import { FormDashboard } from '../components/FormDashboard';
 import { KpiCard } from '@features/kpis/components/KpiCard.tsx';
 import { PeriodicCharts } from '@features/devCharts/components/PeriodicCharts';
 import { HistoryList } from '@features/history/components/HistoryList';
-import { useDashboard } from '../hooks/useDashboard';
+import { useFetchDashboardDatas } from '../hooks/useFetchDashboardDatas.ts';
 import { KPI_CONFIGS } from '@core/constants/kpiConfig';
 import { Tabs, Tab } from "@core/components/Tab.tsx";
 import {type TranslationKeys} from '@core/constants/locales';
 import {useTranslation} from "@core/hooks/useTranslation.ts";
 
 export default function Dashboard() {
-    const { userMetrics, history, loading, error, fetchDashboardData } = useDashboard();
+    const { userMetrics, history, loading, error, fetchDashboardData } = useFetchDashboardDatas();
     const t: TranslationKeys = useTranslation();
 
     const handlePageChange = (newPage: number) => {
@@ -59,7 +59,7 @@ export default function Dashboard() {
                     )}
 
                     {history && (
-                        <Tab id="history" label={t.tabs.wip} icon="fa-solid fa-clock-rotate-left">
+                        <Tab id="history" label={t.tabs.workHistory} icon="fa-solid fa-clock-rotate-left">
                             <div className="animate-fadeIn">
                                 <HistoryList historyPage={history} onPageChange={handlePageChange} />
                             </div>

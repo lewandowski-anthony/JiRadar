@@ -137,6 +137,6 @@ export const en = {
     tabs: {
         periodic: "Periodic Analysis",
         reviews: "Code Reviews",
-        wip: "Work In Progress"
+        workHistory: "Work History"
     }
 };
