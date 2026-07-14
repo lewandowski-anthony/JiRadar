@@ -22,6 +22,7 @@ export default defineConfig({
                 functions: 80,
                 lines: 80,
             },
+            include: ['src/**/*.{ts,tsx}'],
             exclude: [
                 'node_modules/**',
                 'dist/**',
@@ -30,6 +31,7 @@ export default defineConfig({
                 'eslint.config.js',
                 'vite.config.ts',
                 'src/core/models/**',
+                '**/*.spec.{ts,tsx}',
                 'src/core/constants/locales/**',
             ]
         }

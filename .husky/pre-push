@@ -8,7 +8,7 @@ echo "🔍 [Jiradar] Starting global code coverage checks..."
 echo "☕ [1/2] Validating Back-end coverage (Spring Boot)..."
 cd "$ROOT_DIR/back-end" && mvn clean verify
 
-#echo "📦 [2/2] Validating Front-end coverage (Angular 22 + Vitest)..."
-#cd "$ROOT_DIR/front-end" && npm run test:coverage
+echo "📦 [2/2] Validating Front-end coverage (Angular 22 + Vitest)..."
+cd "$ROOT_DIR/front-end" && npm run test:coverage
 
 echo "✅ [Jiradar] Everything is perfect! Push is authorized."

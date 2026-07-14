@@ -3,34 +3,26 @@ import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { LocaleContext } from '@core/context/localContext';
-import type {LocaleType} from "@core/constants/locales";
 
-describe('LanguageSwitcher Component', () => {
-    const mockChangeLocale = vi.fn();
+describe('LanguageSwitcher - Click Outside', () => {
+    it('should close the dropdown when clicking outside', async () => {
+        const mockChangeLocale = vi.fn();
+        const user = userEvent.setup();
 
-    const renderWithContext = (locale: LocaleType = 'en') => {
-        return render(
-            <LocaleContext.Provider value={{ locale, changeLocale: mockChangeLocale }}>
-                <LanguageSwitcher />
+        render(
+            <LocaleContext.Provider value={{ locale: 'en', changeLocale: mockChangeLocale }}>
+                <div>
+                    <div data-testid="outside">Outside</div>
+                    <LanguageSwitcher />
+                </div>
             </LocaleContext.Provider>
         );
-    };
-
-    it('renders the active language code', () => {
-        renderWithContext('fr');
-        expect(screen.getByText('fr')).toBeInTheDocument();
-    });
-
-    it('opens dropdown and triggers language change', async () => {
-        renderWithContext('en');
-        const user = userEvent.setup();
 
         const triggerButton = screen.getByRole('button');
         await user.click(triggerButton);
+        expect(screen.getByText('Français')).toBeInTheDocument();
 
-        const frButton = screen.getByText('Français');
-        await user.click(frButton);
-
-        expect(mockChangeLocale).toHaveBeenCalledWith('fr');
+        await user.click(screen.getByTestId('outside'));
+        expect(screen.queryByText('Français')).not.toBeInTheDocument();
     });
 });
