@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
-import { useLocale } from '@core/hooks/useLocale';
+import {useState, useRef, useEffect } from 'react';
 import { CHART_LOCALES, type LocaleType } from '@core/constants/locales';
+import {useLocale} from "@core/hooks/useLocale";
 
 const LANGUAGE_LABELS: Record<LocaleType, string> = {
     en: "English",
@@ -13,6 +13,7 @@ const LANGUAGE_LABELS: Record<LocaleType, string> = {
 
 export function LanguageSwitcher() {
     const [currentLocale, changeLocale] = useLocale();
+
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -46,7 +47,6 @@ export function LanguageSwitcher() {
                             onClick={() => {
                                 changeLocale(loc);
                                 setIsOpen(false);
-                                window.location.reload();
                             }}
                             className={`w-full text-left px-4 py-2 text-sm transition-colors block ${
                                 currentLocale === loc

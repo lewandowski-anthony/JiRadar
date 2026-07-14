@@ -1,6 +1,18 @@
+import type { ComponentType } from 'react';
 import type { PeriodicUserMetricsDto } from '@core/models/dashboard';
-import { parseDurationToHours } from '@core/utils/time';
+import { BaseBarChart } from '@core/components/charts/BaseBarChart';
+import { BaseLineChart } from '@core/components/charts/BaseLineChart';
+import type { BaseChartProps } from '@core/models/charts/BaseChartProps';
 import type { TranslationKeys } from './locales';
+import {parseDurationToHours} from "@core/utils/time";
+
+export interface FormattedDataset {
+    label: string;
+    borderColor?: string;
+    backgroundColor?: string;
+    borderWidth?: number;
+    data: number[];
+}
 
 export interface ChartDatasetConfig {
     label: (t: TranslationKeys) => string;
@@ -13,15 +25,11 @@ export interface ChartConfig {
     id: string;
     title: (t: TranslationKeys) => string;
     type: 'line' | 'bar';
+    ChartComponent: ComponentType<BaseChartProps>;
     yMax?: number;
     fullWidth?: boolean;
     staticDatasets?: ChartDatasetConfig[];
-    getDynamicDatasets?: (data: PeriodicUserMetricsDto[], t: TranslationKeys) => {
-        label: string;
-        borderColor: string;
-        backgroundColor: string;
-        data: number[];
-    }[];
+    getDynamicDatasets?: (data: PeriodicUserMetricsDto[], t: TranslationKeys) => FormattedDataset[];
 }
 
 export const CHARTS_REGISTRY: ChartConfig[] = [
@@ -29,6 +37,7 @@ export const CHARTS_REGISTRY: ChartConfig[] = [
         id: 'flow',
         title: (t) => t.charts.flowTitle,
         type: 'line',
+        ChartComponent: BaseLineChart,
         staticDatasets: [
             {
                 label: (t) => t.charts.issuesStarted,
@@ -48,6 +57,7 @@ export const CHARTS_REGISTRY: ChartConfig[] = [
         id: 'types',
         title: (t) => t.charts.typesTitle,
         type: 'bar',
+        ChartComponent: BaseBarChart,
         yMax: 100,
         getDynamicDatasets: (data) => {
             const uniqueTypes = Array.from(
@@ -73,6 +83,7 @@ export const CHARTS_REGISTRY: ChartConfig[] = [
         id: 'review-health',
         title: (t) => t.charts.reviewHealthTitle,
         type: 'bar',
+        ChartComponent: BaseBarChart,
         staticDatasets: [
             {
                 label: (t) => t.charts.reviewsDone,
@@ -92,6 +103,7 @@ export const CHARTS_REGISTRY: ChartConfig[] = [
         id: 'wip-rate',
         title: (t) => t.charts.wipTitle,
         type: 'line',
+        ChartComponent: BaseLineChart,
         staticDatasets: [
             {
                 label: (t) => t.charts.concurrentIssues,
@@ -105,6 +117,7 @@ export const CHARTS_REGISTRY: ChartConfig[] = [
         id: 'lead-times',
         title: (t) => t.charts.leadTimesTitle,
         type: 'line',
+        ChartComponent: BaseLineChart,
         fullWidth: true,
         staticDatasets: [
             {
@@ -125,6 +138,7 @@ export const CHARTS_REGISTRY: ChartConfig[] = [
         id: 'team-collaboration',
         title: (t) => t.charts.collaborationTitle,
         type: 'line',
+        ChartComponent: BaseLineChart,
         yMax: 100,
         fullWidth: true,
         staticDatasets: [

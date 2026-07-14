@@ -1,4 +1,4 @@
-import type {User} from '@core/models/user.ts';
+import type {User} from '@core/models/user';
 
 export interface UserHistoryEventDto {
   issueKey: string;

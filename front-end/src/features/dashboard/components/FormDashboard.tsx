@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
-import type {DashboardFilters} from '@core/models/dashboard.ts';
-import {getCurrentDateStr, getPastMonthDateStr} from "@core/utils/time.ts";
+import type {DashboardFilters} from '@core/models/dashboard';
+import {getCurrentDateStr, getPastMonthDateStr} from "@core/utils/time";
 import type {TranslationKeys} from "@core/constants/locales";
-import {useTranslation} from "@core/hooks/useTranslation.ts";
+import {useTranslation} from "@core/hooks/useTranslation";
 
 interface DashboardFormProps {
     onSubmit: (filters: DashboardFilters) => void;

@@ -5,18 +5,15 @@ import {
   Legend
 } from 'chart.js';
 import { Doughnut, Pie } from 'react-chartjs-2';
+import type {BaseChartProps} from "@core/models/charts/BaseChartProps";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-interface BasePieChartProps {
-  title: string;
-  labels: string[];
-  dataValues: number[];
-  backgroundColors: string[];
+interface BasePieChartProps extends BaseChartProps {
   isDonut?: boolean;
 }
 
-export function BasePieChart({ title, labels, dataValues, backgroundColors, isDonut = true }: BasePieChartProps) {
+export function BasePieChart({ title, labels, datasets, isDonut = true }: BasePieChartProps) {
   const options = {
     responsive: true,
     plugins: {
@@ -29,14 +26,11 @@ export function BasePieChart({ title, labels, dataValues, backgroundColors, isDo
 
   const data = {
     labels,
-    datasets: [
-      {
-        data: dataValues,
-        backgroundColor: backgroundColors,
-        borderColor: '#0f172a',
-        borderWidth: 2,
-      },
-    ],
+    datasets: datasets.map((dataset) => ({
+        ...dataset,
+        borderColor: dataset.borderColor ?? '#0f172a',
+        borderWidth: dataset.borderWidth ?? 2,
+    })),
   };
 
   const ChartComponent = isDonut ? Doughnut : Pie;

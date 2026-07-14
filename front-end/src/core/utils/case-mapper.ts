@@ -4,17 +4,20 @@ export function snakeToCamel(str: string): string {
   );
 }
 
-export function mapKeysToCamel(obj: any): any {
+export function mapKeysToCamel(obj: unknown): unknown {
   if (Array.isArray(obj)) {
     return obj.map((v) => mapKeysToCamel(v));
-  } else if (obj !== null && obj.constructor === Object) {
-    return Object.keys(obj).reduce(
-      (result, key) => ({
-        ...result,
-        [snakeToCamel(key)]: mapKeysToCamel(obj[key]),
-      }),
-      {}
-    );
   }
+    if (obj !== null && typeof obj === 'object') {
+        const inspectableObj = obj as Record<string, unknown>;
+
+        return Object.keys(inspectableObj).reduce<Record<string, unknown>>(
+            (result, key) => ({
+                ...result,
+                [snakeToCamel(key)]: mapKeysToCamel(inspectableObj[key]),
+            }),
+            {}
+        );
+    }
   return obj;
 }

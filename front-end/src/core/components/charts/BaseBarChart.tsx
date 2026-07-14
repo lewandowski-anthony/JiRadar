@@ -8,6 +8,7 @@ import {
     Legend
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
+import type {BaseChartProps} from '@core/models/charts/BaseChartProps';
 
 ChartJS.register(
     CategoryScale,
@@ -18,28 +19,13 @@ ChartJS.register(
     Legend
 );
 
-export interface BarDataset {
-    label: string;
-    data: number[];
-    borderColor: string;
-    backgroundColor: string;
-}
-
-interface BaseBarChartProps {
-    title: string;
-    labels: string[];
-    datasets: BarDataset[];
-    maxWidth?: string;
-    yMax?: number;
-}
-
 export function BaseBarChart({
                                  title,
                                  labels,
                                  datasets,
                                  maxWidth = 'max-w-2xl',
                                  yMax
-                             }: BaseBarChartProps) {
+                             }: BaseChartProps) {
     const options = {
         responsive: true,
         maintainAspectRatio: false,
@@ -64,8 +50,10 @@ export function BaseBarChart({
         labels,
         datasets: datasets.map((dataset) => ({
             ...dataset,
+            borderColor: dataset.borderColor ?? '#3b82f6',
+            backgroundColor: dataset.backgroundColor ?? 'rgba(59, 130, 246, 0.1)',
             borderRadius: 4,
-            borderWidth: 1,
+            borderWidth: dataset.borderWidth ?? 1,
             barPercentage: 0.7,
             categoryPercentage: 0.8,
         })),

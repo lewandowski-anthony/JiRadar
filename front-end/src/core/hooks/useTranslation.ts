@@ -1,6 +1,6 @@
-import { useLocale } from './useLocale';
 import { CHART_LOCALES, type TranslationKeys } from '@core/constants/locales';
 import { en } from "@core/constants/locales/en";
+import {useLocale} from "@core/hooks/useLocale.ts";
 
 export function useTranslation(): TranslationKeys {
     const [locale] = useLocale();

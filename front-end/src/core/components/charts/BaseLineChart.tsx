@@ -10,6 +10,7 @@ import {
     Filler
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import type {BaseChartProps} from "@core/models/charts/BaseChartProps";
 
 ChartJS.register(
     CategoryScale,
@@ -22,20 +23,8 @@ ChartJS.register(
     Filler
 );
 
-export interface LineDataset {
-    label: string;
-    data: number[];
-    borderColor: string;
-    backgroundColor: string;
-}
-
-interface BaseLineChartProps {
-    title: string;
-    labels: string[];
-    datasets: LineDataset[];
+interface BaseLineChartProps extends BaseChartProps {
     stepped?: boolean;
-    maxWidth?: string;
-    yMax?: number;
 }
 
 export function BaseLineChart({
@@ -69,6 +58,9 @@ export function BaseLineChart({
         labels,
         datasets: datasets.map((dataset) => ({
             ...dataset,
+            borderColor: dataset.borderColor ?? '#a855f7',
+            backgroundColor: dataset.backgroundColor ?? 'rgba(168, 85, 247, 0.2)',
+            borderWidth: dataset.borderWidth ?? 1,
             fill: true,
             tension: stepped ? 0 : 0.3,
             stepped: stepped,

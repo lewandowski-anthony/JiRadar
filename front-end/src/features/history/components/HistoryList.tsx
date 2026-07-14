@@ -1,7 +1,7 @@
 import { format, parseISO } from 'date-fns';
 import type { UserHistoryEventDto } from '@core/models/history';
 import type { Page } from '@core/models/pages';
-import {useTranslation} from "@core/hooks/useTranslation.ts";
+import {useTranslation} from "@core/hooks/useTranslation";
 
 export function HistoryList({
                               historyPage,

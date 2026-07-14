@@ -1,5 +1,5 @@
 import Dashboard from '@features/dashboard/components/Dashboard';
-import { Navbar } from '@core/components/Navbar';
+import { Navbar } from '@core/components/menus/Navbar';
 
 export default function App() {
     return (

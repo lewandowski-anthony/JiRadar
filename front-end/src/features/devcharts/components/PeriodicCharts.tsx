@@ -1,7 +1,5 @@
 import type { PeriodicUserMetricsDto } from '@core/models/dashboard';
-import { BaseLineChart } from '@core/components/BaseLineChart.tsx';
-import { BaseBarChart } from '@core/components/BaseBarChart.tsx';
-import { CHARTS_REGISTRY } from '@core/constants/chartConfig';
+import { CHARTS_REGISTRY, type ChartConfig, type FormattedDataset } from '@core/constants/chartConfig';
 import { useTranslation } from '@core/hooks/useTranslation';
 
 interface PeriodicChartsProps {
@@ -12,31 +10,29 @@ export function PeriodicCharts({ granularityData }: PeriodicChartsProps) {
     const labels = granularityData.map((item) => item.label);
     const t = useTranslation();
 
-    const renderChart = (chart: any) => {
-        const datasets = chart.getDynamicDatasets
+    const renderChart = (chart: ChartConfig) => {
+
+        const datasets: FormattedDataset[] = chart.getDynamicDatasets
             ? chart.getDynamicDatasets(granularityData, t)
-            : (chart.staticDatasets || []).map((d: any) => ({
+            : (chart.staticDatasets || []).map((d) => ({
                 label: d.label(t),
                 borderColor: d.borderColor,
                 backgroundColor: d.backgroundColor,
-                data: granularityData.map(d.getValue),
+                data: granularityData.map((item) => d.getValue(item)),
             }));
 
-        const props = {
-            title: chart.title(t),
-            labels,
-            yMax: chart.yMax,
-            maxWidth: "max-w-full",
-            datasets
-        };
+        const TargetChart = chart.ChartComponent;
 
-        switch (chart.type) {
-            case 'bar':
-                return <BaseBarChart key={chart.id} {...props} />;
-            case 'line':
-            default:
-                return <BaseLineChart key={chart.id} {...props} />;
-        }
+        return (
+            <TargetChart
+                key={chart.id}
+                title={chart.title(t)}
+                labels={labels}
+                yMax={chart.yMax}
+                maxWidth="max-w-full"
+                datasets={datasets}
+            />
+        );
     };
 
     return (
@@ -45,9 +41,9 @@ export function PeriodicCharts({ granularityData }: PeriodicChartsProps) {
 
             {CHARTS_REGISTRY.filter((c) => c.fullWidth).map((chart) => (
                 <div key={chart.id} className="lg:col-span-2">
-                    {renderChart(chart)}
+            {renderChart(chart)}
                 </div>
-            ))}
+                ))}
         </div>
-    );
+);
 }

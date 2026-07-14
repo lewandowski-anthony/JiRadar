@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from '@core/hooks/useTranslation';
-import { LanguageSwitcher } from "@core/components/LanguageSwitcher.tsx";
+import { LanguageSwitcher } from "@core/components/languages/LanguageSwitcher";
 import { LoginDropdown } from '@features/login/components/LoginDropdown';
 
 export function Navbar() {

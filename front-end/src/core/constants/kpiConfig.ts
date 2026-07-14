@@ -1,10 +1,15 @@
 import type { TranslationKeys } from './locales';
+import type {UserMetricsDto} from "@core/models/dashboard";
+
+type AllowedKpiKeys = {
+    [K in keyof UserMetricsDto]: UserMetricsDto[K] extends string | number ? K : never;
+}[keyof UserMetricsDto];
 
 export interface KpiConfig {
-    key: keyof TranslationKeys['kpi'];
+    key: AllowedKpiKeys & keyof TranslationKeys['kpi'];
     color: string;
     borderColor: string;
-    format?: (value: any) => string;
+    format?: (value: string | number | undefined) => string;
 }
 
 export const KPI_CONFIGS: KpiConfig[] = [
@@ -22,7 +27,7 @@ export const KPI_CONFIGS: KpiConfig[] = [
         key: 'deliverySuccessRate',
         color: 'text-emerald-400',
         borderColor: 'border-emerald-500/20',
-        format: (val) => `${val}%`,
+        format: (val) => (val !== undefined ? `${val}%` : ''),
     },
     {
         key: 'numberOfIssueDone',
@@ -48,6 +53,6 @@ export const KPI_CONFIGS: KpiConfig[] = [
         key: 'pingPongReviewRate',
         color: 'text-red-400',
         borderColor: 'border-red-500/20',
-        format: (val) => `${val}%`,
+        format: (val) => (val !== undefined ? `${val}%` : ''),
     },
 ];

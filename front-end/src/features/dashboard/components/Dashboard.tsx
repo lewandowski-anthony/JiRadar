@@ -1,12 +1,12 @@
 import { FormDashboard } from '../components/FormDashboard';
-import { KpiCard } from '@features/kpis/components/KpiCard.tsx';
-import { PeriodicCharts } from '@features/devCharts/components/PeriodicCharts';
+import { KpiCard } from '@features/kpis/components/KpiCard';
+import { PeriodicCharts } from '@features/devcharts/components/PeriodicCharts';
 import { HistoryList } from '@features/history/components/HistoryList';
-import { useFetchDashboardDatas } from '../hooks/useFetchDashboardDatas.ts';
+import { useFetchDashboardDatas } from '../hooks/useFetchDashboardDatas';
 import { KPI_CONFIGS } from '@core/constants/kpiConfig';
-import { Tabs, Tab } from "@core/components/Tab.tsx";
+import { Tabs, Tab } from "@core/components/menus/Tab";
 import {type TranslationKeys} from '@core/constants/locales';
-import {useTranslation} from "@core/hooks/useTranslation.ts";
+import {useTranslation} from "@core/hooks/useTranslation";
 
 export default function Dashboard() {
     const { userMetrics, history, loading, error, fetchDashboardData } = useFetchDashboardDatas();
@@ -38,7 +38,8 @@ export default function Dashboard() {
                         <Tab id="metrics" label={t.tabs.periodic} icon="fa-solid fa-chart-simple">
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full animate-fadeIn">
                                 {KPI_CONFIGS.map((metricConfig) => {
-                                    const metric = (userMetrics as any)[metricConfig.key];
+                                    const metricKey = metricConfig.key;
+                                    const metric = userMetrics ? userMetrics[metricKey] : undefined;
                                     const displayValue = metricConfig.format ? metricConfig.format(metric) : String(metric ?? '');
 
                                     const kpiText = t.kpi[metricConfig.key];

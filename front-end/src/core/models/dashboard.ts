@@ -1,4 +1,4 @@
-export type Granularity = 'NONE' | 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY';
+export type Granularity = 'NONE' | 'DAY' | 'WEEK' | 'MONTH' | 'YEAR';
 
 export interface DashboardFilters {
   projectKey: string;
