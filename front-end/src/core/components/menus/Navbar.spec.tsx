@@ -3,13 +3,16 @@ import userEvent from '@testing-library/user-event';
 import { describe, it, expect } from 'vitest';
 import { Navbar } from './Navbar';
 import { LocaleProvider } from '@core/context/LocaleProvider';
+import {AuthProvider} from "@core/context/AuthContext.tsx";
 
 describe('Navbar Component', () => {
     it('should render application titles and handle login modal toggling', async () => {
         const user = userEvent.setup();
         render(
             <LocaleProvider>
-                <Navbar />
+                <AuthProvider>
+                    <Navbar />
+                </AuthProvider>
             </LocaleProvider>
         );
 

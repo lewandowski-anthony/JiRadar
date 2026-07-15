@@ -1,0 +1,40 @@
+name: 'Docker Build and Push'
+description: 'Helper action to lowercase repository names, set up buildx, and build/push Docker images'
+
+inputs:
+  context:
+    description: 'Build context path (e.g., ./back-end)'
+    required: true
+  image_name:
+    description: 'The name of the image (e.g., jiradar-back)'
+    required: true
+  image_tag:
+    description: 'The version tag (e.g., 1.0.0)'
+    required: true
+  push_image:
+    description: 'Should the image be pushed ("true" or "false")'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Lowercase Repository Name
+      id: repo
+      shell: bash
+      run: |
+        echo "name=${GITHUB_REPOSITORY,,}" >> $GITHUB_OUTPUT
+
+    - name: Build and Push Docker Image
+      uses: docker/build-push-action@v5
+      with:
+        context: ${{ inputs.context }}
+        file: ${{ inputs.context }}/Dockerfile
+        push: ${{ inputs.push_image == 'true' }}
+        tags: |
+          ghcr.io/${{ steps.repo.outputs.name }}/${{ inputs.image_name }}:${{ inputs.image_tag }}
+          ghcr.io/${{ steps.repo.outputs.name }}/${{ inputs.image_name }}:latest
+        cache-from: type=gha
+        cache-to: type=gha,mode=max

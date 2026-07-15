@@ -29,5 +29,4 @@ COPY --chown=spring:spring --from=builder /jiradar-back/jiradar-back.jar ./
 
 ENV JAVA_OPTS=""
 
-ENTRYPOINT java $JAVA_OPTS \
-"org.springframework.boot.loader.launch.JarLauncher"
+ENTRYPOINT java $JAVA_OPTS -jar jiradar-back.jar

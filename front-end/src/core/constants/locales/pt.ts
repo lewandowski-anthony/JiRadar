@@ -4,22 +4,30 @@ export const pt = {
     // ---------------------------------------------------------
     app: {
         loading: "Carregando...",
-        subtitle: "Análise de desempenho e histórico de dados para equipas",
-        title: "JiRadar Dashboard"
+        subtitle: "Análise de desempenho e dados históricos para equipes",
+        title: "Painel JiRadar"
+    },
+
+    // ---------------------------------------------------------
+    // Common
+    // ---------------------------------------------------------
+    common: {
+        email: "E-mail",
+        checking: "Verificando",
     },
 
     // ---------------------------------------------------------
     // CHARTS LEGENDS & TITLES
     // ---------------------------------------------------------
     charts: {
-        collaborationTitle: "Colaboração e Taxa de Sucesso de Entrega (%)",
+        collaborationTitle: "Taxa de Sucesso de Colaboração e Entrega (%)",
         concurrentIssues: "Tarefas Simultâneas",
         cycleTime: "Tempo de Ciclo",
         deliverySuccess: "Taxa de Sucesso de Entrega (%)",
-        flowTitle: "Fluxo de Atividade (Issues Flow)",
+        flowTitle: "Fluxo de Atividade (Fluxo de Tarefas)",
         issuesDone: "Tarefas Concluídas",
         issuesStarted: "Tarefas Iniciadas",
-        leadTimesTitle: "Tempos Médios de Execução (Horas)",
+        leadTimesTitle: "Tempo Médio de Atendimento (Horas)",
         participationRate: "Taxa de Participação em Revisões (%)",
         reviewHealthTitle: "Eficiência de Revisão e Reaberturas",
         reviewTime: "Tempo de Revisão",
@@ -33,25 +41,25 @@ export const pt = {
     // ERRORS & VALIDATIONS
     // ---------------------------------------------------------
     error: {
-        projectCodeRequired: "Código do projeto obrigatório"
+        projectCodeRequired: "Código do Projeto Obrigatório"
     },
 
     // ---------------------------------------------------------
     // FORMS & FILTERS
     // ---------------------------------------------------------
     dashboardForm: {
-        endDate: "Data de término",
+        endDate: "Data Final",
         granularity: {
             daily: "Diário",
             monthly: "Mensal",
-            noGranularity: "Sem granularidade",
+            noGranularity: "Sem Granularidade",
             title: "Granularidade",
             weekly: "Semanal",
             yearly: "Anual"
         },
         projectCode: "Código do Projeto",
-        startDate: "Data de início",
-        updateDashboard: "Atualizar painel de controlo"
+        startDate: "Data Inicial",
+        updateDashboard: "Atualizar Painel"
     },
 
     // ---------------------------------------------------------
@@ -72,28 +80,26 @@ export const pt = {
         name: "Tarefa",
         title: "Título"
     },
-
     // ---------------------------------------------------------
     // LOGIN
     // ---------------------------------------------------------
     loginForm: {
         token: "Token",
-        issueTracker: "Gerenciador de tarefas",
-        selectIssueTracker: "Selecionar gerenciador de tarefas",
+        issueTracker: "Gerenciador de Tarefas",
+        selectIssueTracker: "Selecionar Gerenciador de Tarefas",
         logIn: "Entrar",
-        currentUser: "Usuário atual"
+        currentUser: "Usuário Atual"
     },
-
     // ---------------------------------------------------------
     // KEY PERFORMANCE INDICATORS (KPIs)
     // ---------------------------------------------------------
     kpi: {
         averageCycleTime: {
-            description: "O tempo médio necessário para concluir um cycle de trabalho.",
+            description: "O tempo médio necessário para concluir um ciclo de trabalho.",
             title: "Tempo de Ciclo Médio"
         },
         averageReviewTime: {
-            description: "O tempo médio necessário para realizar uma revisão.",
+            description: "O tempo médio necessário para concluir uma revisão.",
             title: "Tempo de Revisão Médio"
         },
         deliverySuccessRate: {
@@ -110,16 +116,35 @@ export const pt = {
         },
         numberOfReviewReopened: {
             description: "O número total de revisões reabertas.",
-            title: "Revisões Reabertas"
+            title: "Reaberturas de Revisão"
         },
         parallelIssuesInProgressRate: {
-            description: "A média de tarefas tratadas em paralelo.",
-            title: "Tarefas Simultâneas (Média)"
+            description: "O número médio de tarefas tratadas em paralelo.",
+            title: "Tarefas Paralelas (Média)"
         },
         pingPongReviewRate: {
-            description: "A percentagem de tarefas presas num ciclo de revisão ping-pong (ida e volta).",
+            description: "A percentagem de tarefas presas em um ciclo de revisão ping-pong (ida e volta).",
             title: "Taxa de Revisão Ping-Pong"
         }
+    },
+
+    // ---------------------------------------------------------
+    // Github
+    // ---------------------------------------------------------
+    github: {
+        pat: "Token de Acesso Pessoal do GitHub (PAT)",
+        error: {
+            invalidPat: "O Token do GitHub (PAT) é inválido."
+        }
+    },
+
+    // ---------------------------------------------------------
+    // Jira
+    // ---------------------------------------------------------
+    jira: {
+        token: "Token do Jira Atlassian",
+        invalidToken: "Token inválido.",
+        connect: "Conectar ao Jira."
     },
 
     // ---------------------------------------------------------
@@ -127,7 +152,7 @@ export const pt = {
     // ---------------------------------------------------------
     page: {
         name: "Página",
-        next: "Seguinte",
+        next: "Próxima",
         on: "de",
         previous: "Anterior",
         total: "Total"
@@ -139,6 +164,6 @@ export const pt = {
     tabs: {
         periodic: "Análise Periódica",
         reviews: "Revisões de Código",
-        workHistory: "Histórico de trabalho"
+        workHistory: "Histórico de Trabalho"
     }
 };

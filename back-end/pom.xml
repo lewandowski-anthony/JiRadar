@@ -260,7 +260,6 @@
                     <properties>
                         <configurationParameters>
                             cucumber.junit-platform.naming-strategy=long
-                            cucumber.features=src/test/resources/features
                             cucumber.glue=com.jiradar.jiradarback
                         </configurationParameters>
                     </properties>
