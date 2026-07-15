@@ -1,12 +1,46 @@
 @import "tailwindcss";
 
-html,
-body,
-#root {
-  margin: 0 !important;
-  padding: 0 !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  min-height: 100vh;
-  overflow-x: hidden;
+@theme {
+    --color-main-bg: #ffffff;
+    --color-main-bg-hover: #f8fafc;
+    --color-cardbg: #f1f5f9;
+    --color-cardbg-hover: #e2e8f0;
+    --color-border-subtle: #cbd5e1;
+    --color-text-main: #0f172a;
+    --color-text-muted: #475569;
+    --color-chart-grid: #e2e8f0;
+    --logo-invert: 1;
+
+    --color-select-focus: #1d4ed8;
+
+    --color-btn-primary: #1e40af;
+    --color-btn-primary-hover: #1d4ed8;
+    --color-btn-text-main: #f9fafb;
+}
+
+@layer base {
+    html, body {
+        @apply transition-colors duration-200;
+        background-color: var(--color-main-bg);
+        color: var(--color-text-main);
+    }
+
+    html.dark, .dark {
+        --color-main-bg: #030712;
+        --color-main-bg-hover: #111827;
+        --color-cardbg: #1f2937;
+        --color-cardbg-hover: #374151;
+        --color-border-subtle: #4b5563;
+        --color-text-main: #f9fafb;
+        --color-text-muted: #9ca3af;
+        --color-chart-grid: #374151;
+        --logo-invert: 0;
+
+
+        --color-select-focus: #f97316;
+
+        --color-btn-primary: #ea580c;
+        --color-btn-primary-hover: #f97316;
+        --color-btn-text-main: #f9fafb;
+    }
 }

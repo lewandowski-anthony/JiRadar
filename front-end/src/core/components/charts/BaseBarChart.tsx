@@ -8,7 +8,8 @@ import {
     Legend
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import type {BaseChartProps} from '@core/models/charts/BaseChartProps';
+import type { BaseChartProps } from '@core/models/charts/BaseChartProps';
+import { getThemeColor } from '@core/utils/theme-resolver';
 
 ChartJS.register(
     CategoryScale,
@@ -26,20 +27,27 @@ export function BaseBarChart({
                                  maxWidth = 'max-w-2xl',
                                  yMax
                              }: BaseChartProps) {
+
+    const textColor = getThemeColor('--color-text-muted');
+    const gridColor = getThemeColor('--color-chart-grid');
+
     const options = {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
             legend: {
                 position: 'top' as const,
-                labels: { color: '#94a3b8' }
+                labels: { color: textColor }
             },
         },
         scales: {
-            x: { grid: { display: false }, ticks: { color: '#94a3b8' } },
+            x: {
+                grid: { display: false },
+                ticks: { color: textColor }
+            },
             y: {
-                grid: { color: '#334155', drawTicks: false },
-                ticks: { color: '#94a3b8' },
+                grid: { color: gridColor, drawTicks: false },
+                ticks: { color: textColor },
                 border: { dash: [4, 4] },
                 ...(yMax !== undefined ? { max: yMax } : {})
             },
@@ -60,8 +68,8 @@ export function BaseBarChart({
     };
 
     return (
-        <div className={`bg-slate-900 p-4 sm:p-6 rounded-xl border border-slate-800 w-full ${maxWidth} mx-auto`}>
-            <h2 className="text-base sm:text-lg font-bold text-white mb-4">{title}</h2>
+        <div className={`bg-cardbg p-4 sm:p-6 rounded-xl border border-border-subtle w-full ${maxWidth} mx-auto transition-colors`}>
+            <h2 className="text-base sm:text-lg font-bold text-text-main mb-4">{title}</h2>
             <div className="h-[260px] sm:h-[300px] w-full">
                 <Bar options={options} data={data} />
             </div>

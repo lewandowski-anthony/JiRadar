@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { HistoryList } from './HistoryList';
-import { LocaleProvider } from '@core/context/LocaleProvider'; // 🌟 Import your real Provider
+import { LocaleProvider } from '@core/context/language/LocaleProvider'; // 🌟 Import your real Provider
 
 describe('HistoryList Component', () => {
     const mockPageChange = vi.fn();

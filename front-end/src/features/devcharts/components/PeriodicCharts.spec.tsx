@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { PeriodicCharts } from './PeriodicCharts';
-import { LocaleProvider } from '@core/context/LocaleProvider';
+import { LocaleProvider } from '@core/context/language/LocaleProvider';
 import type { PeriodicUserMetricsDto } from "@core/models/dashboard.ts";
 
 vi.mock('react-chartjs-2', () => ({

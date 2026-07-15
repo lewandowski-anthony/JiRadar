@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import Dashboard from './Dashboard';
 import { useFetchDashboardDatas } from '../hooks/useFetchDashboardDatas';
-import { LocaleProvider } from '@core/context/LocaleProvider';
+import { LocaleProvider } from '@core/context/language/LocaleProvider';
 import type {Page} from "@core/models/pages.ts";
 import type {UserHistoryEventDto} from "@core/models/history.ts";
 import type {UserMetricsDto} from "@core/models/dashboard.ts";

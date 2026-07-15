@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { FormDashboard } from './FormDashboard';
-import {LocaleProvider} from "@core/context/LocaleProvider.tsx";
+import {AppProviders} from "@core/context/app/AppProviders.tsx";
 
 describe('FormDashboard Component', () => {
     it('should update inputs and submit filters on form submit', async () => {
@@ -10,9 +10,9 @@ describe('FormDashboard Component', () => {
         const user = userEvent.setup();
 
         render(
-            <LocaleProvider>
+            <AppProviders>
                 <FormDashboard onSubmit={mockSubmit} isLoading={false} />
-            </LocaleProvider>
+            </AppProviders>
         );
 
         const projectInput = screen.getByLabelText(/Project Code/i);
@@ -37,9 +37,9 @@ describe('FormDashboard Component', () => {
         const user = userEvent.setup();
 
         render(
-            <LocaleProvider>
+            <AppProviders>
                 <FormDashboard onSubmit={mockSubmit} isLoading={false} />
-            </LocaleProvider>
+            </AppProviders>
         );
 
         const projectInput = screen.getByLabelText(/Project Code/i);
