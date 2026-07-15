@@ -70,7 +70,6 @@ public class SnakeCaseApplicationConfiguration {
 													stringToConvert.indexOf("_") + 1))));
 		}
 
-		// Return string
 		return stringToConvert;
 	}
 }

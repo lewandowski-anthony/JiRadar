@@ -9,6 +9,14 @@ export const en = {
     },
 
     // ---------------------------------------------------------
+    // Common
+    // ---------------------------------------------------------
+    common: {
+        email: "Email",
+        checking: "Checking",
+    },
+
+    // ---------------------------------------------------------
     // CHARTS LEGENDS & TITLES
     // ---------------------------------------------------------
     charts: {
@@ -118,6 +126,25 @@ export const en = {
             description: "The percentage of issues caught in a ping-pong review loop (back and forth).",
             title: "Ping-Pong Review Rate"
         }
+    },
+
+    // ---------------------------------------------------------
+    // Github
+    // ---------------------------------------------------------
+    github: {
+        pat: "GitHub Personnal Access Token",
+        error: {
+            invalidPat: "Github Token (PAT) is invalid."
+        }
+    },
+
+    // ---------------------------------------------------------
+    // Jira
+    // ---------------------------------------------------------
+    jira: {
+        token: "Jira Atlassian Token",
+        invalidToken: "Invalid token.",
+        connect: "Connect to Jira."
     },
 
     // ---------------------------------------------------------

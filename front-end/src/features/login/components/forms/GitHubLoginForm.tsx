@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import {useTranslation} from "@core/hooks/useTranslation.ts";
 
 interface GitHubLoginFormProps {
     onSuccess: () => void;
@@ -9,6 +10,7 @@ interface GitHubLoginFormProps {
 
 export function GitHubLoginForm({ onSuccess, onError, loginFn, loading }: GitHubLoginFormProps) {
     const [token, setToken] = useState('');
+    const t = useTranslation();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -17,14 +19,14 @@ export function GitHubLoginForm({ onSuccess, onError, loginFn, loading }: GitHub
             onSuccess();
         } catch (err: unknown) {
             const axiosError = err as { response?: { data?: { message?: string } } };
-            onError(axiosError.response?.data?.message || "Jeton GitHub (PAT) invalide.");
+            onError(axiosError.response?.data?.message || t.github.error.invalidPat);
         }
     };
 
     return (
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1">
-                <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">GitHub Personal Access Token</label>
+                <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{t.github.pat}</label>
                 <input
                     type="password"
                     value={token}

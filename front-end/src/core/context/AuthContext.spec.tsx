@@ -40,9 +40,9 @@ function TestComponent() {
 
 describe('AuthContext Component', () => {
     const mockUser = {
-        accountId: '123',
+        name: 'John Doe',
         displayName: 'John Doe',
-        emailAddress: 'john@doe.com',
+        email: 'john@doe.com',
         avatarUrl: 'http://avatar.com',
     };
 
@@ -191,7 +191,7 @@ describe('AuthContext Component', () => {
         const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
         expect(() => render(<TestComponent />)).toThrow(
-            "useAuth doit être utilisé au sein d'un AuthProvider"
+            "Use auth must be used within a AuthProvider"
         );
 
         consoleSpy.mockRestore();

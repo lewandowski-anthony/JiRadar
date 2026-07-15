@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { JiraLoginForm } from './JiraLoginForm';
+import { LocaleProvider } from '@core/context/LocaleProvider'; // 1. Importer le provider
 
 describe('JiraLoginForm Component', () => {
     const defaultProps = {
@@ -13,7 +14,11 @@ describe('JiraLoginForm Component', () => {
 
     it('should update token and email input values on user typing', async () => {
         const user = userEvent.setup();
-        render(<JiraLoginForm {...defaultProps} />);
+        render(
+            <LocaleProvider>
+                <JiraLoginForm {...defaultProps} />
+            </LocaleProvider>
+        );
 
         const emailInput = screen.getByTestId('jira-email-input');
         const tokenInput = screen.getByTestId('jira-token-input');
@@ -28,7 +33,11 @@ describe('JiraLoginForm Component', () => {
     it('should call loginFn with correct parameters on form submit', async () => {
         const user = userEvent.setup();
         const mockLoginFn = vi.fn().mockResolvedValue(undefined);
-        render(<JiraLoginForm {...defaultProps} loginFn={mockLoginFn} />);
+        render(
+            <LocaleProvider>
+                <JiraLoginForm {...defaultProps} loginFn={mockLoginFn} />
+            </LocaleProvider>
+        );
 
         const emailInput = screen.getByTestId('jira-email-input');
         const tokenInput = screen.getByTestId('jira-token-input');
@@ -46,7 +55,11 @@ describe('JiraLoginForm Component', () => {
         const user = userEvent.setup();
         const mockError = { response: { data: { message: 'Invalid Credentials' } } };
         const mockLoginFn = vi.fn().mockRejectedValue(mockError);
-        render(<JiraLoginForm {...defaultProps} loginFn={mockLoginFn} />);
+        render(
+            <LocaleProvider>
+                <JiraLoginForm {...defaultProps} loginFn={mockLoginFn} />
+            </LocaleProvider>
+        );
 
         const emailInput = screen.getByTestId('jira-email-input');
         const tokenInput = screen.getByTestId('jira-token-input');
@@ -61,7 +74,11 @@ describe('JiraLoginForm Component', () => {
     });
 
     it('should disable inputs and button when loading is true', () => {
-        render(<JiraLoginForm {...defaultProps} loading={true} />);
+        render(
+            <LocaleProvider>
+                <JiraLoginForm {...defaultProps} loading={true} />
+            </LocaleProvider>
+        );
 
         const emailInput = screen.getByTestId('jira-email-input');
         const tokenInput = screen.getByTestId('jira-token-input');

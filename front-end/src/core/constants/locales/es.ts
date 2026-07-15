@@ -4,29 +4,37 @@ export const es = {
     // ---------------------------------------------------------
     app: {
         loading: "Cargando...",
-        subtitle: "Análisis de rendimiento e histórico de datos para equipos",
-        title: "JiRadar Dashboard"
+        subtitle: "Análisis de rendimiento y datos históricos para equipos",
+        title: "Tablero JiRadar"
+    },
+
+    // ---------------------------------------------------------
+    // Common
+    // ---------------------------------------------------------
+    common: {
+        email: "Correo electrónico",
+        checking: "Comprobando",
     },
 
     // ---------------------------------------------------------
     // CHARTS LEGENDS & TITLES
     // ---------------------------------------------------------
     charts: {
-        collaborationTitle: "Colaboración y Tasa de Éxito de Entrega (%)",
-        concurrentIssues: "Tareas Simultáneas",
-        cycleTime: "Tiempo de Ciclo",
-        deliverySuccess: "Tasa de Éxito de Entrega (%)",
-        flowTitle: "Flujo de Actividad (Issues Flow)",
-        issuesDone: "Tareas Completadas",
-        issuesStarted: "Tareas Iniciadas",
-        leadTimesTitle: "Tiempos Medios de Ejecución (Horas)",
-        participationRate: "Tasa de Participación en Revisiones (%)",
-        reviewHealthTitle: "Eficiencia de Revisión y Reaperturas",
-        reviewTime: "Tiempo de Revisión",
-        reviewsDone: "Revisiones Completadas",
-        reviewsReopened: "Revisiones Reabiertas",
-        typesTitle: "Distribución por Tipo de Tarea (%)",
-        wipTitle: "Trabajo en Progreso Medio (WIP)"
+        collaborationTitle: "Tasa de éxito de colaboración y entrega (%)",
+        concurrentIssues: "Tareas simultáneas",
+        cycleTime: "Tiempo de ciclo",
+        deliverySuccess: "Tasa de éxito de entrega (%)",
+        flowTitle: "Flujo de actividad (Flujo de tareas)",
+        issuesDone: "Tareas completadas",
+        issuesStarted: "Tareas iniciadas",
+        leadTimesTitle: "Tiempos de entrega promedio (Horas)",
+        participationRate: "Tasa de participación en revisiones (%)",
+        reviewHealthTitle: "Eficiencia de revisión y reaperturas",
+        reviewTime: "Tiempo de revisión",
+        reviewsDone: "Revisiones completadas",
+        reviewsReopened: "Revisiones reabiertas",
+        typesTitle: "Distribución de tipos de tareas (%)",
+        wipTitle: "Trabajo en progreso promedio (WIP)"
     },
 
     // ---------------------------------------------------------
@@ -49,9 +57,9 @@ export const es = {
             weekly: "Semanal",
             yearly: "Anual"
         },
-        projectCode: "Código de Proyecto",
+        projectCode: "Código de proyecto",
         startDate: "Fecha de inicio",
-        updateDashboard: "Actualizar panel de control"
+        updateDashboard: "Actualizar tablero"
     },
 
     // ---------------------------------------------------------
@@ -77,48 +85,66 @@ export const es = {
     // ---------------------------------------------------------
     loginForm: {
         token: "Token",
-        issueTracker: "Rastreador de problemas",
-        selectIssueTracker: "Seleccionar gestor de incidencias",
+        issueTracker: "Gestor de tareas",
+        selectIssueTracker: "Seleccionar gestor de tareas",
         logIn: "Iniciar sesión",
         currentUser: "Usuario actual"
     },
-
     // ---------------------------------------------------------
     // KEY PERFORMANCE INDICATORS (KPIs)
     // ---------------------------------------------------------
     kpi: {
         averageCycleTime: {
-            description: "El tiempo promedio necesario para completar un ciclo de trabajo.",
-            title: "Tiempo de Ciclo Medio"
+            description: "El tiempo promedio requerido para completar un ciclo de trabajo.",
+            title: "Tiempo de ciclo promedio"
         },
         averageReviewTime: {
-            description: "El tiempo promedio necesario para realizar una revisión.",
-            title: "Tiempo de Revisión Medio"
+            description: "El tiempo promedio requerido para completar una revisión.",
+            title: "Tiempo de revisión promedio"
         },
         deliverySuccessRate: {
             description: "El porcentaje de entregas exitosas en comparación con el total.",
-            title: "Tasa de Éxito de Entrega"
+            title: "Tasa de éxito de entrega"
         },
         numberOfIssueDone: {
             description: "El número total de tareas completadas.",
-            title: "Tareas Completadas"
+            title: "Tareas completadas"
         },
         numberOfIssueStarted: {
             description: "El número total de tareas iniciadas.",
-            title: "Tareas Iniciadas"
+            title: "Tareas iniciadas"
         },
         numberOfReviewReopened: {
             description: "El número total de revisiones reabiertas.",
-            title: "Revisiones Reabiertas"
+            title: "Revisiones reabiertas"
         },
         parallelIssuesInProgressRate: {
-            description: "El promedio de tareas manejadas en paralelo.",
-            title: "Tareas Simultáneas (Promedio)"
+            description: "El número promedio de tareas gestionadas en paralelo.",
+            title: "Tareas paralelas (Promedio)"
         },
         pingPongReviewRate: {
             description: "El porcentaje de tareas atrapadas en un bucle de revisión ping-pong (ida y vuelta).",
-            title: "Tasa de Revisión Ping-Pong"
+            title: "Tasa de revisión ping-pong"
         }
+    },
+
+    // ---------------------------------------------------------
+    // Github
+    // ---------------------------------------------------------
+    github: {
+        pat: "Token de acceso personal de GitHub",
+        error: {
+            invalidPat: "El token de GitHub (PAT) no es válido."
+        }
+    },
+
+    // ---------------------------------------------------------
+    // Jira
+    // ---------------------------------------------------------
+    jira: {
+        token: "Token de Jira Atlassian",
+        invalidToken: "Token no válido.",
+        connect: "Conectarse a Jira."
     },
 
     // ---------------------------------------------------------
@@ -136,8 +162,8 @@ export const es = {
     // TABS NAVIGATION
     // ---------------------------------------------------------
     tabs: {
-        periodic: "Análisis Periódico",
-        reviews: "Revisiones de Código",
+        periodic: "Análisis periódico",
+        reviews: "Revisiones de código",
         workHistory: "Historial de trabajo"
     }
 };

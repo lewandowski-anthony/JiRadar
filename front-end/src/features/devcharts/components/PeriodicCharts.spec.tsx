@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { PeriodicCharts } from './PeriodicCharts';
 import { LocaleProvider } from '@core/context/LocaleProvider';
-import type {UserMetricsDto} from "@core/models/dashboard.ts";
+import type { PeriodicUserMetricsDto } from "@core/models/dashboard.ts";
 
 vi.mock('react-chartjs-2', () => ({
     Bar: () => <div data-testid="mock-bar" />,
@@ -10,10 +10,12 @@ vi.mock('react-chartjs-2', () => ({
 }));
 
 describe('PeriodicCharts Component', () => {
-    it('should iterate over the charts registry registry and map datasets securely', () => {
-        const mockedMetrics = [
+    it('should iterate over the charts registry and map datasets securely', () => {
+        const mockedMetrics: PeriodicUserMetricsDto[] = [
             {
                 label: 'Week 28',
+                from: '2026-07-06',
+                to: '2026-07-12',
                 numberOfIssueStarted: 10,
                 numberOfIssueDone: 8,
                 averageCycleTime: '2d 4h',
@@ -30,7 +32,7 @@ describe('PeriodicCharts Component', () => {
 
         render(
             <LocaleProvider>
-                <PeriodicCharts granularityData={mockedMetrics as unknown as UserMetricsDto} />
+                <PeriodicCharts granularityData={mockedMetrics} />
             </LocaleProvider>
         );
 

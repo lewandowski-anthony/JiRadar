@@ -4,36 +4,44 @@ export const ja = {
     // ---------------------------------------------------------
     app: {
         loading: "読み込み中...",
-        subtitle: "チームのパフォーマンス分析および履歴データ追跡",
-        title: "JiRadar Dashboard"
+        subtitle: "チームのパフォーマンス分析と履歴データ",
+        title: "JiRadar ダッシュボード"
+    },
+
+    // ---------------------------------------------------------
+    // Common
+    // ---------------------------------------------------------
+    common: {
+        email: "メールアドレス",
+        checking: "確認中",
     },
 
     // ---------------------------------------------------------
     // CHARTS LEGENDS & TITLES
     // ---------------------------------------------------------
     charts: {
-        collaborationTitle: "コラボレーションおよびリリース成功率 (%)",
-        concurrentIssues: "同時進行中のタスク数",
+        collaborationTitle: "コラボレーション＆デリバリー成功率 (%)",
+        concurrentIssues: "並行課題",
         cycleTime: "サイクルタイム",
-        deliverySuccess: "リリース成功率 (%)",
-        flowTitle: "アクティビティフロー (Issues Flow)",
-        issuesDone: "完了したタスク数",
-        issuesStarted: "開始されたタスク数",
+        deliverySuccess: "デリバリー成功率 (%)",
+        flowTitle: "アクティビティフロー (課題のフロー)",
+        issuesDone: "完了した課題",
+        issuesStarted: "開始した課題",
         leadTimesTitle: "平均リードタイム (時間)",
         participationRate: "レビュー参加率 (%)",
-        reviewHealthTitle: "レビュー効率および再オープン数",
-        reviewTime: "レビュータイム",
-        reviewsDone: "承認済みレビュー数",
-        reviewsReopened: "再オープンされたレビュー数",
-        typesTitle: "タスクタイプ分布比率 (%)",
-        wipTitle: "平均仕掛品数 (WIP)"
+        reviewHealthTitle: "レビュー効率と再オープン",
+        reviewTime: "レビュー時間",
+        reviewsDone: "完了したレビュー",
+        reviewsReopened: "再オープンされたレビュー",
+        typesTitle: "課題タイプの分布 (%)",
+        wipTitle: "平均仕掛品 (WIP)"
     },
 
     // ---------------------------------------------------------
     // ERRORS & VALIDATIONS
     // ---------------------------------------------------------
     error: {
-        projectCodeRequired: "プロジェクトコードが必要です"
+        projectCodeRequired: "プロジェクトコードは必須です"
     },
 
     // ---------------------------------------------------------
@@ -44,8 +52,8 @@ export const ja = {
         granularity: {
             daily: "日次",
             monthly: "月次",
-            noGranularity: "期間指定なし",
-            title: "时间粒度",
+            noGranularity: "粒度なし",
+            title: "粒度",
             weekly: "週次",
             yearly: "年次"
         },
@@ -58,7 +66,7 @@ export const ja = {
     // HISTORY TRACKING
     // ---------------------------------------------------------
     history: {
-        noEvents: "履歴にイベントが見つかりませんでした。",
+        noEvents: "履歴にイベントが見つかりません。",
         title: "履歴"
     },
 
@@ -69,57 +77,74 @@ export const ja = {
         author: "作成者",
         date: "日付",
         modificationDate: "更新日",
-        name: "タスク",
+        name: "課題",
         title: "タイトル"
     },
-
     // ---------------------------------------------------------
-    // ログイン
+    // LOGIN
     // ---------------------------------------------------------
     loginForm: {
         token: "トークン",
-        issueTracker: "イシュートラッカー",
-        selectIssueTracker: "イシュートラッカーを選択",
+        issueTracker: "課題トラッカー",
+        selectIssueTracker: "課題トラッカーを選択",
         logIn: "ログイン",
         currentUser: "現在のユーザー"
     },
-
     // ---------------------------------------------------------
     // KEY PERFORMANCE INDICATORS (KPIs)
     // ---------------------------------------------------------
     kpi: {
         averageCycleTime: {
-            description: "1つのワークサイクルを完了するのに必要な平均時間。",
+            description: "作業サイクルを完了するまでに必要な平均時間。",
             title: "平均サイクルタイム"
         },
         averageReviewTime: {
-            description: "1つのレビューを完了するのに必要な平均時間。",
-            title: "平均レビュータイム"
+            description: "レビューを完了するまでに必要な平均時間。",
+            title: "平均レビュー時間"
         },
         deliverySuccessRate: {
-            description: "総リリース数に対する成功したリリースの割合。",
-            title: "リリース成功率"
+            description: "全体の配信に対する成功したデリバリーの割合。",
+            title: "デリバリー成功率"
         },
         numberOfIssueDone: {
-            description: "完了したタスクの総数。",
-            title: "完了タスク数"
+            description: "完了した課題の総数。",
+            title: "完了した課題"
         },
         numberOfIssueStarted: {
-            description: "開始されたタスクの総数。",
-            title: "開始タスク数"
+            description: "開始した課題の総数。",
+            title: "開始した課題"
         },
         numberOfReviewReopened: {
             description: "再オープンされたレビューの総数。",
-            title: "レビュー再オープン数"
+            title: "レビューの再オープン"
         },
         parallelIssuesInProgressRate: {
-            description: "並行して処理されたタスクの平均数。",
-            title: "平均並行タスク数"
+            description: "並行して処理された課題の平均数。",
+            title: "並行課題 (平均)"
         },
         pingPongReviewRate: {
-            description: "レビューの差し戻しが複数回発生した（往復を繰り返した）タスクの割合。",
-            title: "レビューピンポン率"
+            description: "ピンポンレビュー（やり取りの繰り返し）のループに陥った課題の割合。",
+            title: "ピンポンレビュー率"
         }
+    },
+
+    // ---------------------------------------------------------
+    // Github
+    // ---------------------------------------------------------
+    github: {
+        pat: "GitHub 個人アクセストークン (PAT)",
+        error: {
+            invalidPat: "Github トークン (PAT) が無効です。"
+        }
+    },
+
+    // ---------------------------------------------------------
+    // Jira
+    // ---------------------------------------------------------
+    jira: {
+        token: "Jira Atlassian トークン",
+        invalidToken: "無効なトークン。",
+        connect: "Jira に接続。"
     },
 
     // ---------------------------------------------------------
