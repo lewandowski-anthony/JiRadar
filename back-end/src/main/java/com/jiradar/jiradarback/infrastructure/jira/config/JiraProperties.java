@@ -11,9 +11,7 @@ import java.util.List;
 @ConfigurationProperties("issue-tracker.jira.config")
 public class JiraProperties {
 
-    private String user;
     private String url;
-    private String token;
     private StatusesMapping statuses;
 
     @Getter
