@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from '@core/hooks/useTranslation';
 import { useAuth } from '@core/context/AuthContext';
 import { JiraLoginForm } from './forms/JiraLoginForm';
-import { GitHubLoginForm } from './forms/GitHubLoginForm.tsx';
 
 interface LoginDropdownProps {
     isOpen: boolean;
@@ -18,9 +17,10 @@ export function LoginDropdown({ isOpen, onClose }: LoginDropdownProps) {
     const [loading] = useState(false);
     const [loginError, setLoginError] = useState<string | null>(null);
 
-    useEffect(() => {
-        if (isOpen) setLoginError(null);
-    }, [isOpen, issueTracker]);
+    const handleTrackerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setIssueTracker(e.target.value);
+        setLoginError(null);
+    };
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
@@ -28,7 +28,9 @@ export function LoginDropdown({ isOpen, onClose }: LoginDropdownProps) {
                 onClose();
             }
         }
-        if (isOpen) document.addEventListener('mousedown', handleClickOutside);
+        if (isOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [isOpen, onClose]);
 
@@ -42,7 +44,7 @@ export function LoginDropdown({ isOpen, onClose }: LoginDropdownProps) {
                 </label>
                 <select
                     value={issueTracker}
-                    onChange={(e) => setIssueTracker(e.target.value)}
+                    onChange={handleTrackerChange}
                     className="w-full px-3 py-2 text-sm rounded-xl bg-slate-950 border border-slate-800 text-slate-100 focus:outline-none focus:border-purple-500 transition-colors"
                     disabled={loading}
                 >
@@ -59,15 +61,6 @@ export function LoginDropdown({ isOpen, onClose }: LoginDropdownProps) {
 
             {issueTracker === 'jira' && (
                 <JiraLoginForm
-                    loginFn={jiraLogin}
-                    loading={loading}
-                    onSuccess={onClose}
-                    onError={setLoginError}
-                />
-            )}
-
-            {issueTracker === 'github' && (
-                <GitHubLoginForm
                     loginFn={jiraLogin}
                     loading={loading}
                     onSuccess={onClose}

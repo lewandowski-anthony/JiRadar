@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { PeriodicCharts } from './PeriodicCharts';
 import { LocaleProvider } from '@core/context/LocaleProvider';
+import type {UserMetricsDto} from "@core/models/dashboard.ts";
 
 vi.mock('react-chartjs-2', () => ({
     Bar: () => <div data-testid="mock-bar" />,
@@ -29,7 +30,7 @@ describe('PeriodicCharts Component', () => {
 
         render(
             <LocaleProvider>
-                <PeriodicCharts granularityData={mockedMetrics as any} />
+                <PeriodicCharts granularityData={mockedMetrics as unknown as UserMetricsDto} />
             </LocaleProvider>
         );
 

@@ -1,6 +1,13 @@
 import { useState } from 'react';
 
-export function GitHubLoginForm({ onSuccess, onError, loginFn, loading }: any) {
+interface GitHubLoginFormProps {
+    onSuccess: () => void;
+    onError: (message: string) => void;
+    loginFn: (token: string, tracker: string) => Promise<void>;
+    loading: boolean;
+}
+
+export function GitHubLoginForm({ onSuccess, onError, loginFn, loading }: GitHubLoginFormProps) {
     const [token, setToken] = useState('');
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -8,8 +15,9 @@ export function GitHubLoginForm({ onSuccess, onError, loginFn, loading }: any) {
         try {
             await loginFn(token.trim(), 'github');
             onSuccess();
-        } catch (err: any) {
-            onError(err.response?.data?.message || "Jeton GitHub (PAT) invalide.");
+        } catch (err: unknown) {
+            const axiosError = err as { response?: { data?: { message?: string } } };
+            onError(axiosError.response?.data?.message || "Jeton GitHub (PAT) invalide.");
         }
     };
 
@@ -21,11 +29,17 @@ export function GitHubLoginForm({ onSuccess, onError, loginFn, loading }: any) {
                     type="password"
                     value={token}
                     onChange={(e) => setToken(e.target.value)}
+                    data-testid="github-token-input"
                     className="w-full px-3 py-2 text-sm rounded-xl bg-slate-950 border border-slate-800 text-slate-100 focus:outline-none focus:border-purple-500 transition-colors"
                     disabled={loading}
                 />
             </div>
-            <button type="submit" disabled={loading} className="w-full mt-2 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 font-semibold text-sm text-white transition-colors disabled:opacity-50">
+            <button
+                type="submit"
+                disabled={loading}
+                data-testid="github-submit-button"
+                className="w-full mt-2 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 font-semibold text-sm text-white transition-colors disabled:opacity-50"
+            >
                 {loading ? "Vérification..." : "Se connecter à GitHub"}
             </button>
         </form>

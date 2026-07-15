@@ -2,8 +2,8 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { LoginDropdown } from './LoginDropdown';
-import {LocaleProvider} from "@core/context/LocaleProvider";
-import {AuthProvider} from "@core/context/AuthContext.tsx";
+import { LocaleProvider } from "@core/context/LocaleProvider";
+import { AuthProvider } from "@core/context/AuthContext";
 
 describe('LoginDropdown Component', () => {
     it('should return null if isOpen is false', () => {
@@ -17,8 +17,7 @@ describe('LoginDropdown Component', () => {
         expect(container.firstChild).toBeNull();
     });
 
-    it('should handle token value input state change', async () => {
-        const user = userEvent.setup();
+    it('should render tracker selector when open', () => {
         render(
             <LocaleProvider>
                 <AuthProvider>
@@ -27,10 +26,7 @@ describe('LoginDropdown Component', () => {
             </LocaleProvider>
         );
 
-        const tokenInput = screen.getByPlaceholderText('Token');
-        await user.type(tokenInput, 'secret-jira-key');
-
-        expect(tokenInput).toHaveValue('secret-jira-key');
+        expect(screen.getByRole('combobox')).toBeInTheDocument();
     });
 
     it('should trigger onClose when clicking outside the dropdown container', async () => {

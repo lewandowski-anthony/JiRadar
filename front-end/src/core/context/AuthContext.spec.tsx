@@ -1,5 +1,4 @@
-/* eslint-disable react-refresh/only-export-components */
-import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getCookie, setCookie } from '@core/utils/cookies';
 import { JiradarService } from '@core/services/JiradarService';
 import type { User } from "@core/models/user";
@@ -19,13 +18,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
 
-    const logout = useCallback(() => {
-        setCookie('jiradar_token', '', -1);
-        setCookie('jiradar_tracker', '', -1);
-        setUser(null);
-        setIsAuthenticated(false);
-    }, []);
-
     useEffect(() => {
         async function initAuth() {
             const token = getCookie('jiradar_token');
@@ -44,9 +36,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setLoading(false);
         }
         initAuth();
-    }, [logout]);
+    }, []);
 
-    const jiraLogin = useCallback(async (email: string, token: string, tracker: string) => {
+    const jiraLogin = async (email: string, token: string, tracker: string) => {
         setLoading(true);
         const credentials = `${email}:${token}`;
         const base64Token = btoa(credentials);
@@ -64,18 +56,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         } finally {
             setLoading(false);
         }
-    }, [logout]);
+    };
 
-    const contextValue = useMemo(() => ({
-        user,
-        isAuthenticated,
-        loading,
-        jiraLogin,
-        logout
-    }), [user, isAuthenticated, loading, jiraLogin, logout]);
+    // Déclarée en "function" pour profiter du hoisting automatique
+    function logout() {
+        setCookie('jiradar_token', '', -1);
+        setCookie('jiradar_tracker', '', -1);
+        setUser(null);
+        setIsAuthenticated(false);
+    }
 
     return (
-        <AuthContext.Provider value={contextValue}>
+        <AuthContext.Provider value={{ user, isAuthenticated, loading, jiraLogin, logout }}>
             {children}
         </AuthContext.Provider>
     );
