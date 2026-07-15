@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/lewandowski-anthony/JiRadar/compare/v1.0.0...v1.1.0) (2026-07-15)
+
+
+### Features
+
+* Add docker multi plateform management ([97e7b10](https://github.com/lewandowski-anthony/JiRadar/commit/97e7b10825489a539005187374d306895b223ca5))
+
 ## 1.0.0 (2026-07-15)
 
 
