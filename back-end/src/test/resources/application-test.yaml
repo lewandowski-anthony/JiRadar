@@ -1,0 +1,10 @@
+issue-tracker:
+  jira:
+    config:
+      url: http://localhost:8089/jira
+  github:
+    config:
+        url: http://localhost:8089/github
+  trello:
+    api:
+      url: http://localhost:8089/trello

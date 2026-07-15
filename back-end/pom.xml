@@ -24,6 +24,7 @@
         <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
         <cucumber.version>7.34.4</cucumber.version>
         <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
+        <wiremock-standalone.version>3.13.2</wiremock-standalone.version>
     </properties>
 
     <dependencyManagement>
@@ -140,7 +141,14 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-resttestclient</artifactId>
+            <artifactId>spring-boot-webtestclient</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.wiremock</groupId>
+            <artifactId>wiremock-standalone</artifactId>
+            <version>${wiremock-standalone.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
