@@ -9,6 +9,8 @@ import com.jiradar.jiradarback.core.model.issuetracker.UserMetrics;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Optional;
+
 /**
  * Core domain interface defining the contract for interacting with external issue tracking systems.
  * <p>
@@ -39,7 +41,7 @@ public interface IssueTrackerService {
 	 * @param issueKey the unique business key of the issue (e.g., "ABC-123").
 	 * @return the corresponding {@link Issue} domain model, or {@code null} if no match is found.
 	 */
-	Issue getIssueByKey(String issueKey);
+	Optional<Issue> getIssueByKey(String issueKey);
 
 	/**
 	 * Calculates and aggregates global activity metrics for the authenticated user within a specified timeframe.

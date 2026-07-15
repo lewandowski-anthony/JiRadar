@@ -12,6 +12,7 @@ import com.jiradar.jiradarback.core.model.issuetracker.User;
 import com.jiradar.jiradarback.core.model.issuetracker.UserHistoryEvent;
 import com.jiradar.jiradarback.core.model.issuetracker.UserMetrics;
 import com.jiradar.jiradarback.core.util.PageUtils;
+import com.jiradar.jiradarback.exception.BusinessException;
 import com.jiradar.jiradarback.infrastructure.cache.config.AvailableCache;
 import com.jiradar.jiradarback.infrastructure.jira.enums.JiraFieldId;
 import com.jiradar.jiradarback.infrastructure.jira.repository.mapper.JiraUserMapper;
@@ -30,6 +31,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static com.jiradar.jiradarback.core.model.enums.TransitionType.OTHER;
@@ -56,12 +58,11 @@ public class JiraIssueTrackerAdapter implements IssueTrackerService {
 	}
 
 	@Override
-	public Issue getIssueByKey(String issueKey) {
+	public Optional<Issue> getIssueByKey(String issueKey) {
 		jiraClient.getIssue(issueKey, JiraFieldId.CHANGELOG.name());
 		return jiraIssueRepository.getIssuesForCustomRange(List.of(), LocalDate.now(), LocalDate.now()).stream()
 				.filter(issue -> issue.getKey().equals(issueKey))
-				.findFirst()
-				.orElse(null);
+				.findFirst();
 	}
 
 	@Override
@@ -72,7 +73,12 @@ public class JiraIssueTrackerAdapter implements IssueTrackerService {
 
 	@Override
 	public Page<UserHistoryEvent> getHistory(ProjectSearchParamCommand command, Pageable pageable) {
+		if (command.endDate().isBefore(command.startDate())) {
+			throw new BusinessException("End date cannot be before start date");
+		}
+
 		List<Issue> allIssues = fetchIssuesForRange(command.projectKeys(), command.startDate(), command.endDate());
+
 		String userEmail = getMyself().getEmail();
 		DateRange finalRange = DateRange.from(command.startDate(), command.endDate());
 

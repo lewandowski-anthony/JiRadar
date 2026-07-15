@@ -82,3 +82,7 @@ Feature: API - History endpoint
       }
     ]
     """
+
+  Scenario: We receive a 400 Bad Request when the end date is before the start date
+    When I send a GET request to "/api/v1/tracker/jira/users/me/history?projectKeys=SMSUP&startDate=2026-05-10&endDate=2026-05-01&page=0&size=20"
+    Then the HTTP response status should be 400

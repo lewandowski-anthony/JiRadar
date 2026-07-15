@@ -5,6 +5,7 @@ import com.jiradar.jiradarback.controller.mapper.IssueDtoMapper;
 import com.jiradar.jiradarback.core.factory.IssueTrackerFactory;
 import com.jiradar.jiradarback.core.model.issuetracker.Issue;
 import com.jiradar.jiradarback.core.IssueTrackerService;
+import com.jiradar.jiradarback.exception.NotFoundException;
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +26,9 @@ public class IssueController {
 	public IssueDto getIssue(
 			@PathVariable("issueKey") String issueKey,
 			@PathParam("issueTracker") String issueTracker) {
-		return issueDtoMapper.toDto(issueTrackerFactory.getService(issueTracker).getIssueByKey(issueKey));
+		return issueTrackerFactory
+				.getService(issueTracker)
+				.getIssueByKey(issueKey)
+				.map(issueDtoMapper::toDto).orElseThrow(() -> new NotFoundException(String.format("Issue not found for key: %s", issueKey)));
 	}
 }

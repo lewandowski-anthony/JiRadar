@@ -12,5 +12,5 @@ import lombok.AllArgsConstructor;
 public class JiraIssueTypeResponseDto {
     private String id;
     private String name;
-    private boolean subtask;
+    private Boolean subtask;
 }
