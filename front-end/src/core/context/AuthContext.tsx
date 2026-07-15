@@ -8,7 +8,7 @@ interface AuthContextType {
     user: User | null;
     isAuthenticated: boolean;
     loading: boolean;
-    login: (token: string, tracker: string) => Promise<void>;
+    jiraLogin: (email: string, token: string, tracker: string) => Promise<void>;
     logout: () => void;
 }
 
@@ -39,13 +39,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         initAuth();
     }, []);
 
-    const login = async (token: string, tracker: string) => {
+    const jiraLogin = async (email: string, token: string, tracker: string) => {
         setLoading(true);
-        setCookie('jiradar_token', token, 1);
+        const credentials = `${email}:${token}`;
+        const base64Token = btoa(credentials);
+        setCookie('jiradar_token', base64Token, 1);
 
         try {
             const profile = await JiradarService.getMyAccount(tracker);
-            setCookie('jiradar_token', token, 7);
+            setCookie('jiradar_token', base64Token, 7);
             setCookie('jiradar_tracker', tracker, 7);
             setUser(profile);
             setIsAuthenticated(true);
@@ -65,7 +67,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     return (
-        <AuthContext.Provider value={{ user, isAuthenticated, loading, login, logout }}>
+        <AuthContext.Provider value={{ user, isAuthenticated, loading, jiraLogin: jiraLogin, logout }}>
             {children}
         </AuthContext.Provider>
     );
