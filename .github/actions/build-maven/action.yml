@@ -1,0 +1,41 @@
+name: 'Build Maven Back-end'
+description: 'Installe Java et build le projet Maven'
+
+inputs:
+  java_version:
+    description: 'Version of Java to use'
+    required: false
+    default: '25'
+  push_image:
+    description: 'Should we push docker image to repository'
+    required: true
+    default: 'false'
+  image_tag:
+    description: 'The tag of the Docker image (e.g., 1.0.0)'
+    required: true
+    default: 'latest'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up JDK ${{ inputs.java_version }}
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ inputs.java_version }}
+        distribution: 'temurin'
+        cache: 'maven'
+
+    - name: Build Back-end
+      shell: bash
+      run: |
+        cd back-end
+        mvn -B clean package
+
+    - name: Build and Push Docker Image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./back-end
+        push: ${{ inputs.push_image == 'true' }}
+        tags: |
+          ghcr.io/${{ github.repository }}/jiradar-back:${{ inputs.image_tag }}
+          ghcr.io/${{ github.repository }}/jiradar-back:latest

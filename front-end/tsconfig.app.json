@@ -22,8 +22,9 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@core/*": ["src/core/*"],
-      "@features/*": ["src/features/*"]
+      "@/*": ["./src/*"],
+      "@core/*": ["./src/core/*"],
+      "@features/*": ["./src/features/*"]
     }
   },
   "include": ["src"]

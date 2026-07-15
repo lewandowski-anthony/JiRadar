@@ -14,7 +14,7 @@ describe('HistoryList Component', () => {
                 issueType: 'Bug',
                 date: '2026-07-14T12:00:00Z',
                 transitionType: 'In Progress',
-                issueAssignee: { name: 'Alex', email: 'alex@jiradar.com' }
+                issueAssignee: { name: 'Alex', email: 'alex@jiradar.com', displayName: 'Alex', avatarUrl: 'avatar.png' },
             }
         ],
         page: { size: 10, number: 0, totalElements: 11, totalPages: 2 }

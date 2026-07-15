@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  # -----------------------------------------------------------------
+  # BACK-END (Spring Boot)
+  # -----------------------------------------------------------------
+  back:
+    build:
+      context: ../back-end
+      dockerfile: Dockerfile
+    container_name: jiradar-back
+    ports:
+      - "8080:8080"
+    environment:
+      - JAVA_OPTS=-Xmx512m
+      - JIRA_ENABLED=true
+      - JIRA_URL=https://decathlon.atlassian.net
+      - JIRA_STATUS_START_DEV=In Progress,En cours
+      - JIRA_STATUS_REQUEST_REVIEW=In Review,Peer Review
+      - JIRA_STATUS_DONE=Done,Terminé,Validé
+    networks:
+      - jiradar-network
+
+  # -----------------------------------------------------------------
+  # FRONT-END (React + Vite + Nginx)
+  # -----------------------------------------------------------------
+  front:
+    build:
+      context: ../front-end
+      dockerfile: Dockerfile
+    container_name: jiradar-front
+    ports:
+      - "80:80"
+    environment:
+      - BACKEND_URL=http://localhost:8080
+    depends_on:
+      - back
+    networks:
+      - jiradar-network
+
+networks:
+  jiradar-network:
+    driver: bridge

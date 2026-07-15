@@ -1,9 +1,0 @@
-spring:
-  application:
-    name: Jiradar Back
-
-issue-tracker:
-  jira:
-    config:
-      user: anthony.lewandowski@decathlon.com
-      url: https://decathlon.atlassian.net
