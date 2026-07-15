@@ -14,5 +14,6 @@ import static io.cucumber.core.options.Constants.PLUGIN_PROPERTY_NAME;
 @Suite
 @IncludeEngines("cucumber")
 @SelectPackages("com.jiradar.jiradarback")
+@SelectClasspathResource("features")
 public class CucumberTestRunner {
 }
