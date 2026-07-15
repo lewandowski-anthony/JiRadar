@@ -29,7 +29,7 @@ runs:
       shell: bash
       run: |
         cd front-end
-        npm ci
+        npm install
         npm run build
 
     - name: Build and Push Docker Image
