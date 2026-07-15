@@ -32,11 +32,10 @@ runs:
         npm install
         npm run build
 
-    - name: Build and Push Docker Image
-      uses: docker/build-push-action@v5
+    - name: Docker Build & Push
+      uses: ./.github/actions/docker-build-push
       with:
         context: ./front-end
-        push: ${{ inputs.push_image == 'true' }}
-        tags: |
-          ghcr.io/${{ github.repository }}/jiradar-front:${{ inputs.image_tag }}
-          ghcr.io/${{ github.repository }}/jiradar-front:latest
+        image_name: jiradar-front
+        image_tag: ${{ inputs.image_tag }}
+        push_image: ${{ inputs.push_image }}
