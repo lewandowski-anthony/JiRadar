@@ -1,6 +1,7 @@
 package com.jiradar.jiradarback.config;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +11,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class WireMockConfig {
 
-	private final WireMockServer wireMockServer = new WireMockServer(8089);
+	private static final WireMockServer wireMockServer = new WireMockServer(
+			WireMockConfiguration.wireMockConfig().port(8089)
+	);
 
 	@PostConstruct
 	public void start() {

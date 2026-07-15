@@ -50,8 +50,4 @@ public class ChangeLog {
 				&& this.author.getEmail().equalsIgnoreCase(devEmail)
 				&& TransitionType.END_REVIEW == this.transitionType;
 	}
-
-	private boolean hasHappenedBetweenPeriod(ZonedDateTime start, ZonedDateTime end) {
-		return date.isBefore(end) && date.isAfter(start);
-	}
 }
