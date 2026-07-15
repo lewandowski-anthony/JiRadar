@@ -1,82 +1,199 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { getCookie, setCookie } from '@core/utils/cookies';
+import { render, screen, act } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { AuthProvider, useAuth } from '@core/context/AuthContext';
 import { JiradarService } from '@core/services/JiradarService';
-import type { User } from "@core/models/user";
+import { getCookie, setCookie } from '@core/utils/cookies';
 
-interface AuthContextType {
-    user: User | null;
-    isAuthenticated: boolean;
-    loading: boolean;
-    jiraLogin: (email: string, token: string, tracker: string) => Promise<void>;
-    logout: () => void;
-}
+vi.mock('@core/services/JiradarService', () => ({
+    JiradarService: {
+        getMyAccount: vi.fn(),
+    },
+}));
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+vi.mock('@core/utils/cookies', () => ({
+    getCookie: vi.fn(),
+    setCookie: vi.fn(),
+}));
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const [user, setUser] = useState<User | null>(null);
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-    const [loading, setLoading] = useState<boolean>(true);
+function TestComponent() {
+    const { user, isAuthenticated, loading, jiraLogin, logout } = useAuth();
 
-    useEffect(() => {
-        async function initAuth() {
-            const token = getCookie('jiradar_token');
-            const tracker = getCookie('jiradar_tracker') || 'jira';
-
-            if (token) {
-                try {
-                    const profile = await JiradarService.getMyAccount(tracker);
-                    setUser(profile);
-                    setIsAuthenticated(true);
-                } catch (err) {
-                    console.error(err);
-                    logout();
-                }
-            }
-            setLoading(false);
-        }
-        initAuth();
-    }, []);
-
-    const jiraLogin = async (email: string, token: string, tracker: string) => {
-        setLoading(true);
-        const credentials = `${email}:${token}`;
-        const base64Token = btoa(credentials);
-        setCookie('jiradar_token', base64Token, 1);
-
+    const handleLogin = async () => {
         try {
-            const profile = await JiradarService.getMyAccount(tracker);
-            setCookie('jiradar_token', base64Token, 7);
-            setCookie('jiradar_tracker', tracker, 7);
-            setUser(profile);
-            setIsAuthenticated(true);
-        } catch (error) {
-            logout();
-            throw error;
-        } finally {
-            setLoading(false);
+            await jiraLogin('john@doe.com', 'my-token', 'jira');
+        } catch (e) {
+            console.error(e);
         }
     };
 
-    // Déclarée en "function" pour profiter du hoisting automatique
-    function logout() {
-        setCookie('jiradar_token', '', -1);
-        setCookie('jiradar_tracker', '', -1);
-        setUser(null);
-        setIsAuthenticated(false);
-    }
+    if (loading) return <div data-testid="loading">Loading...</div>;
 
     return (
-        <AuthContext.Provider value={{ user, isAuthenticated, loading, jiraLogin, logout }}>
-            {children}
-        </AuthContext.Provider>
+        <div>
+            <div data-testid="auth-state">{isAuthenticated ? 'Connected' : 'Disconnected'}</div>
+            <div data-testid="user-name">{user ? user.displayName : 'No User'}</div>
+            <button data-testid="login-btn" onClick={handleLogin}>Login</button>
+            <button data-testid="logout-btn" onClick={logout}>Logout</button>
+        </div>
     );
 }
 
-export function useAuth() {
-    const context = useContext(AuthContext);
-    if (!context) {
-        throw new Error('useAuth doit être utilisé au sein d\'un AuthProvider');
-    }
-    return context;
-}
+describe('AuthContext Component', () => {
+    const mockUser = {
+        accountId: '123',
+        displayName: 'John Doe',
+        emailAddress: 'john@doe.com',
+        avatarUrl: 'http://avatar.com',
+    };
+
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    it('should initialize as disconnected when no token is present', async () => {
+        vi.mocked(getCookie).mockImplementation((name) => {
+            if (name === 'jiradar_tracker') return 'jira';
+            return null;
+        });
+
+        await act(async () => {
+            render(
+                <AuthProvider>
+                    <TestComponent />
+                </AuthProvider>
+            );
+        });
+
+        expect(screen.getByTestId('auth-state').textContent).toBe('Disconnected');
+        expect(screen.getByTestId('user-name').textContent).toBe('No User');
+    });
+
+    it('should automatically connect user if token and profile are valid on init', async () => {
+        vi.mocked(getCookie).mockImplementation((name) => {
+            if (name === 'jiradar_token') return 'valid-token';
+            if (name === 'jiradar_tracker') return 'jira';
+            return null;
+        });
+        vi.mocked(JiradarService.getMyAccount).mockResolvedValue(mockUser);
+
+        await act(async () => {
+            render(
+                <AuthProvider>
+                    <TestComponent />
+                </AuthProvider>
+            );
+        });
+
+        expect(screen.getByTestId('auth-state').textContent).toBe('Connected');
+        expect(screen.getByTestId('user-name').textContent).toBe('John Doe');
+        expect(JiradarService.getMyAccount).toHaveBeenCalledWith('jira');
+    });
+
+    it('should log out and clear cookies if API fails on initialization', async () => {
+        vi.mocked(getCookie).mockImplementation((name) => {
+            if (name === 'jiradar_token') return 'invalid-token';
+            return null;
+        });
+        vi.mocked(JiradarService.getMyAccount).mockRejectedValue(new Error('API Error'));
+
+        await act(async () => {
+            render(
+                <AuthProvider>
+                    <TestComponent />
+                </AuthProvider>
+            );
+        });
+
+        expect(screen.getByTestId('auth-state').textContent).toBe('Disconnected');
+        expect(setCookie).toHaveBeenCalledWith('jiradar_token', '', -1);
+        expect(setCookie).toHaveBeenCalledWith('jiradar_tracker', '', -1);
+    });
+
+    it('should handle successful jiraLogin flow with base64 encoding', async () => {
+        vi.mocked(getCookie).mockReturnValue(null);
+        vi.mocked(JiradarService.getMyAccount).mockResolvedValue(mockUser);
+
+        await act(async () => {
+            render(
+                <AuthProvider>
+                    <TestComponent />
+                </AuthProvider>
+            );
+        });
+
+        const loginButton = screen.getByTestId('login-btn');
+
+        await act(async () => {
+            loginButton.click();
+        });
+
+        const expectedBase64 = btoa('john@doe.com:my-token');
+
+        expect(setCookie).toHaveBeenCalledWith('jiradar_token', expectedBase64, 1);
+        expect(setCookie).toHaveBeenCalledWith('jiradar_token', expectedBase64, 7);
+        expect(setCookie).toHaveBeenCalledWith('jiradar_tracker', 'jira', 7);
+        expect(screen.getByTestId('auth-state').textContent).toBe('Connected');
+        expect(screen.getByTestId('user-name').textContent).toBe('John Doe');
+    });
+
+    it('should clean up state, clear cookies and handle failed jiraLogin without crashing', async () => {
+        vi.mocked(getCookie).mockReturnValue(null);
+        vi.mocked(JiradarService.getMyAccount).mockRejectedValue(new Error('API Error'));
+
+        await act(async () => {
+            render(
+                <AuthProvider>
+                    <TestComponent />
+                </AuthProvider>
+            );
+        });
+
+        const loginButton = screen.getByTestId('login-btn');
+
+        await act(async () => {
+            loginButton.click();
+        });
+
+        expect(setCookie).toHaveBeenCalledWith('jiradar_token', '', -1);
+        expect(setCookie).toHaveBeenCalledWith('jiradar_tracker', '', -1);
+        expect(screen.getByTestId('auth-state').textContent).toBe('Disconnected');
+    });
+
+    it('should clean up state and cookies on logout', async () => {
+        vi.mocked(getCookie).mockImplementation((name) => {
+            if (name === 'jiradar_token') return 'valid-token';
+            return null;
+        });
+        vi.mocked(JiradarService.getMyAccount).mockResolvedValue(mockUser);
+
+        await act(async () => {
+            render(
+                <AuthProvider>
+                    <TestComponent />
+                </AuthProvider>
+            );
+        });
+
+        expect(screen.getByTestId('auth-state').textContent).toBe('Connected');
+
+        const logoutButton = screen.getByTestId('logout-btn');
+        await act(async () => {
+            logoutButton.click();
+        });
+
+        expect(setCookie).toHaveBeenCalledWith('jiradar_token', '', -1);
+        expect(setCookie).toHaveBeenCalledWith('jiradar_tracker', '', -1);
+        expect(screen.getByTestId('auth-state').textContent).toBe('Disconnected');
+        expect(screen.getByTestId('user-name').textContent).toBe('No User');
+    });
+
+    it('should throw error when useAuth is used outside AuthProvider', () => {
+        const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+        expect(() => render(<TestComponent />)).toThrow(
+            "useAuth doit être utilisé au sein d'un AuthProvider"
+        );
+
+        consoleSpy.mockRestore();
+    });
+});
