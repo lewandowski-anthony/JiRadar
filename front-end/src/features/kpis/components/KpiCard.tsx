@@ -45,7 +45,7 @@ export function KpiCard({ title, value, description, color, borderColor }: KpiCa
           }`}
         >
           <div className="overflow-hidden">
-            <p className="text-xs italic text-text-muted leading-relaxed bg-slate-950/40 p-2 rounded border border-slate-800/30">
+            <p className="text-xs italic text-text-muted leading-relaxed bg-main-bg p-2 rounded border border-border-subtle">
               {description}
             </p>
           </div>

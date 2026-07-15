@@ -18,7 +18,7 @@ export function HistoryList({
 
     return (
         <div className="bg-bg-card p-6 rounded-xl border border-slate-800 mx-auto space-y-4">
-            <h2 className="text-xl font-bold text-white">{t.history.title}</h2>
+            <h2 className="text-xl font-bold text-text-main">{t.history.title}</h2>
 
             {content.length === 0 ? (
                 <div className="text-center py-8 text-slate-500">
@@ -28,7 +28,7 @@ export function HistoryList({
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse text-sm text-slate-300">
                         <thead>
-                            <tr className="border-b border-slate-800 text-slate-400 font-medium">
+                            <tr className="border-b border-slate-800 text-text-muted font-medium">
                                 <th className="py-3 px-4">{t.issue.name}</th>
                                 <th className="py-3 px-4">{t.issue.title}</th>
                                 <th className="py-3 px-4">{t.issue.author}</th>
@@ -40,7 +40,7 @@ export function HistoryList({
                             {content.map((event) => (
                                 <tr key={event.issueKey} className="hover:bg-slate-950/40 transition-colors">
                                     <td className="py-3 px-4 font-mono text-blue-400">{event.issueKey}</td>
-                                    <td className="py-3 px-4 font-mono text-blue-200">{event.issueSummary}</td>
+                                    <td className="py-3 px-4 font-mono text-text-muted">{event.issueSummary}</td>
                                     <td className="py-3 px-4 flex items-center gap-3">
                                         <img
                                             src={event.issueAssignee?.avatarUrl}
@@ -48,14 +48,14 @@ export function HistoryList({
                                             className="w-9 h-9 rounded-full border border-purple-500 object-cover shrink-0"
                                         />
                                         <div className="flex flex-col">
-                                            <div className="font-medium text-slate-200">{event.issueAssignee?.name || 'None'}</div>
-                                            <div className="text-xs text-slate-500">{event.issueAssignee?.email || 'None'}</div>
+                                            <div className="font-medium text-text-main">{event.issueAssignee?.name || 'None'}</div>
+                                            <div className="text-xs text-text-muted">{event.issueAssignee?.email || 'None'}</div>
                                         </div>
                                     </td>
                                     <td className="py-3 px-4">
-                                        <span className="text-slate-400 font-medium">{event.transitionType}</span>
+                                        <span className="text-text-muted font-medium">{event.transitionType}</span>
                                     </td>
-                                    <td className="py-3 px-4 text-xs text-slate-400">
+                                    <td className="py-3 px-4 text-xs text-text-muted">
                                         {event.date ? format(parseISO(event.date), 'dd/MM/yyyy HH:mm') : '—'}
                                     </td>
                                 </tr>
