@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/lewandowski-anthony/JiRadar/compare/v1.1.0...v1.1.1) (2026-07-15)
+
+
+### Bug Fixes
+
+* Fix readme documentation ([c7a46a4](https://github.com/lewandowski-anthony/JiRadar/commit/c7a46a43418e727a887b4eaf8667a968c79e75a4))
+
 ## [1.1.0](https://github.com/lewandowski-anthony/JiRadar/compare/v1.0.0...v1.1.0) (2026-07-15)
 
 
