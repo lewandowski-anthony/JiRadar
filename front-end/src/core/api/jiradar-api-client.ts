@@ -2,8 +2,7 @@ import axios from 'axios';
 import { mapKeysToCamel } from '../utils/case-mapper';
 import { getCookie } from '../utils/cookies';
 
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
-
+const BASE_URL = (window as any).ENV?.JIRADAR_BACKEND_URL || import.meta.env.VITE_API_URL || 'http://localhost:8080';
 export const apiClient = axios.create({
     baseURL: BASE_URL,
     headers: {
