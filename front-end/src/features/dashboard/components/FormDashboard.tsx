@@ -1,16 +1,15 @@
-import React, {useState} from 'react';
-import type {DashboardFilters} from '@core/models/dashboard';
-import {getCurrentDateStr, getPastMonthDateStr} from "@core/utils/time";
-import type {TranslationKeys} from "@core/constants/locales";
-import {useTranslation} from "@core/hooks/useTranslation";
+import React, { useState } from 'react';
+import type { DashboardFilters } from '@core/models/dashboard';
+import { getCurrentDateStr, getPastMonthDateStr } from "@core/utils/time";
+import type { TranslationKeys } from "@core/constants/locales";
+import { useTranslation } from "@core/hooks/useTranslation";
 
 interface DashboardFormProps {
     onSubmit: (filters: DashboardFilters) => void;
     isLoading: boolean;
 }
 
-export function FormDashboard({onSubmit, isLoading}: DashboardFormProps) {
-
+export function FormDashboard({ onSubmit, isLoading }: DashboardFormProps) {
     const t: TranslationKeys = useTranslation();
     const [filters, setFilters] = useState<DashboardFilters>({
         projectKey: '',
@@ -22,7 +21,7 @@ export function FormDashboard({onSubmit, isLoading}: DashboardFormProps) {
     const [error, setError] = useState<string | null>(null);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const {name, value} = e.target;
+        const { name, value } = e.target;
         setFilters((prev) => ({
             ...prev,
             [name]: value,
@@ -40,11 +39,10 @@ export function FormDashboard({onSubmit, isLoading}: DashboardFormProps) {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="bg-slate-900 p-6 rounded-xl border border-slate-800 space-y-4 mx-auto">
+        <form onSubmit={handleSubmit} className="bg-cardbg p-6 rounded-xl border border-border-subtle space-y-4 mx-auto transition-colors">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-
                 <div className="flex flex-col">
-                    <label className="text-slate-400 text-sm mb-1" htmlFor="projectKey">{t.dashboardForm.projectCode}</label>
+                    <label className="text-text-muted text-sm mb-1" htmlFor="projectKey">{t.dashboardForm.projectCode}</label>
                     <input
                         type="text"
                         id="projectKey"
@@ -52,42 +50,42 @@ export function FormDashboard({onSubmit, isLoading}: DashboardFormProps) {
                         placeholder={t.dashboardForm.projectCode}
                         value={filters.projectKey}
                         onChange={handleChange}
-                        className="bg-slate-950 border border-slate-800 rounded p-2 text-slate-200 focus:outline-none focus:border-blue-500"
+                        className="bg-main-bg border border-border-subtle rounded p-2 text-text-main focus:outline-none focus:border-blue-500 transition-colors"
                     />
                 </div>
 
                 <div className="flex flex-col">
-                    <label className="text-slate-400 text-sm mb-1" htmlFor="startDate">{t.dashboardForm.startDate}</label>
+                    <label className="text-text-muted text-sm mb-1" htmlFor="startDate">{t.dashboardForm.startDate}</label>
                     <input
                         type="date"
                         id="startDate"
                         name="startDate"
                         value={filters.startDate}
                         onChange={handleChange}
-                        className="bg-slate-950 border border-slate-800 rounded p-2 text-slate-200 focus:outline-none focus:border-blue-500"
+                        className="bg-main-bg border border-border-subtle rounded p-2 text-text-main focus:outline-none focus:border-blue-500 transition-colors"
                     />
                 </div>
 
                 <div className="flex flex-col">
-                    <label className="text-slate-400 text-sm mb-1" htmlFor="endDate">{t.dashboardForm.endDate}</label>
+                    <label className="text-text-muted text-sm mb-1" htmlFor="endDate">{t.dashboardForm.endDate}</label>
                     <input
                         type="date"
                         id="endDate"
                         name="endDate"
                         value={filters.endDate}
                         onChange={handleChange}
-                        className="bg-slate-950 border border-slate-800 rounded p-2 text-slate-200 focus:outline-none focus:border-blue-500"
+                        className="bg-main-bg border border-border-subtle rounded p-2 text-text-main focus:outline-none focus:border-blue-500 transition-colors"
                     />
                 </div>
 
                 <div className="flex flex-col">
-                    <label className="text-slate-400 text-sm mb-1" htmlFor="granularity">{t.dashboardForm.granularity.title}</label>
+                    <label className="text-text-muted text-sm mb-1" htmlFor="granularity">{t.dashboardForm.granularity.title}</label>
                     <select
                         id="granularity"
                         name="granularity"
                         value={filters.granularity}
                         onChange={handleChange}
-                        className="bg-slate-950 border border-slate-800 rounded p-2 text-slate-200 focus:outline-none focus:border-blue-500"
+                        className="bg-main-bg border border-border-subtle rounded p-2 text-text-main focus:outline-none focus:border-blue-500 transition-colors"
                     >
                         <option value="NONE">{t.dashboardForm.granularity.noGranularity}</option>
                         <option value="DAY">{t.dashboardForm.granularity.daily}</option>
@@ -98,13 +96,17 @@ export function FormDashboard({onSubmit, isLoading}: DashboardFormProps) {
                 </div>
             </div>
 
-            {error && <p className="text-red-500 text-sm">{error}</p>}
+            {error && (
+                <div className="text-xs text-red-600 dark:text-red-400 bg-red-500/10 dark:bg-red-950/40 p-3 border border-red-300 dark:border-red-900/50 rounded-xl transition-colors">
+                    {error}
+                </div>
+            )}
 
             <div className="flex justify-end">
                 <button
                     type="submit"
                     disabled={isLoading}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded transition-colors disabled:opacity-50"
+                    className="bg-btn-primary hover:bg-btn-primary-hover text-btn-text-main font-medium py-2 px-6 rounded transition-colors disabled:opacity-50 cursor-pointer"
                 >
                     {isLoading ? t.app.loading : t.dashboardForm.updateDashboard}
                 </button>

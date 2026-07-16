@@ -2,8 +2,8 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { LoginDropdown } from './LoginDropdown';
-import { LocaleProvider } from "@core/context/LocaleProvider";
-import { AuthProvider } from "@core/context/AuthContext";
+import { LocaleProvider } from "@core/context/language/LocaleProvider";
+import { AuthProvider } from "@core/context/authentication/AuthContext";
 
 describe('LoginDropdown Component', () => {
     it('should return null if isOpen is false', () => {

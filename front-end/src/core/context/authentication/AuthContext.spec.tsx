@@ -1,6 +1,6 @@
 import { render, screen, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { AuthProvider, useAuth } from '@core/context/AuthContext';
+import { AuthProvider, useAuth } from '@core/context/authentication/AuthContext';
 import { JiradarService } from '@core/services/JiradarService';
 import { getCookie, setCookie } from '@core/utils/cookies';
 

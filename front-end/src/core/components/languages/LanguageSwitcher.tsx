@@ -1,6 +1,6 @@
-import {useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { CHART_LOCALES, type LocaleType } from '@core/constants/locales';
-import {useLocale} from "@core/hooks/useLocale";
+import { useLocale } from "@core/hooks/useLocale";
 
 const LANGUAGE_LABELS: Record<LocaleType, string> = {
     en: "English",
@@ -13,7 +13,6 @@ const LANGUAGE_LABELS: Record<LocaleType, string> = {
 
 export function LanguageSwitcher() {
     const [currentLocale, changeLocale] = useLocale();
-
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -31,16 +30,16 @@ export function LanguageSwitcher() {
         <div className="relative inline-block text-left" ref={dropdownRef}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700 hover:bg-slate-700 text-sm font-medium text-slate-200 transition-colors uppercase"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-cardbg border border-border-subtle hover:bg-cardbg-hover text-sm font-medium text-text-main transition-colors uppercase cursor-pointer"
             >
                 <span>{currentLocale}</span>
-                <svg className={`w-4 height-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className={`w-4 h-4 text-text-muted transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                 </svg>
             </button>
 
             {isOpen && (
-                <div className="absolute right-0 mt-2 w-40 rounded-xl bg-slate-900 border border-slate-800 shadow-xl z-50 py-1 overflow-hidden">
+                <div className="absolute right-0 mt-2 w-40 rounded-xl bg-cardbg border border-border-subtle shadow-xl z-50 py-1 overflow-hidden transition-colors">
                     {(Object.keys(CHART_LOCALES) as LocaleType[]).map((loc) => (
                         <button
                             key={loc}
@@ -48,10 +47,10 @@ export function LanguageSwitcher() {
                                 changeLocale(loc);
                                 setIsOpen(false);
                             }}
-                            className={`w-full text-left px-4 py-2 text-sm transition-colors block ${
+                            className={`w-full text-left px-4 py-2 text-sm transition-colors block cursor-pointer ${
                                 currentLocale === loc
-                                    ? 'bg-purple-950/40 text-purple-400 font-semibold'
-                                    : 'text-slate-300 hover:bg-slate-800'
+                                    ? 'bg-btn-primary-hover text-btn-text-main font-semibold dark:bg-btn-primary dark:text-btn-primary'
+                                    : 'text-text-muted hover:bg-cardbg-hover hover:text-text-main'
                             }`}
                         >
                             {LANGUAGE_LABELS[loc]}

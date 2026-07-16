@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { JiraLoginForm } from './JiraLoginForm';
-import { LocaleProvider } from '@core/context/LocaleProvider'; // 1. Importer le provider
+import { LocaleProvider } from '@core/context/language/LocaleProvider';
 
 describe('JiraLoginForm Component', () => {
     const defaultProps = {

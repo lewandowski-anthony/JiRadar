@@ -44,13 +44,13 @@ describe('JiradarService', () => {
         vi.mocked(apiClient.get).mockResolvedValueOnce({
             data: mockEvents,
             headers: {
-                'x-total-pages': '5',
-                'x-page-number': '2',
-                'x-total-elements': '45'
+                'total-pages': '5',
+                'page-number': '2',
+                'total-elements': '45'
             }
         });
 
-        const result = await JiradarService.fetchHistory(filters, 'JIRA', 10);
+        const result = await JiradarService.fetchHistory({ ...filters, page: 10, size: 20 });
         expect(result.content).toEqual(mockEvents);
         expect(result.page.totalPages).toBe(5);
         expect(result.page.number).toBe(2);
