@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/lewandowski-anthony/JiRadar/compare/v1.2.2...v1.3.0) (2026-07-16)
+
+
+### Features
+
+* adapt Docker image for cloud deployment ([772c191](https://github.com/lewandowski-anthony/JiRadar/commit/772c1910beb08367ab8f208fafe6ae751cc490d3))
+
 ## [1.2.2](https://github.com/lewandowski-anthony/JiRadar/compare/v1.2.1...v1.2.2) (2026-07-16)
 
 
