@@ -30,7 +30,7 @@ Feature: API - User endpoints
         {
           "id": "3183242",
           "key": "SMSUP-1508",
-          "self": "https://decathlon.atlassian.net/rest/api/3/issue/3183242",
+          "self": "https://company.atlassian.net/rest/api/3/issue/3183242",
           "fields": {
             "summary": "[TECHNICAL] Implements Togglz to manage feature flagging on SMSUP Ecosystem",
             "created": "2026-06-01T14:07:36.506+02:00",
@@ -38,7 +38,7 @@ Feature: API - User endpoints
             "status": {
               "id": "13781",
               "name": "Done",
-              "iconUrl": "https://decathlon.atlassian.net/images/icons/statuses/generic.png"
+              "iconUrl": "https://company.atlassian.net/images/icons/statuses/generic.png"
             },
             "project": {
               "id": "12345",
@@ -132,7 +132,7 @@ Feature: API - User endpoints
         {
           "id": "3183242",
           "key": "SMSUP-1508",
-          "self": "https://decathlon.atlassian.net/rest/api/3/issue/3183242",
+          "self": "https://company.atlassian.net/rest/api/3/issue/3183242",
           "fields": {
             "summary": "[TECHNICAL] Implements Togglz",
             "created": "2026-05-05T10:00:00.000Z",
@@ -200,7 +200,7 @@ Feature: API - User endpoints
         {
           "id": "9999",
           "key": "SMSUP-999",
-          "self": "https://decathlon.atlassian.net/rest/api/3/issue/9999",
+          "self": "https://company.atlassian.net/rest/api/3/issue/9999",
           "fields": {
             "summary": "Unassigned Ticket",
             "created": "2026-05-01T14:00:00.000Z",
@@ -261,7 +261,7 @@ Feature: API - User endpoints
         {
           "id": "7777",
           "key": "SMSUP-777",
-          "self": "https://decathlon.atlassian.net/rest/api/3/issue/7777",
+          "self": "https://company.atlassian.net/rest/api/3/issue/7777",
           "fields": {
             "summary": "Quick Task",
             "created": "2026-05-04T00:00:00.000Z",
@@ -325,7 +325,7 @@ Feature: API - User endpoints
         {
           "id": "8888",
           "key": "SMSUP-888",
-          "self": "https://decathlon.atlassian.net/rest/api/3/issue/8888",
+          "self": "https://company.atlassian.net/rest/api/3/issue/8888",
           "fields": {
             "summary": "Feature with Peer Review",
             "created": "2026-05-01T00:00:00.000Z",
