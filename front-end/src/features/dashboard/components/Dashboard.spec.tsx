@@ -1,55 +1,68 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import Dashboard from './Dashboard';
 import { useFetchDashboardDatas } from '../hooks/useFetchDashboardDatas';
 import { LocaleProvider } from '@core/context/language/LocaleProvider';
-import type {Page} from "@core/models/pages.ts";
-import type {UserHistoryEventDto} from "@core/models/history.ts";
-import type {UserMetricsDto} from "@core/models/dashboard.ts";
+import type { Page } from "@core/models/pages";
+import type { UserHistoryEventDto } from "@core/models/history";
+import type { UserMetricsDto } from "@core/models/dashboard";
 
 vi.mock('../hooks/useFetchDashboardDatas');
+
 vi.mock('react-chartjs-2', () => ({
     Bar: () => <div data-testid="mock-bar" />,
     Line: () => <div data-testid="mock-line" />
 }));
 
-describe('Dashboard Container Component', () => {
-    it('should display conditional application layout states correctly', () => {
-
-        vi.mocked(useFetchDashboardDatas).mockReturnValue({
-            userMetrics: null,
-            history: null,
-            loading: true,
-            error: null,
-            fetchDashboardData: vi.fn()
-        });
-
-        const { rerender } = render(
-            <LocaleProvider>
-                <Dashboard />
-            </LocaleProvider>
-        );
-
-        const loadingElements = screen.getAllByText('Loading...');
-        expect(loadingElements.length).toBeGreaterThanOrEqual(1);
+describe('Dashboard Orchestrator Component', () => {
+    it('should drive pagination changes and global filter execution loops', async () => {
+        const user = userEvent.setup();
+        const mockFetchDashboardData = vi.fn();
+        const mockFetchHistoryPage = vi.fn();
 
         vi.mocked(useFetchDashboardDatas).mockReturnValue({
             userMetrics: {
-                averageCycleTime: '2h',
+                averageCycleTime: '5h',
                 userMetricsByGranularity: []
             } as unknown as UserMetricsDto,
-            history: {content: [], page: {totalPages: 1}} as unknown as Page<UserHistoryEventDto>,
+            history: {
+                content: [{ issueKey: 'TS-45', date: '2026-07-16', transitionType: 'Done' }],
+                page: { totalPages: 3, number: 0, totalElements: 30, size: 10 }
+            } as unknown as Page<UserHistoryEventDto>,
             loading: false,
-            error: 'Server unavailable connection timeout',
-            fetchDashboardData: vi.fn()
+            historyLoading: false,
+            error: null,
+            fetchDashboardData: mockFetchDashboardData,
+            fetchHistoryPage: mockFetchHistoryPage
         });
 
-        rerender(
+        render(
             <LocaleProvider>
                 <Dashboard />
             </LocaleProvider>
         );
-        expect(screen.getByText('Server unavailable connection timeout')).toBeInTheDocument();
-        expect(screen.getByText('Average Cycle Time')).toBeInTheDocument();
+
+        const projectInput = screen.getByLabelText(/Project Code/i);
+        const submitButton = screen.getByRole('button', { name: /Update Dashboard/i });
+
+        await user.type(projectInput, 'PRJ');
+        await user.click(submitButton);
+
+        expect(mockFetchDashboardData).toHaveBeenCalledWith(expect.objectContaining({
+            projectKey: 'PRJ'
+        }));
+
+        const historyTabButton = screen.getByRole('button', { name: /Work History/i });
+        await user.click(historyTabButton);
+
+        const nextButton = screen.getByTestId('history-next-btn');
+        await user.click(nextButton);
+
+        expect(mockFetchHistoryPage).toHaveBeenCalledWith(
+            expect.objectContaining({ projectKey: 'PRJ' }),
+            1,
+            10
+        );
     });
 });

@@ -28,13 +28,13 @@ export const JiradarService = {
         return response.data;
     },
 
-    async fetchHistory(filters: DashboardFilters, tracker = 'jira', page = 0, size = 10): Promise<Page<UserHistoryEventDto>> {
+    async fetchHistory(filters: DashboardFilters & { page?: number; size?: number }, tracker = 'jira'): Promise<Page<UserHistoryEventDto>> {
         const params = {
             projectKeys: filters.projectKey,
             startDate: filters.startDate,
             endDate: filters.endDate,
-            page,
-            size,
+            page: filters.page ?? 0,
+            size: filters.size ?? 20,
         };
 
         const response = await apiClient.get<UserHistoryEventDto[]>(
@@ -45,10 +45,10 @@ export const JiradarService = {
         return {
             content: response.data,
             page: {
-                totalPages: parseInt(response.headers['x-total-pages'] || '1', 10),
-                number: parseInt(response.headers['x-page-number'] || '0', 10),
-                totalElements: parseInt(response.headers['x-total-elements'] || '0', 10),
-                size,
+                totalPages: parseInt(response.headers['total-pages'] || '1', 10),
+                number: parseInt(response.headers['page-number'] || '0', 10),
+                totalElements: parseInt(response.headers['total-elements'] || '0', 10),
+                size: parseInt(response.headers['page-size'] || '20', 10),
             }
         };
     }
