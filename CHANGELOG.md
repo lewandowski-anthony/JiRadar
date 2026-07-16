@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.2](https://github.com/lewandowski-anthony/JiRadar/compare/v1.4.1...v1.4.2) (2026-07-16)
+
+
+### Bug Fixes
+
+* Remove cache on myself ([9a851c7](https://github.com/lewandowski-anthony/JiRadar/commit/9a851c7503421239ceded301a1264db81f64ae8f))
+
 ## [1.4.1](https://github.com/lewandowski-anthony/JiRadar/compare/v1.4.0...v1.4.1) (2026-07-16)
 
 
