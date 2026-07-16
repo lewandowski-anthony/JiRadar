@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { GitHubLoginForm } from './GitHubLoginForm';
-import { LocaleProvider } from '@core/context/LocaleProvider';
+import { LocaleProvider } from '@core/context/language/LocaleProvider';
 
 describe('GitHubLoginForm Component', () => {
     const defaultProps = {

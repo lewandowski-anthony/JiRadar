@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { FormDashboard } from '../components/FormDashboard';
 import { KpiCard } from '@features/kpis/components/KpiCard';
 import { PeriodicCharts } from '@features/devcharts/components/PeriodicCharts';
@@ -5,29 +6,46 @@ import { HistoryList } from '@features/history/components/HistoryList';
 import { useFetchDashboardDatas } from '../hooks/useFetchDashboardDatas';
 import { KPI_CONFIGS } from '@core/constants/kpiConfig';
 import { Tabs, Tab } from "@core/components/menus/Tab";
-import {type TranslationKeys} from '@core/constants/locales';
-import {useTranslation} from "@core/hooks/useTranslation";
+import { type TranslationKeys } from '@core/constants/locales';
+import { useTranslation } from "@core/hooks/useTranslation";
+import { type DashboardFilters } from '@core/models/dashboard';
 
 export default function Dashboard() {
-    const { userMetrics, history, loading, error, fetchDashboardData } = useFetchDashboardDatas();
-    const t: TranslationKeys = useTranslation();
+    const {
+        userMetrics,
+        history,
+        loading,
+        historyLoading,
+        error,
+        fetchDashboardData,
+        fetchHistoryPage
+    } = useFetchDashboardDatas();
 
-    const handlePageChange = (newPage: number) => {
-        console.log("Page change :", newPage);
+    const t: TranslationKeys = useTranslation();
+    const [currentFilters, setCurrentFilters] = useState<DashboardFilters | null>(null);
+
+    const handleFormSubmit = (filters: DashboardFilters) => {
+        setCurrentFilters(filters);
+        fetchDashboardData(filters);
+    };
+
+    const handlePageChange = (newPage: number, newSize: number) => {
+        if (!currentFilters) return;
+        fetchHistoryPage(currentFilters, newPage, newSize);
     };
 
     return (
         <div className="space-y-8 w-full px-4 md:px-8">
-            <FormDashboard onSubmit={fetchDashboardData} isLoading={loading} />
+            <FormDashboard onSubmit={handleFormSubmit} isLoading={loading} />
 
             {error && (
-                <div className="bg-red-950/50 border border-red-900 text-red-400 p-4 rounded-xl">
+                <div className="text-xs text-red-600 dark:text-red-400 bg-red-500/10 dark:bg-red-950/40 p-4 border border-red-300 dark:border-red-900/50 rounded-xl transition-colors">
                     <p className="text-sm">{error}</p>
                 </div>
             )}
 
             {loading && (
-                <div className="text-center py-12 text-slate-400 animate-pulse">
+                <div className="text-center py-12 text-text-muted animate-pulse">
                     {t.app.loading}
                 </div>
             )}
@@ -61,8 +79,8 @@ export default function Dashboard() {
 
                     {history && (
                         <Tab id="history" label={t.tabs.workHistory} icon="fa-solid fa-clock-rotate-left">
-                            <div className="animate-fadeIn">
-                                <HistoryList historyPage={history} onPageChange={handlePageChange} />
+                            <div className={`animate-fadeIn transition-opacity ${historyLoading ? 'opacity-50 pointer-events-none' : ''}`}>
+                                <HistoryList historyPage={history} onPageChange={handlePageChange} historyLoading={historyLoading} />
                             </div>
                         </Tab>
                     )}

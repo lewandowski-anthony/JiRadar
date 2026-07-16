@@ -12,9 +12,9 @@ export function KpiCard({ title, value, description, color, borderColor }: KpiCa
   const [showDesc, setShowDesc] = useState(false);
 
   return (
-    <div className={`bg-slate-900 p-6 rounded-xl border ${borderColor} space-y-2 flex flex-col justify-between transition-all duration-200`}>
+    <div className={`bg-cardbg p-6 rounded-xl border ${borderColor} space-y-2 flex flex-col justify-between transition-all duration-200`}>
       <div>
-        <h3 className="text-sm font-medium text-slate-400">
+        <h3 className="text-sm font-medium text-text-muted">
           {title}
         </h3>
         <p className={`text-2xl font-bold tracking-tight ${color} mt-1`}>
@@ -25,9 +25,9 @@ export function KpiCard({ title, value, description, color, borderColor }: KpiCa
       <div className="pt-2 border-t border-slate-800/60 mt-2">
         <button
           onClick={() => setShowDesc(!showDesc)}
-          className="w-full flex items-center justify-between text-xs font-medium text-slate-500 hover:text-slate-300 transition-colors focus:outline-none"
+          className="w-full flex items-center justify-between text-xs font-medium text-text-muted hover:text-text-main transition-colors focus:outline-none"
         >
-          <span className="text-xs font-medium text-slate-500"> Description </span>
+          <span className="text-xs font-medium text-text-muted"> Description </span>
 
           <svg
             className={`w-3 h-3 transform transition-transform duration-200 ${showDesc ? 'rotate-180' : ''}`}
@@ -45,7 +45,7 @@ export function KpiCard({ title, value, description, color, borderColor }: KpiCa
           }`}
         >
           <div className="overflow-hidden">
-            <p className="text-xs italic text-slate-400 leading-relaxed bg-slate-950/40 p-2 rounded border border-slate-800/30">
+            <p className="text-xs italic text-text-muted leading-relaxed bg-main-bg p-2 rounded border border-border-subtle">
               {description}
             </p>
           </div>
