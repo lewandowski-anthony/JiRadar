@@ -52,7 +52,6 @@ public class JiraIssueTrackerAdapter implements IssueTrackerService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = AvailableCache.JIRA_USER)
 	public User getMyself() {
 		return jiraUserMapper.toDomainModel(jiraClient.getMyself());
 	}
