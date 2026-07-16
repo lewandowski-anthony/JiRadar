@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.4](https://github.com/lewandowski-anthony/JiRadar/compare/v1.4.3...v1.4.4) (2026-07-16)
+
+
+### Bug Fixes
+
+* Fix CI/CD ([f6bc29d](https://github.com/lewandowski-anthony/JiRadar/commit/f6bc29d43523ab74cd93a134fae7793e98f5d09b))
+
 ## [1.4.3](https://github.com/lewandowski-anthony/JiRadar/compare/v1.4.2...v1.4.3) (2026-07-16)
 
 
