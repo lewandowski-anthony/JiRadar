@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/lewandowski-anthony/JiRadar/compare/v1.4.0...v1.4.1) (2026-07-16)
+
+
+### Bug Fixes
+
+* Fix API Url ([1fc97be](https://github.com/lewandowski-anthony/JiRadar/commit/1fc97be926b07e1c3ba4f0beb9ce18fe524e0f9a))
+
 ## [1.4.0](https://github.com/lewandowski-anthony/JiRadar/compare/v1.3.0...v1.4.0) (2026-07-16)
 
 
