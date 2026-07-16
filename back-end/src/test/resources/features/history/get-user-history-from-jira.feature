@@ -19,7 +19,7 @@ Feature: API - History endpoint
         {
           "id": "3183242",
           "key": "SMSUP-1508",
-          "self": "https://decathlon.atlassian.net/rest/api/3/issue/3183242",
+          "self": "https://company.atlassian.net/rest/api/3/issue/3183242",
           "fields": {
             "summary": "[TECHNICAL] Implements Togglz to manage feature flagging on SMSUP Ecosystem",
             "created": "2026-05-01T14:07:36.506Z",

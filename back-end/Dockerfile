@@ -12,7 +12,7 @@ FROM $BASE_IMAGE
 LABEL org.opencontainers.image.title='Jiradar Backend - Local'
 LABEL org.opencontainers.image.description='Local development image for Jiradar Backend'
 LABEL org.opencontainers.image.authors='lewandowski-anthony'
-LABEL org.opencontainers.image.source='https://github.com/decathlon/jiradar/back-end'
+LABEL org.opencontainers.image.source='https://github.com/lewandowski-anthony/jiradar/back-end'
 
 RUN apk update &&  \
     apk upgrade &&  \
