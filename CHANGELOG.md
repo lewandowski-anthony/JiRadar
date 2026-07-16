@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0](https://github.com/lewandowski-anthony/JiRadar/compare/v1.1.1...v1.2.0) (2026-07-16)
+
+
+### Features
+
+* add Dark/Light mode - #JIRADAR-14 ([#15](https://github.com/lewandowski-anthony/JiRadar/issues/15)) ([1d98a98](https://github.com/lewandowski-anthony/JiRadar/commit/1d98a984ffda4798b64049bc3ed71ced26b563e1))
+* Clean company ([#18](https://github.com/lewandowski-anthony/JiRadar/issues/18)) ([936c893](https://github.com/lewandowski-anthony/JiRadar/commit/936c893e2536b4fd41ed39bf1fa44321f2304c2d))
+
 ## [1.1.1](https://github.com/lewandowski-anthony/JiRadar/compare/v1.1.0...v1.1.1) (2026-07-15)
 
 
