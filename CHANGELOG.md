@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.2](https://github.com/lewandowski-anthony/JiRadar/compare/v1.2.1...v1.2.2) (2026-07-16)
+
+
+### Bug Fixes
+
+* fix absolute path ([b0d0d58](https://github.com/lewandowski-anthony/JiRadar/commit/b0d0d58d24a05bf92f9741d72c2f108ee7608fc3))
+
 ## [1.2.1](https://github.com/lewandowski-anthony/JiRadar/compare/v1.2.0...v1.2.1) (2026-07-16)
 
 
