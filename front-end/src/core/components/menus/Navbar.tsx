@@ -15,7 +15,7 @@ export function Navbar() {
         <nav className="w-full bg-cardbg border-b border-border-subtle px-6 py-4 flex items-center justify-between transition-colors">
             <div className="flex items-center gap-3">
                 <img
-                    src="/jiradar_logo.svg"
+                    src="jiradar_logo.svg"
                     alt="JiRadar Logo"
                     style={{ filter: 'invert(var(--logo-invert))' }}
                     className="w-8 h-8 object-contain transition-all"
