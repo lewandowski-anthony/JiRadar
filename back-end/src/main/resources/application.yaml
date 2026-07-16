@@ -6,6 +6,20 @@ spring:
     name: Jiradar Back
   jackson:
     property-naming-strategy: SNAKE_CASE
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
+
+cache:
+  provider: ${CACHE_PROVIDER:caffeine}
+  specs:
+    JIRA_METRICS_CACHE:
+      ttl: ${JIRA_METRICS_CACHE_TTL:15m}
+      maxSize: ${JIRA_METRICS_CACHE_MAX_SIZE:1000}
+    JIRA_USER_CACHE:
+      ttl: ${JIRA_USER_CACHE_TTL:2h}
+      maxSize: ${JIRA_USER_CACHE_MAX_SIZE:200}
 
 issue-tracker:
   jira:

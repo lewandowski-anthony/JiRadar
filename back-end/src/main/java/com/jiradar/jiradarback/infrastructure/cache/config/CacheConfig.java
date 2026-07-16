@@ -1,35 +1,23 @@
 package com.jiradar.jiradarback.infrastructure.cache.config;
 
-import com.github.benmanes.caffeine.cache.Caffeine;
+import com.jiradar.jiradarback.infrastructure.cache.CacheProvider;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-import java.util.concurrent.TimeUnit;
-
 @Configuration
 @EnableCaching
+@RequiredArgsConstructor
 @Profile("!test")
 public class CacheConfig {
 
-    @Bean
-    public CacheManager cacheManager() {
-        CaffeineCacheManager cacheManager = new CaffeineCacheManager();
+	private final CacheProvider activeCacheProvider;
 
-        registerCache(cacheManager, AvailableCache.JIRA_METRICS_CACHE);
-        registerCache(cacheManager, AvailableCache.JIRA_USER_CACHE);
-
-        return cacheManager;
-    }
-
-	private void registerCache(CaffeineCacheManager cacheManager, AvailableCache cache) {
-		cacheManager.registerCustomCache(cache.name(),
-				Caffeine.newBuilder()
-						.expireAfterWrite(cache.getCacheRetentionTime(), cache.getCacheRetentionTimeUnit())
-						.maximumSize(500)
-						.build());
+	@Bean
+	public CacheManager cacheManager() {
+		return activeCacheProvider.buildCacheManager();
 	}
 }
