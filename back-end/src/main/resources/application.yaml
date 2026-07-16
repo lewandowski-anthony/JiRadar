@@ -21,3 +21,6 @@ springdoc:
   show-actuator: false
   cache:
     disabled: true
+
+server:
+  forward-headers-strategy: framework
