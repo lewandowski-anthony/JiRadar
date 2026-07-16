@@ -2,10 +2,6 @@ name: 'Build Node Front-end'
 description: 'Installe Node et build le projet React/Vite'
 
 inputs:
-  node_version:
-    description: 'Version of Node.js to use'
-    required: false
-    default: '20'
   push_image:
     description: 'True if you want to push the image on repository'
     required: true
@@ -18,20 +14,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Set up Node.js version ${{ inputs.node_version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ inputs.node_version }}
-        cache: 'npm'
-        cache-dependency-path: front-end/package-lock.json
-
-    - name: Build Front-end
-      shell: bash
-      run: |
-        cd front-end
-        npm install
-        npm run build
-
     - name: Docker Build & Push
       uses: ./.github/actions/docker-build-push
       with:
