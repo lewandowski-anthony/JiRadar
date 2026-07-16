@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.3](https://github.com/lewandowski-anthony/JiRadar/compare/v1.4.2...v1.4.3) (2026-07-16)
+
+
+### Bug Fixes
+
+* Fix Swagger UI Reverse Proxy ([1342140](https://github.com/lewandowski-anthony/JiRadar/commit/134214096004d128a300e424ed26a031a57c6001))
+
 ## [1.4.2](https://github.com/lewandowski-anthony/JiRadar/compare/v1.4.1...v1.4.2) (2026-07-16)
 
 
