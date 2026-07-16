@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/lewandowski-anthony/JiRadar/compare/v1.2.0...v1.2.1) (2026-07-16)
+
+
+### Bug Fixes
+
+* fix Docker image for cloud ([3230f59](https://github.com/lewandowski-anthony/JiRadar/commit/3230f590f05bbc5335ce39b74000119359c4483c))
+
 ## [1.2.0](https://github.com/lewandowski-anthony/JiRadar/compare/v1.1.1...v1.2.0) (2026-07-16)
 
 
