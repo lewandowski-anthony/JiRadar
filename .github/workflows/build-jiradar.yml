@@ -48,7 +48,6 @@ jobs:
         uses: ./.github/actions/update-project-versions
         with:
           pr_output: ${{ needs.release-please.outputs.pr }}
-          new_version: ${{ needs.release-please.outputs.clean_tag }}
 
   build-back:
     runs-on: ubuntu-latest
