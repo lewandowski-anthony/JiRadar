@@ -1,0 +1,41 @@
+version: '3.8'
+
+include:
+  - path: ./docker-compose.yaml
+
+services:
+  valkey:
+    image: valkey/valkey:8.0-alpine
+    container_name: jiradar-valkey
+    ports:
+      - "6379:6379"
+    volumes:
+      - valkey-data:/data
+    networks:
+      - jiradar-network
+
+  redisinsight:
+    image: redis/redisinsight:latest
+    container_name: jiradar-redisinsight
+    ports:
+      - "8001:5540"
+    volumes:
+      - redisinsight-data:/data
+    depends_on:
+      - valkey
+    networks:
+      - jiradar-network
+
+  back:
+    environment:
+      - CACHE_PROVIDER=redis
+      - SPRING_DATA_REDIS_HOST=valkey
+      - SPRING_DATA_REDIS_PORT=6379
+    depends_on:
+      - valkey
+
+volumes:
+  valkey-data:
+    driver: local
+  redisinsight-data:
+    driver: local

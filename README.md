@@ -1,4 +1,5 @@
 # Jiradar - Analytics & Visualization Workspace
+
 [![Java Version](https://img.shields.io/badge/Java-25-orange.svg?style=flat-square&logo=openjdk)](https://openjdk.org/projects/jdk/25/)
 [![Spring Boot](https://img.shields.io/badge/Spring_Boot-4.1.0-brightgreen.svg?style=flat-square&logo=springboot)](https://spring.io/projects/spring-boot)
 [![Node Target](https://img.shields.io/badge/Node.js-v20.x-blue.svg?style=flat-square&logo=nodedotjs)](https://nodejs.org/)
@@ -9,7 +10,9 @@
 [![Release Version](https://img.shields.io/github/v/release/lewandowski-anthony/jiradar?style=flat-square&color=blue)](https://github.com/lewandowski-anthony/jiradar/releases)
 ![JiRadar Logo](front-end/public/jiradar_logo.svg)
 
-Jiradar is a full-stack platform designed to extract, process, and analyze project delivery metrics and activity loops from issue-tracking ecosystems like Jira. By evaluating issue transitions and raw changelog streams, the system provides real-time developer productivity engineering analytics, including flow predictability metrics, cycle times, review behavior metrics, and work-in-progress indexes.
+Jiradar is a full-stack platform designed to extract, process, and analyze project delivery metrics and activity loops from issue-tracking ecosystems like Jira. By evaluating issue transitions and raw
+changelog streams, the system provides real-time developer productivity engineering analytics, including flow predictability metrics, cycle times, review behavior metrics, and work-in-progress
+indexes.
 
 The repository is managed as a unified multi-module structure comprising a Java-based Spring Boot backend engine, a React frontend client application, and global automated verification workflows.
 
@@ -26,7 +29,8 @@ The system is split into two isolated, micro-architectured layers that collabora
 └── front-end/               # React client application utilizing feature modules
 ```
 
-A global validation mechanism is enforced on code pushes via Git hooks. The pre-push hook acts as a quality gate ensuring that both modules pass strict criteria before code can be published to remote servers:
+A global validation mechanism is enforced on code pushes via Git hooks. The pre-push hook acts as a quality gate ensuring that both modules pass strict criteria before code can be published to remote
+servers:
 
 1. Compiles the Spring Boot backend environment and runs integration testing cycles.
 2. Triggers the frontend unit testing coverage engine to ensure strict thresholds are met.
@@ -83,36 +87,88 @@ The frontend provides user dashboards, telemetry visualization feeds, and pagina
 
 ---
 
+## Caching Strategy & Configuration
+
+The application uses a pluggable caching infrastructure managed by `CacheProvider` implementations. This allows swapping telemetry tracking and query-optimization caches between an internal in-memory
+solution and a distributed external cluster.
+
+### Cache Providers
+
+The system switches providers dynamically via environment variables or configuration setups:
+
+* **Caffeine (In-Memory):** The default local strategy (`cache.provider=caffeine`), using high-performance local caches with short default lifecycles.
+* **Redis/Valkey (Distributed):** An externalized distributed caching option (`cache.provider=redis`), routing JSON-serialized payloads through a dedicated key-value infrastructure layer.
+
+| Environment Variable Overrides | Default value | For mode |
+|:-------------------------------|:--------------|:---------|
+| `CACHE_PROVIDER`               | `caffeine`    | /        |
+| `SPRING_DATA_REDIS_HOST`       | `localhost`   | redis    |
+| `SPRING_DATA_REDIS_PORT`       | `6379`        | redis    |
+
+### System Specifications & Tuning Properties
+
+Custom retention times (TTL) and maximum entry bounds can be overwritten via `application.yaml` configurations or explicit environment injects:
+
+| Cache Context Key    | Default Fallback TTL | Default Max Size | Environment Variable Overrides                           |
+|:---------------------|:---------------------|:-----------------|:---------------------------------------------------------|
+| `JIRA_METRICS_CACHE` | 15 Minutes           | 1000             | `JIRA_METRICS_CACHE_TTL` / `JIRA_METRICS_CACHE_MAX_SIZE` |
+| `JIRA_USER_CACHE`    | 2 Hours              | 200              | `JIRA_USER_CACHE_TTL` / `JIRA_USER_CACHE_MAX_SIZE`       |
+
+### Redis Deployment Matrix
+
+To run the application environment utilizing the decoupled distributed caching architecture, launch the workspace using the extended compose manifest:
+
+```bash
+docker compose -f docker/docker-compose-redis.yaml up --build
+```
+
+This bundle provisions a Valkey 8.0 core service instance mapping to port `6379`, attaches a RedisInsight telemetry dashboard console mapping to port `8001`, and reconfigures the backend layer
+variables smoothly.
+
+---
+
 ## Continuous Integration & Continuous Deployment (CI/CD)
 
 The project leverages automated delivery practices distributed between localized Git quality locks, automated release workflows, and containerized deployment profiles.
 
 ### Release-Please Automation
+
 Project releases, version bumps, and `CHANGELOG.md` compilation are fully automated using Google's **Release-Please** utility.
+
 * **Conventional Commits:** The pipeline parses commit prefixes (e.g., `feat:` for minor updates, `fix:` for patches, and `BREAKING CHANGE:` for major updates).
 * **Release Pull Request:** It dynamically compiles pending adjustments into a persistent Release PR branch containing updated manifests (`pom.xml`, `package.json`) and release note configurations.
 * **Automated Publishing:** Merging the Release PR automatically triggers Git tags and registers structured release summaries directly on the remote hosting platform.
 
 ### Local Quality Gate (Husky Pre-Push Pipeline)
+
 Before any commit hits the remote origin, compliance constraints run locally inside the engineer's workspace via Husky lifecycle triggers.
 
 * **Backend Loop:** Automatically kicks off `mvn clean verify` to validate clean code compilation, check for code style regressions, run Cucumber behavioral matrices, and assert backend test coverage.
 * **Frontend Loop:** Triggers automated testing setups via Vitest across feature bundles to guarantee no breaks slip through.
 
 ### Containerization Strategy (Docker Specifications)
+
 Both frontend and backend modules feature multi-stage production-ready container profiles designed to scale smoothly under automated infrastructure workflows.
 
 #### 1. Backend Service Layer (`back-end/Dockerfile`)
+
 The backend relies on an optimized multi-stage build structure utilizing a layer extraction mechanism to achieve rapid startup overhead and lean image footprints:
-* **Build Phase:** Extracts compiled archive artifacts (`target/jiradar-back-*.jar`) into standard operational layered segments (`lib`, standalone application dependencies, class resources) using Spring Boot's internal tool index properties.
-* **Runtime Environment:** Runs on an isolated, non-root system configuration context (`spring:spring` safe user space) using an Eclipse Temurin Java 25 Alpine foundation. This layer loads raw dependencies externally via the decoupled layer manager, optimizing system caches.
+
+* **Build Phase:** Extracts compiled archive artifacts (`target/jiradar-back-*.jar`) into standard operational layered segments (`lib`, standalone application dependencies, class resources) using
+  Spring Boot's internal tool index properties.
+* **Runtime Environment:** Runs on an isolated, non-root system configuration context (`spring:spring` safe user space) using an Eclipse Temurin Java 25 Alpine foundation. This layer loads raw
+  dependencies externally via the decoupled layer manager, optimizing system caches.
 
 #### 2. Frontend App UI Layer (`front-end/Dockerfile`)
+
 The client UI workspace builds on a split Node environment mapping directly into high-availability distribution endpoints:
+
 * **Compilation Phase:** Spins up a Node Alpine framework layer to install pristine project dependencies and execute code compilation blocks (`npm run build`).
-* **Distribution Phase:** Moves built visual bundles (`dist/`) directly into a high-performance Nginx web server layout container. An injection runtime hook (`docker/entrypoint.sh`) dynamically builds configuration property matrices (`config.js`) from target environment variables (`JIRADAR_BACKEND_URL`), keeping compiled code separate from backend locations.
+* **Distribution Phase:** Moves built visual bundles (`dist/`) directly into a high-performance Nginx web server layout container. An injection runtime hook (`docker/entrypoint.sh`) dynamically builds
+  configuration property matrices (`config.js`) from target environment variables (`JIRADAR_BACKEND_URL`), keeping compiled code separate from backend locations.
 
 ### Complete Ecosystem Automation (Docker Compose)
+
 The global container stack can be fully orchestrated locally or through automated provisioning clusters via the workspace compose layer:
 
 ```yaml
@@ -155,22 +211,28 @@ services:
 
 The server is structured following Clean Architecture domains to isolate infrastructural adjustments from core metrics logic:
 
-* **Presentation Layer (`controller`)**: Exposes versioned REST components under `/api/v1/tracker/{issueTracker}/...`. It handles structural payload casing transparently using an automatic servlet interception filter (`OncePerRequestFilter`) to unify naming conversions between frontend interfaces and Java models.
+* **Presentation Layer (`controller`)**: Exposes versioned REST components under `/api/v1/tracker/{issueTracker}/...`. It handles structural payload casing transparently using an automatic servlet
+  interception filter (`OncePerRequestFilter`) to unify naming conversions between frontend interfaces and Java models.
 * **Domain Layer (`core`)**: Formulates rich calculation models such as `UserMetricCalculationService` to compute specific metrics:
     * **Average Cycle Time:** The duration separating an issue's initialization in development from its transition into a finalized status state.
     * **Average Review Time:** Elapsed duration spent strictly inside peer review workflow labels.
     * **Delivery Success Rate:** The ratio of issues started that successfully transitioned to finished within the selected timeframe.
     * **WIP Parallel Index:** A daily work-in-progress assessment factor measuring concurrent open tickets allocated to an active engineer profile.
-* **Infrastructure Layer (`infrastructure`)**: Standardizes vendor connection adapters like `JiraIssueTrackerAdapter` and routes performance operations through an in-memory `CaffeineCacheManager`. Telemetry tracking caches use short 5-minute boundaries grouped into monthly calendars (`YearMonth`) to balance API query roundtrips with up-to-date data changes.
+* **Infrastructure Layer (`infrastructure`)**: Standardizes vendor connection adapters like `JiraIssueTrackerAdapter` and abstracts performance optimization structures into decoupled caching modules
+  via the `CacheProvider` interface contract.
 
 ### 2. Frontend Client (React 19 & Tailwind CSS 4)
 
 The application handles visual rendering dynamically through reactive components, hooks, and context structures built on Vite:
 
-* **Core Framework Elements (`core`)**: Context systems such as `AuthContext` manage credentials and sessions, while `LocaleProvider` implements multilingual switches. Shared utilities handle API clients (`apiClient`) and normalized naming conversions.
-* **Dashboard Engine (`features/dashboard`)**: Orchestrates unified filter inputs (`FormDashboard`) and orchestrates layout widgets allowing users to query project data, restrict date fields, and configure timeline periodic groupings (Daily, Weekly, Monthly, Yearly).
-* **Metrics Visualization (`features/devcharts`)**: Integrates Chart.js wrapped structures via `react-chartjs-2` to render multi-dimensional performance representations for timeline indicators and workload allocation charts.
-* **Audit Trails List (`features/history`)**: Implements asynchronous paginated views, processing metadata headers mapped directly from server pagination boundaries (Page Number, Size, Total Elements, and Total Pages).
+* **Core Framework Elements (`core`)**: Context systems such as `AuthContext` manage credentials and sessions, while `LocaleProvider` implements multilingual switches. Shared utilities handle API
+  clients (`apiClient`) and normalized naming conversions.
+* **Dashboard Engine (`features/dashboard`)**: Orchestrates unified filter inputs (`FormDashboard`) and orchestrates layout widgets allowing users to query project data, restrict date fields, and
+  configure timeline periodic groupings (Daily, Weekly, Monthly, Yearly).
+* **Metrics Visualization (`features/devcharts`)**: Integrates Chart.js wrapped structures via `react-chartjs-2` to render multi-dimensional performance representations for timeline indicators and
+  workload allocation charts.
+* **Audit Trails List (`features/history`)**: Implements asynchronous paginated views, processing metadata headers mapped directly from server pagination boundaries (Page Number, Size, Total Elements,
+  and Total Pages).
 
 ---
 
@@ -184,7 +246,8 @@ Backend coverage profiles are generated using the `jacoco-maven-plugin` configur
 
 ### Frontend Testing Matrix
 
-The client framework delegates automated testing workflows to Vitest executing inside virtualized `jsdom` document spaces. It relies on a structural statement filter constraint enforcing an absolute 80% coverage requirement across functional code regions, explicitly omitting structural types or configuration modules:
+The client framework delegates automated testing workflows to Vitest executing inside virtualized `jsdom` document spaces. It relies on a structural statement filter constraint enforcing an absolute
+80% coverage requirement across functional code regions, explicitly omitting structural types or configuration modules:
 
 | Target Category | Code Coverage Threshold Constraint |
 |:----------------|:-----------------------------------|
