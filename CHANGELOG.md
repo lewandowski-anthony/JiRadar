@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.5.0](https://github.com/lewandowski-anthony/JiRadar/compare/v1.4.4...v1.5.0) (2026-07-17)
+
+
+### Features
+
+* Add Redis option for caching - #JIRADAR-28 ([#29](https://github.com/lewandowski-anthony/JiRadar/issues/29)) ([13bd943](https://github.com/lewandowski-anthony/JiRadar/commit/13bd943099383cc1c57a78a43cc7999cd33f43c9))
+
+
+### Bug Fixes
+
+* Add K8s documentation ([a9ded2f](https://github.com/lewandowski-anthony/JiRadar/commit/a9ded2f50d456b3f13dd25a1546e52e6855ee6f1))
+
 ## [1.4.4](https://github.com/lewandowski-anthony/JiRadar/compare/v1.4.3...v1.4.4) (2026-07-16)
 
 
