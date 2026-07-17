@@ -18,7 +18,7 @@ export function useFetchDashboardDatas() {
         try {
             const [metrics, history] = await Promise.all([
                 JiradarService.fetchMetrics(filters),
-                JiradarService.fetchHistory({ ...filters, page: 0 }) // Force page 0 à la soumission
+                JiradarService.fetchHistory({ ...filters, page: 0 })
             ]);
             setUserMetrics(metrics);
             setUserHistory(history);

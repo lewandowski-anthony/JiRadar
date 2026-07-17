@@ -1,9 +1,10 @@
-package com.jiradar.jiradarback.core;
+package com.jiradar.jiradarback.core.service;
 
 import com.jiradar.jiradarback.core.model.datetime.DateRange;
 import com.jiradar.jiradarback.core.model.issuetracker.Issue;
 import com.jiradar.jiradarback.core.model.issuetracker.IssueType;
 import com.jiradar.jiradarback.core.model.issuetracker.User;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.Duration;
@@ -13,6 +14,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Getter
 public class UserMetricCalculationService {
 
 	private final DateRange range;

@@ -71,6 +71,14 @@ export const en = {
     },
 
     // ---------------------------------------------------------
+    // CUSTOM METRICS
+    // ---------------------------------------------------------
+    customMetrics: {
+        noCustomMetrics: "No custom metrics found.",
+        title: "Custom Metrics"
+    },
+
+    // ---------------------------------------------------------
     // ISSUE PROPERTIES
     // ---------------------------------------------------------
     issue: {
@@ -164,6 +172,7 @@ export const en = {
     tabs: {
         periodic: "Periodic Analysis",
         reviews: "Code Reviews",
+        customMetrics: "Custom Metrics",
         workHistory: "Work History"
     }
 };
