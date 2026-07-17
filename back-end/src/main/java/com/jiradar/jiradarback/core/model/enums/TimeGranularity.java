@@ -24,7 +24,7 @@ public enum TimeGranularity {
 	private final UnaryOperator<ZonedDateTime> adjuster;
 
 	TimeGranularity(String pattern, UnaryOperator<ZonedDateTime> adjuster) {
-		this.formatter = DateTimeFormatter.ofPattern(pattern, Locale.getDefault());
+		this.formatter = DateTimeFormatter.ofPattern(pattern, Locale.ENGLISH);
 		this.adjuster = adjuster;
 	}
 
@@ -34,7 +34,7 @@ public enum TimeGranularity {
 
 	public String toLabel(ZonedDateTime date) {
 		return this == WEEK
-			   ? "Sem. " + date.format(this.formatter)
+			   ? "Week. " + date.format(this.formatter)
 			   : date.format(this.formatter);
 	}
 

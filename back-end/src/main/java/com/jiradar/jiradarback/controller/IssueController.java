@@ -3,8 +3,6 @@ package com.jiradar.jiradarback.controller;
 import com.jiradar.jiradarback.controller.dto.IssueDto;
 import com.jiradar.jiradarback.controller.mapper.IssueDtoMapper;
 import com.jiradar.jiradarback.core.factory.IssueTrackerFactory;
-import com.jiradar.jiradarback.core.model.issuetracker.Issue;
-import com.jiradar.jiradarback.core.IssueTrackerService;
 import com.jiradar.jiradarback.exception.NotFoundException;
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
