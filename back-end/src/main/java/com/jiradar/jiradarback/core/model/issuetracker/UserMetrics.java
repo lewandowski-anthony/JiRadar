@@ -1,7 +1,7 @@
 package com.jiradar.jiradarback.core.model.issuetracker;
 
 import com.jiradar.jiradarback.core.model.datetime.DateRange;
-import com.jiradar.jiradarback.core.UserMetricCalculationService;
+import com.jiradar.jiradarback.core.service.UserMetricCalculationService;
 import com.jiradar.jiradarback.core.model.enums.TimeGranularity;
 import com.jiradar.jiradarback.core.service.CustomMetricEngine;
 import lombok.AccessLevel;
@@ -23,28 +23,34 @@ public class UserMetrics {
 	private final Metric metric;
 	private final List<PeriodicUserMetrics> userMetricsByGranularity;
 
-	public static UserMetrics generate(MetricGenerationQuery metricGenerationQuery) {
+	public static UserMetrics generate(MetricGenerationQuery query) {
 
-		UserMetricCalculationService userMetricCalculationService = new UserMetricCalculationService(metricGenerationQuery.user(), metricGenerationQuery.projectIssues(), metricGenerationQuery.range());
+		CustomMetricEngine customMetricEngine = new CustomMetricEngine(query.customMetricsDefinition());
 
-		Metric globalMetric = new Metric(userMetricCalculationService, metricGenerationQuery.customFormulas());
+		UserMetricCalculationService globalService = new UserMetricCalculationService(
+				query.user(),
+				query.projectIssues(),
+				query.range()
+		);
 
-		List<PeriodicUserMetrics> periodicHistory = (metricGenerationQuery.granularity() != null)
-													? generateHistory(metricGenerationQuery)
+		Metric globalMetric = new Metric(globalService, customMetricEngine);
+
+		List<PeriodicUserMetrics> periodicHistory = (query.granularity() != null)
+													? generateHistory(query, customMetricEngine)
 													: null;
 
 		return UserMetrics.builder()
-				.from(metricGenerationQuery.range().from())
-				.to(metricGenerationQuery.range().to())
+				.from(query.range().from())
+				.to(query.range().to())
 				.metric(globalMetric)
 				.userMetricsByGranularity(periodicHistory)
 				.build();
 	}
 
-	private static List<PeriodicUserMetrics> generateHistory(MetricGenerationQuery metricGenerationQuery) {
-		return metricGenerationQuery.range().splitBy(metricGenerationQuery.granularity()).stream()
+	private static List<PeriodicUserMetrics> generateHistory(MetricGenerationQuery query, CustomMetricEngine engine) {
+		return query.range().splitBy(query.granularity()).stream()
 				.map(subRange -> {
-					List<Issue> subIssues = metricGenerationQuery.projectIssues().stream()
+					List<Issue> subIssues = query.projectIssues().stream()
 							.filter(issue -> issue.isStartedIn(subRange)
 									|| issue.isDoneIn(subRange)
 									|| issue.isActiveOn(subRange.from()))
@@ -53,8 +59,8 @@ public class UserMetrics {
 					return new PeriodicUserMetrics(
 							subRange.from(),
 							subRange.to(),
-							metricGenerationQuery.granularity().toLabel(subRange.from()),
-							new Metric(new UserMetricCalculationService(metricGenerationQuery.user(), subIssues, subRange), metricGenerationQuery.customFormulas())
+							query.granularity().toLabel(subRange.from()),
+							new Metric(new UserMetricCalculationService(query.user(), subIssues, subRange), engine)
 					);
 				})
 				.toList();
@@ -75,7 +81,7 @@ public class UserMetrics {
 			Map<String, Object> customMetrics
 	) {
 
-		private Metric(UserMetricCalculationService service, Map<String, String> customMetrics) {
+		private Metric(UserMetricCalculationService service, CustomMetricEngine engine) {
 			this(
 					service.getNumberOfIssueStarted(),
 					service.getNumberOfIssueDone(),
@@ -88,7 +94,7 @@ public class UserMetrics {
 					service.calculatePingPongReviewRate(),
 					service.calculateParallelJiraInProgressRate(),
 					service.getDoneIssuesTypeDistribution(),
-					new CustomMetricEngine(customMetrics).evaluateCustomMetrics(service)
+					engine.evaluateCustomMetrics(service)
 			);
 		}
 	}
@@ -106,6 +112,6 @@ public class UserMetrics {
 			List<Issue> projectIssues,
 			DateRange range,
 			TimeGranularity granularity,
-			Map<String, String> customFormulas
+			List<CustomMetricDefinition> customMetricsDefinition
 	) {}
 }

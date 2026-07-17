@@ -1,7 +1,6 @@
 package com.jiradar.jiradarback.infrastructure.jira;
 
 import com.jiradar.jiradarback.common.config.CustomMetricsProperties;
-import com.jiradar.jiradarback.core.IssueTrackerService;
 import com.jiradar.jiradarback.core.mapper.UserHistoryMapper;
 import com.jiradar.jiradarback.core.model.command.ProjectSearchParamCommand;
 import com.jiradar.jiradarback.core.model.datetime.DateRange;
@@ -11,12 +10,12 @@ import com.jiradar.jiradarback.core.model.issuetracker.Issue;
 import com.jiradar.jiradarback.core.model.issuetracker.User;
 import com.jiradar.jiradarback.core.model.issuetracker.UserHistoryEvent;
 import com.jiradar.jiradarback.core.model.issuetracker.UserMetrics;
+import com.jiradar.jiradarback.core.service.AbstractIssueTrackerService;
 import com.jiradar.jiradarback.core.util.PageUtils;
 import com.jiradar.jiradarback.exception.BusinessException;
 import com.jiradar.jiradarback.infrastructure.jira.enums.JiraFieldId;
 import com.jiradar.jiradarback.infrastructure.jira.repository.mapper.JiraUserMapper;
 import com.jiradar.jiradarback.infrastructure.jira.repository.JiraIssueRepository;
-import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,14 +32,24 @@ import java.util.stream.Stream;
 import static com.jiradar.jiradarback.core.model.enums.TransitionType.OTHER;
 
 @Service
-@RequiredArgsConstructor
-public class JiraIssueTrackerAdapter implements IssueTrackerService {
+public class JiraIssueTrackerAdapter extends AbstractIssueTrackerService {
 
 	private final JiraServiceClient jiraClient;
 	private final JiraUserMapper jiraUserMapper;
-	private final UserHistoryMapper userHistoryMapper;
 	private final JiraIssueRepository jiraIssueRepository;
-	private final CustomMetricsProperties customMetricsProperties;
+
+	public JiraIssueTrackerAdapter(
+			CustomMetricsProperties customMetricsProperties,
+			JiraServiceClient jiraClient,
+			JiraUserMapper jiraUserMapper,
+			UserHistoryMapper userHistoryMapper,
+			JiraIssueRepository jiraIssueRepository) {
+
+		super(customMetricsProperties, userHistoryMapper);
+		this.jiraClient = jiraClient;
+		this.jiraUserMapper = jiraUserMapper;
+		this.jiraIssueRepository = jiraIssueRepository;
+	}
 
 	@Override
 	public boolean supports(String provider) {
@@ -70,7 +79,7 @@ public class JiraIssueTrackerAdapter implements IssueTrackerService {
 				.projectIssues(allIssues)
 				.range(DateRange.from(command.startDate(), command.endDate()))
 				.granularity(historyGranularity)
-				.customFormulas(customMetricsProperties.getCustom())
+				.customMetricsDefinition(this.customMetricsProperties.getCustomMetrics())
 				.build();
 
 		return UserMetrics.generate(metricGenerationQuery);

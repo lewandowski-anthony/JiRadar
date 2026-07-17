@@ -32,7 +32,7 @@ public interface UserMetricsDtoMapper {
 
 	default List<UserMetricsDto.CustomMetricElementDto> mapCustomMetrics(Map<String, Object> map) {
 		if (map == null || map.isEmpty()) {
-			return null;
+			return Collections.emptyList();
 		}
 		return map.entrySet().stream()
 				.map(entry -> new UserMetricsDto.CustomMetricElementDto(entry.getKey(), entry.getValue()))

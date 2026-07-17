@@ -25,9 +25,7 @@ cache:
 
 issue-tracker:
   metrics:
-    custom:
-      review-ratio: "numberOfIssueDone > 0 ? (numberOfReviewDone * 1.0 / numberOfIssueDone) : 0.0"
-      urgent-delayed-bugs: "userIssues.?[type.name == 'Bug' && calculateCycleTimeForIssue()?.toDays() > 3].size()"
+
   jira:
     config:
       enabled: ${JIRA_ENABLED:true}

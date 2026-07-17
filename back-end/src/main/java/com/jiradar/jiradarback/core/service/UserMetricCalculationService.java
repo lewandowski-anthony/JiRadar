@@ -1,4 +1,4 @@
-package com.jiradar.jiradarback.core;
+package com.jiradar.jiradarback.core.service;
 
 import com.jiradar.jiradarback.core.model.datetime.DateRange;
 import com.jiradar.jiradarback.core.model.issuetracker.Issue;

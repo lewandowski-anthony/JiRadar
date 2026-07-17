@@ -1,63 +1,60 @@
 package com.jiradar.jiradarback.controller.dto;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Map;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-
-@Schema(description = "${openapi.dto.metrics.description}")
+@Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@Schema(description = "${openapi.dto.description}")
 public record UserMetricsDto(
-		@Schema(description = "${openapi.dto.metrics.from}")
+		@Schema(description = "${openapi.dto.from}")
 		ZonedDateTime from,
 
-		@Schema(description = "${openapi.dto.metrics.to}")
+		@Schema(description = "${openapi.dto.to}")
 		ZonedDateTime to,
 
 		@JsonUnwrapped
-		@Schema(description = "${openapi.dto.metrics.metric}")
 		MetricDto metric,
 
-		@JsonInclude(NON_NULL)
-		@Schema(description = "${openapi.dto.metrics.userMetricsByGranularity}")
+		@Schema(description = "${openapi.dto.history}")
 		List<PeriodicUserMetricsDto> userMetricsByGranularity
 ) {
-
+	@Builder
 	@Schema(description = "${openapi.dto.metric.description}")
 	public record MetricDto(
-			@Schema(description = "${openapi.dto.metric.numberOfIssueStarted}", example = "14")
+			@Schema(description = "${openapi.dto.metric.numberOfIssueStarted}")
 			long numberOfIssueStarted,
 
-			@Schema(description = "${openapi.dto.metric.numberOfIssueDone}", example = "11")
+			@Schema(description = "${openapi.dto.metric.numberOfIssueDone}")
 			long numberOfIssueDone,
 
-			@Schema(description = "${openapi.dto.metric.averageCycleTime}", example = "PT48H30M")
+			@Schema(description = "${openapi.dto.metric.averageCycleTime}")
 			String averageCycleTime,
 
-			@Schema(description = "${openapi.dto.metric.averageReviewTime}", example = "PT4H15M")
+			@Schema(description = "${openapi.dto.metric.averageReviewTime}")
 			String averageReviewTime,
 
-			@Schema(description = "${openapi.dto.metric.numberOfReviewDone}", example = "32")
+			@Schema(description = "${openapi.dto.metric.numberOfReviewDone}")
 			long numberOfReviewDone,
 
-			@Schema(description = "${openapi.dto.metric.numberOfReviewReopened}", example = "3")
+			@Schema(description = "${openapi.dto.metric.numberOfReviewReopened}")
 			long numberOfReviewReopened,
 
-			@Schema(description = "${openapi.dto.metric.teamReviewParticipationRate}", example = "72.5")
+			@Schema(description = "${openapi.dto.metric.teamReviewParticipationRate}")
 			double teamReviewParticipationRate,
 
-			@Schema(description = "${openapi.dto.metric.deliverySuccessRate}", example = "91.0")
+			@Schema(description = "${openapi.dto.metric.deliverySuccessRate}")
 			double deliverySuccessRate,
 
-			@Schema(description = "${openapi.dto.metric.pingPongReviewRate}", example = "1.1")
+			@Schema(description = "${openapi.dto.metric.pingPongReviewRate}")
 			double pingPongReviewRate,
 
-			@Schema(description = "${openapi.dto.metric.parallelIssuesInProgressRate}", example = "18.4")
+			@Schema(description = "${openapi.dto.metric.parallelIssuesInProgressRate}")
 			double parallelIssuesInProgressRate,
 
 			@Schema(description = "${openapi.dto.metric.issueRateByType}")
@@ -81,11 +78,10 @@ public record UserMetricsDto(
 			@Schema(description = "${openapi.dto.periodic.to}")
 			ZonedDateTime to,
 
-			@Schema(description = "${openapi.dto.periodic.label}", example = "Sem. 28 - 2026")
+			@Schema(description = "${openapi.dto.periodic.label}")
 			String label,
 
 			@JsonUnwrapped
-			@Schema(description = "${openapi.dto.periodic.metrics}")
 			MetricDto metrics
 	) {}
 }
