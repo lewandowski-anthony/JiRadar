@@ -5,6 +5,9 @@ inputs:
   pr_output:
     description: 'The raw JSON string from steps.release.outputs.pr'
     required: true
+  new_version:
+    description: 'The clean version string without v prefix'
+    required: true
 
 runs:
   using: 'composite'
@@ -13,16 +16,10 @@ runs:
       shell: bash
       run: |
         PR_BRANCH=$(echo '${{ inputs.pr_output }}' | jq -r '.headBranchName')
-        PR_TITLE=$(echo '${{ inputs.pr_output }}' | jq -r '.title')
-        NEW_VERSION=$(echo "$PR_TITLE" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?' | head -n1)
+        NEW_VERSION="${{ inputs.new_version }}"
         
         echo "Target Release PR Branch: $PR_BRANCH"
         echo "Target New Version: $NEW_VERSION"
-        
-        if [ -z "$NEW_VERSION" ]; then
-          echo "ERROR: Could not resolve the new version from the PR metadata."
-          exit 1
-        fi
         
         git fetch origin $PR_BRANCH
         git checkout $PR_BRANCH
