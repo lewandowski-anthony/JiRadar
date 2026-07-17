@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.6.0](https://github.com/lewandowski-anthony/JiRadar/compare/v1.5.0...v1.6.0) (2026-07-17)
+
+
+### Features
+
+* Add Banners, clean redis, add no cache mode ([6c879cf](https://github.com/lewandowski-anthony/JiRadar/commit/6c879cf8d9a877a0f383f27158d1cd4ccfbfc524))
+* Add Banners, clean redis, add no cache mode ([bbbfc82](https://github.com/lewandowski-anthony/JiRadar/commit/bbbfc8257091594a8645f9a554b2a74f936924b9))
+* Add test and clean POM ([1824a69](https://github.com/lewandowski-anthony/JiRadar/commit/1824a69e2fc6c82f2c885077402058e6f314599c))
+* Improve CI and better docker version tag ([526481c](https://github.com/lewandowski-anthony/JiRadar/commit/526481c0c7bb6af73614a495c6d45d92444ececb))
+* Improve CI and better docker version tag ([9b52a30](https://github.com/lewandowski-anthony/JiRadar/commit/9b52a303aaaf587178b66fd6cdeab5b636957e23))
+* Improve CI and better docker version tag ([86bb85e](https://github.com/lewandowski-anthony/JiRadar/commit/86bb85e30cd3950c7df3a68cb14390d3ed62616e))
+* Improve CI for version management ([b99058e](https://github.com/lewandowski-anthony/JiRadar/commit/b99058e79ddfa6f64b60162374f713699dac074e))
+
 ## [1.5.0](https://github.com/lewandowski-anthony/JiRadar/compare/v1.4.4...v1.5.0) (2026-07-17)
 
 
