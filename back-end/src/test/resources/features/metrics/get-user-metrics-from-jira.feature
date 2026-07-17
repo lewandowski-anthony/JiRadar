@@ -186,7 +186,7 @@ Feature: API - User endpoints
     {
       "user_metrics_by_granularity": [
         {
-          "label": "Sem. 19 - 2026"
+          "label": "Week. 19 - 2026"
         }
       ]
     }
