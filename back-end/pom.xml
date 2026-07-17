@@ -25,6 +25,8 @@
         <cucumber.version>7.34.4</cucumber.version>
         <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
         <wiremock-standalone.version>3.13.2</wiremock-standalone.version>
+        <argLine></argLine>
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -40,97 +42,116 @@
     </dependencyManagement>
 
     <dependencies>
+        <!-- ======================================================================= -->
+        <!-- Spring Boot Starters & Core Modules                                     -->
+        <!-- ======================================================================= -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-commons</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webflux</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-
+        <!-- ======================================================================= -->
+        <!-- Caching & Data Storage                                                  -->
+        <!-- ======================================================================= -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
-
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
         </dependency>
 
+        <!-- ======================================================================= -->
+        <!-- Code Generation & Mapping Tools                                        -->
+        <!-- ======================================================================= -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
             <version>${org.mapstruct.version}</version>
         </dependency>
 
+        <!-- ======================================================================= -->
+        <!-- Utilities & Libraries                                                   -->
+        <!-- ======================================================================= -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${commons-lang3.version}</version>
             <scope>compile</scope>
         </dependency>
-
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
             <version>${commons-collections4.version}</version>
             <scope>compile</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>${springdoc-openapi-starter-webmvc-ui.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
         </dependency>
 
-        <!-- TEST DEPENDENCIES -->
+        <!-- ======================================================================= -->
+        <!-- Documentation & API Exploration                                         -->
+        <!-- ======================================================================= -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${springdoc-openapi-starter-webmvc-ui.version}</version>
+        </dependency>
 
+        <!-- ======================================================================= -->
+        <!-- Testing Frameworks & Utilities                                          -->
+        <!-- ======================================================================= -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-webtestclient</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wiremock</groupId>
+            <artifactId>wiremock-standalone</artifactId>
+            <version>${wiremock-standalone.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Cucumber Integration -->
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-java</artifactId>
             <version>${cucumber.version}</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-spring</artifactId>
             <version>${cucumber.version}</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-junit-platform-engine</artifactId>
@@ -138,34 +159,22 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-suite-engine</artifactId>
-            <scope>test</scope>
-        </dependency>
-
+        <!-- JUnit 5 Platform Engines & Suites -->
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-suite-api</artifactId>
             <scope>test</scope>
         </dependency>
-
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-webtestclient</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.wiremock</groupId>
-            <artifactId>wiremock-standalone</artifactId>
-            <version>${wiremock-standalone.version}</version>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite-engine</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <!-- Code Coverage (JaCoCo) -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -187,10 +196,12 @@
                             <excludes>
                                 <exclude>com/jiradar/jiradarback/controller/config/**</exclude>
                                 <exclude>com/jiradar/jiradarback/infrastructure/cache/config/**</exclude>
+                                <exclude>com/jiradar/jiradarback/infrastructure/common/config/**</exclude>
                                 <exclude>com/jiradar/jiradarback/controller/dto/**</exclude>
                                 <exclude>com/jiradar/jiradarback/BackEndApplication.class</exclude>
                                 <exclude>com/jiradar/jiradarback/core/constant/**</exclude>
-                                <exclude>com/jiradar/jiradarback/core/config/**</exclude>
+                                <exclude>com/jiradar/jiradarback/infrastructure/jira/dto/response/**</exclude>
+                                <exclude>com/jiradar/jiradarback/controller/mapper/**</exclude>
                             </excludes>
                         </configuration>
                     </execution>
@@ -216,9 +227,12 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Spring Boot Build Execution -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot.version}</version>
                 <configuration>
                     <layers>
                         <enabled>true</enabled>
@@ -232,9 +246,12 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Java Compilation Engine -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <parameters>true</parameters>
                     <source>${java.version}</source>
@@ -258,11 +275,14 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
+
+            <!-- Test Execution Engine -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
+                    <argLine>${argLine}</argLine>
                     <properties>
                         <configurationParameters>
                             cucumber.junit-platform.naming-strategy=long
@@ -278,5 +298,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
