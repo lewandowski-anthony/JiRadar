@@ -1,0 +1,42 @@
+name: 'Update Project Versions'
+description: 'Updates Maven pom.xml and Node package.json versions inside the Release Please PR branch'
+
+inputs:
+  pr_output:
+    description: 'The raw JSON string from steps.release.outputs.pr'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Update Versions and Push
+      shell: bash
+      run: |
+        PR_BRANCH=$(echo '${{ inputs.pr_output }}' | jq -r '.headBranchName')
+        NEW_VERSION=$(echo '${{ inputs.inputs.pr_output }}' | jq -r '.version')
+        
+        echo "Target Release PR Branch: $PR_BRANCH"
+        echo "Target New Version: $NEW_VERSION"
+        
+        git fetch origin $PR_BRANCH
+        git checkout $PR_BRANCH
+        
+        cd back-end
+        mvn versions:set -DnewVersion=$NEW_VERSION -DgenerateBackupPoms=false
+        cd ..
+        
+        cd front-end
+        npm version $NEW_VERSION --no-git-tag-version
+        cd ..
+        
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        
+        git add back-end/pom.xml front-end/package.json front-end/package-lock.json
+        
+        if ! git diff --cached --quiet; then
+          git commit -m "chore: update pom.xml and package.json versions to $NEW_VERSION"
+          git push origin $PR_BRANCH
+        else
+          echo "All project files are already up to date."
+        fi
