@@ -22,6 +22,7 @@ import java.util.Map;
 @Component
 @AllArgsConstructor
 @ConditionalOnProperty(name = "cache.provider", havingValue = "redis")
+@ConditionalOnProperty(name = "cache.enabled", havingValue = "true", matchIfMissing = true)
 public class RedisCacheProvider implements CacheProvider {
 
 	@Lazy

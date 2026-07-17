@@ -2,7 +2,7 @@ package com.jiradar.jiradarback.infrastructure.security;
 
 
 public class UserContext {
-    private static final ThreadLocal<String> authorizationHolder = new ThreadLocal<>();
+    private static final ThreadLocal<String> authorizationHolder = new InheritableThreadLocal<>();
 
     public static void setAuthorization(String token) {
         authorizationHolder.set(token);

@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 @RequiredArgsConstructor
 @ConditionalOnProperty(name = "cache.provider", havingValue = "caffeine", matchIfMissing = true)
+@ConditionalOnProperty(name = "cache.enabled", havingValue = "true", matchIfMissing = true)
 public class CaffeineCacheProvider implements CacheProvider {
 
 	private final CacheProperties cacheProperties;

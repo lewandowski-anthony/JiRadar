@@ -4,6 +4,7 @@ import com.jiradar.jiradarback.infrastructure.cache.config.AvailableCache;
 import com.jiradar.jiradarback.infrastructure.jira.JiraServiceClient;
 import com.jiradar.jiradarback.infrastructure.jira.dto.request.BulkChangelogRequestDto;
 import com.jiradar.jiradarback.infrastructure.jira.dto.request.SearchRequestRequestDto;
+import com.jiradar.jiradarback.infrastructure.jira.dto.response.BulkChangelogResponseDto;
 import com.jiradar.jiradarback.infrastructure.jira.dto.response.JiraChangelogResponseDto;
 import com.jiradar.jiradarback.infrastructure.jira.dto.response.JiraIssueResponseDto;
 import com.jiradar.jiradarback.infrastructure.jira.dto.response.SearchEnvelopeResponseDto;
@@ -23,6 +24,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -97,20 +101,28 @@ public class JiraIssueRepository {
     }
 
     private Map<String, JiraChangelogResponseDto> getChangeLogsByJiraIds(List<String> issueIds) {
-        List<List<String>> chunks = ListUtils.partition(issueIds, 10);
 
-        return chunks.stream()
-                .map(chunk -> jiraClient.bulkFetchChangelogs(
-                    BulkChangelogRequestDto.builder()
-                        .issueIdsOrKeys(chunk)
-                        .fieldIds(List.of("status"))
-                        .build()
-                ))
-                .flatMap(bulk -> bulk.issueChangeLogs().stream())
-                .collect(Collectors.toMap(
-                    JiraChangelogResponseDto::getIssueId,
-                    Function.identity(),
-                    (existing, _) -> existing
-                ));
-    }
+		List<List<String>> partitionedIssuesIds = ListUtils.partition(issueIds, 10);
+
+		try (ExecutorService parallelCallExecutor = Executors.newVirtualThreadPerTaskExecutor()) {
+
+			List<CompletableFuture<BulkChangelogResponseDto>> futureBulkCalls = partitionedIssuesIds.stream()
+					.map(chunk -> CompletableFuture.supplyAsync(() -> jiraClient.bulkFetchChangelogs(
+							BulkChangelogRequestDto.builder()
+									.issueIdsOrKeys(chunk)
+									.fieldIds(List.of("status"))
+									.build()
+					), parallelCallExecutor))
+					.toList();
+
+			return futureBulkCalls.stream()
+					.map(CompletableFuture::join)
+					.flatMap(bulk -> bulk.issueChangeLogs().stream())
+					.collect(Collectors.toMap(
+							JiraChangelogResponseDto::getIssueId,
+							Function.identity(),
+							(existing, _) -> existing
+					));
+		}
+	}
 }

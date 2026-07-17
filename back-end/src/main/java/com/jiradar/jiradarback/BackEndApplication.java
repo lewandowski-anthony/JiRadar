@@ -1,5 +1,6 @@
 package com.jiradar.jiradarback;
 
+import com.jiradar.jiradarback.infrastructure.common.config.BannerConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
@@ -9,7 +10,9 @@ import org.springframework.data.web.config.EnableSpringDataWebSupport;
 public class BackEndApplication {
 
 	static void main(String[] args) {
-		SpringApplication.run(BackEndApplication.class, args);
+		SpringApplication app = new SpringApplication(BackEndApplication.class);
+		app.setBanner(new BannerConfig());
+		app.run(args);
 	}
 
 }
