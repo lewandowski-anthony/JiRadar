@@ -13,10 +13,16 @@ runs:
       shell: bash
       run: |
         PR_BRANCH=$(echo '${{ inputs.pr_output }}' | jq -r '.headBranchName')
-        NEW_VERSION=$(echo '${{ inputs.inputs.pr_output }}' | jq -r '.version')
+        PR_TITLE=$(echo '${{ inputs.pr_output }}' | jq -r '.title')
+        NEW_VERSION=$(echo "$PR_TITLE" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?' | head -n1)
         
         echo "Target Release PR Branch: $PR_BRANCH"
         echo "Target New Version: $NEW_VERSION"
+        
+        if [ -z "$NEW_VERSION" ]; then
+          echo "ERROR: Could not resolve the new version from the PR metadata."
+          exit 1
+        fi
         
         git fetch origin $PR_BRANCH
         git checkout $PR_BRANCH

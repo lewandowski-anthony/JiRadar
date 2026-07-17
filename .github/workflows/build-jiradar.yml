@@ -17,6 +17,7 @@ jobs:
       tag_name: ${{ steps.release.outputs.tag_name || 'latest' }}
       prs_created: ${{ steps.release.outputs.prs_created || 'false' }}
       pr: ${{ steps.release.outputs.pr }}
+      clean_tag: ${{ steps.format-tag.outputs.version }}
     steps:
       - uses: actions/checkout@v4
 
@@ -26,6 +27,13 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           release-type: simple
+
+      - name: Format Docker Tag
+        id: format-tag
+        shell: bash
+        run: |
+          RAW_TAG="${{ steps.release.outputs.tag_name || 'latest' }}"
+          echo "version=${RAW_TAG#v}" >> $GITHUB_OUTPUT
 
   update-versions:
     runs-on: ubuntu-latest
@@ -62,7 +70,7 @@ jobs:
         uses: ./.github/actions/build-maven
         with:
           push_image: ${{ needs.release-please.outputs.release_created }}
-          image_tag: ${{ needs.release-please.outputs.tag_name }}
+          image_tag: ${{ needs.release-please.outputs.clean_tag }}
 
   build-front:
     runs-on: ubuntu-latest
@@ -85,4 +93,4 @@ jobs:
         uses: ./.github/actions/build-node
         with:
           push_image: ${{ needs.release-please.outputs.release_created }}
-          image_tag: ${{ needs.release-please.outputs.tag_name }}
+          image_tag: ${{ needs.release-please.outputs.clean_tag }}
