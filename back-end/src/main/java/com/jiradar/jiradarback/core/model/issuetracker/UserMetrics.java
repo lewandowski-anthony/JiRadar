@@ -3,6 +3,7 @@ package com.jiradar.jiradarback.core.model.issuetracker;
 import com.jiradar.jiradarback.core.model.datetime.DateRange;
 import com.jiradar.jiradarback.core.UserMetricCalculationService;
 import com.jiradar.jiradarback.core.model.enums.TimeGranularity;
+import com.jiradar.jiradarback.core.service.CustomMetricEngine;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,30 +23,28 @@ public class UserMetrics {
 	private final Metric metric;
 	private final List<PeriodicUserMetrics> userMetricsByGranularity;
 
-	public static UserMetrics generate(User user, List<Issue> projectIssues, DateRange range) {
-		return UserMetrics.generate(user, projectIssues, range, null);
-	}
+	public static UserMetrics generate(MetricGenerationQuery metricGenerationQuery) {
 
-	public static UserMetrics generate(User user, List<Issue> projectIssues, DateRange range, TimeGranularity granularity) {
+		UserMetricCalculationService userMetricCalculationService = new UserMetricCalculationService(metricGenerationQuery.user(), metricGenerationQuery.projectIssues(), metricGenerationQuery.range());
 
-		Metric globalMetric = new Metric(user, projectIssues, range);
+		Metric globalMetric = new Metric(userMetricCalculationService, metricGenerationQuery.customFormulas());
 
-		List<PeriodicUserMetrics> periodicHistory = (granularity != null)
-													? generateHistory(user, projectIssues, range, granularity)
+		List<PeriodicUserMetrics> periodicHistory = (metricGenerationQuery.granularity() != null)
+													? generateHistory(metricGenerationQuery)
 													: null;
 
 		return UserMetrics.builder()
-				.from(range.from())
-				.to(range.to())
+				.from(metricGenerationQuery.range().from())
+				.to(metricGenerationQuery.range().to())
 				.metric(globalMetric)
 				.userMetricsByGranularity(periodicHistory)
 				.build();
 	}
 
-	private static List<PeriodicUserMetrics> generateHistory(User user, List<Issue> projectIssues, DateRange range, TimeGranularity granularity) {
-		return range.splitBy(granularity).stream()
+	private static List<PeriodicUserMetrics> generateHistory(MetricGenerationQuery metricGenerationQuery) {
+		return metricGenerationQuery.range().splitBy(metricGenerationQuery.granularity()).stream()
 				.map(subRange -> {
-					List<Issue> subIssues = projectIssues.stream()
+					List<Issue> subIssues = metricGenerationQuery.projectIssues().stream()
 							.filter(issue -> issue.isStartedIn(subRange)
 									|| issue.isDoneIn(subRange)
 									|| issue.isActiveOn(subRange.from()))
@@ -54,8 +53,8 @@ public class UserMetrics {
 					return new PeriodicUserMetrics(
 							subRange.from(),
 							subRange.to(),
-							granularity.toLabel(subRange.from()),
-							new Metric(user, subIssues, subRange)
+							metricGenerationQuery.granularity().toLabel(subRange.from()),
+							new Metric(new UserMetricCalculationService(metricGenerationQuery.user(), subIssues, subRange), metricGenerationQuery.customFormulas())
 					);
 				})
 				.toList();
@@ -72,14 +71,11 @@ public class UserMetrics {
 			double deliverySuccessRate,
 			double pingPongReviewRate,
 			double parallelIssuesInProgressRate,
-			Map<String, Double> issueRateByType
+			Map<String, Double> issueRateByType,
+			Map<String, Object> customMetrics
 	) {
 
-		public Metric(User user, List<Issue> projectIssues, DateRange range) {
-			this(new UserMetricCalculationService(user, projectIssues, range));
-		}
-
-		private Metric(UserMetricCalculationService service) {
+		private Metric(UserMetricCalculationService service, Map<String, String> customMetrics) {
 			this(
 					service.getNumberOfIssueStarted(),
 					service.getNumberOfIssueDone(),
@@ -91,7 +87,8 @@ public class UserMetrics {
 					service.calculateDeliverySuccessRate(),
 					service.calculatePingPongReviewRate(),
 					service.calculateParallelJiraInProgressRate(),
-					service.getDoneIssuesTypeDistribution()
+					service.getDoneIssuesTypeDistribution(),
+					new CustomMetricEngine(customMetrics).evaluateCustomMetrics(service)
 			);
 		}
 	}
@@ -101,5 +98,14 @@ public class UserMetrics {
 			ZonedDateTime to,
 			String label,
 			Metric metrics
+	) {}
+
+	@Builder
+	public record MetricGenerationQuery(
+			User user,
+			List<Issue> projectIssues,
+			DateRange range,
+			TimeGranularity granularity,
+			Map<String, String> customFormulas
 	) {}
 }

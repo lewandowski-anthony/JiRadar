@@ -1,5 +1,6 @@
 package com.jiradar.jiradarback.controller.dto;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -60,13 +61,17 @@ public record UserMetricsDto(
 			double parallelIssuesInProgressRate,
 
 			@Schema(description = "${openapi.dto.metric.issueRateByType}")
-			List<IssueRateByTypeDto> issueRateByType
+			List<IssueRateByTypeDto> issueRateByType,
+
+			List<CustomMetricElementDto> customMetrics
 	) {}
 
 	public record IssueRateByTypeDto (
 			String type,
 			Double rate
 	) {}
+
+	public record CustomMetricElementDto(String name, Object value) {}
 
 	@Schema(description = "${openapi.dto.periodic.description}")
 	public record PeriodicUserMetricsDto(

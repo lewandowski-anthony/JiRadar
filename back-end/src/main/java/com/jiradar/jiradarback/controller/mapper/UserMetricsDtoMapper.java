@@ -7,6 +7,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -15,16 +16,26 @@ public interface UserMetricsDtoMapper {
 
 	UserMetricsDto mapToDto(UserMetrics jiraUserMetrics);
 
+	@Mapping(target = "customMetrics", expression = "java(mapCustomMetrics(metric.customMetrics()))")
 	UserMetricsDto.MetricDto mapMetric(UserMetrics.Metric metric);
 
 	UserMetricsDto.PeriodicUserMetricsDto mapPeriodicMetric(UserMetrics.PeriodicUserMetrics periodicUserMetrics);
 
 	default List<UserMetricsDto.IssueRateByTypeDto> mapIssueRateByType(Map<String, Double> map) {
 		if (map == null) {
-			return null;
+			return Collections.emptyList();
 		}
 		return map.entrySet().stream()
 				.map(entry -> new UserMetricsDto.IssueRateByTypeDto(entry.getKey(), entry.getValue()))
+				.toList();
+	}
+
+	default List<UserMetricsDto.CustomMetricElementDto> mapCustomMetrics(Map<String, Object> map) {
+		if (map == null || map.isEmpty()) {
+			return null;
+		}
+		return map.entrySet().stream()
+				.map(entry -> new UserMetricsDto.CustomMetricElementDto(entry.getKey(), entry.getValue()))
 				.toList();
 	}
 
