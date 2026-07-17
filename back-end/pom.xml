@@ -190,6 +190,7 @@
                                 <exclude>com/jiradar/jiradarback/controller/dto/**</exclude>
                                 <exclude>com/jiradar/jiradarback/BackEndApplication.class</exclude>
                                 <exclude>com/jiradar/jiradarback/core/constant/**</exclude>
+                                <exclude>com/jiradar/jiradarback/core/config/**</exclude>
                             </excludes>
                         </configuration>
                     </execution>
