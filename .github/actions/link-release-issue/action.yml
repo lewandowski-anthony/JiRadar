@@ -36,7 +36,7 @@ runs:
           --title "$ISSUE_TITLE" \
           --body "$ISSUE_BODY" \
           --assignee "$ACTOR" \
-          --label "maintenance" | grep -oE '[0-9]+$')
+          --label "release" | grep -oE '[0-9]+$')
         
         echo "Created and Assigned tracking Issue #${ISSUE_NUMBER} to @${ACTOR} (Status: In Progress)"
         
