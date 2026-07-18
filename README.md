@@ -8,7 +8,8 @@
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![CI/CD Pipeline](https://github.com/lewandowski-anthony/JiRadar/actions/workflows/build-jiradar.yml/badge.svg)](https://github.com/lewandowski-anthony/JiRadar/actions/workflows/build-jiradar.yml)
 [![Release Version](https://img.shields.io/github/v/release/lewandowski-anthony/jiradar?style=flat-square&color=blue)](https://github.com/lewandowski-anthony/jiradar/releases)
-[![SonarQube Cloud](https://sonarcloud.io/images/project_badges/sonarcloud-highlight.svg)](https://sonarcloud.io/summary/new_code?id=lewandowski-anthony_JiRadar)
+[![SonarCloud](https://img.shields.io/sonar/quality_gate/lewandowski-anthony_JiRadar?server=https%3A%2F%2Fsonarcloud.io&style=flat-square&logo=sonarcloud)](https://sonarcloud.io/summary/new_code?id=lewandowski-anthony_JiRadar)
+
 
 ![JiRadar Logo](front-end/public/jiradar_logo.svg)
 
