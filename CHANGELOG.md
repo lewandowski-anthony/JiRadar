@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.10.0](https://github.com/lewandowski-anthony/JiRadar/compare/v1.9.2...v1.10.0) (2026-07-18)
+
+
+### Features
+
+* Add sonar cloud support - #JIRADAR-70 ([#71](https://github.com/lewandowski-anthony/JiRadar/issues/71)) ([51ad884](https://github.com/lewandowski-anthony/JiRadar/commit/51ad884cb7985bc534d958a7bd794f8cefc3cd62))
+
+
+### Bug Fixes
+
+* Clean sonar config ([5face9e](https://github.com/lewandowski-anthony/JiRadar/commit/5face9e25d6db62e72b051bf5a5a7edcebc0606c))
+* Clean sonar config ([1540b53](https://github.com/lewandowski-anthony/JiRadar/commit/1540b5312438aea4289cb3bf4fccb9288946991d))
+* Fix sonar with multiple projects #JIRADAR-70 ([e54583c](https://github.com/lewandowski-anthony/JiRadar/commit/e54583c25e4b9ebbca5c252522750ef84c3c4f2c))
+* Fix sonar with multiple projects #JIRADAR-70 ([c6106ad](https://github.com/lewandowski-anthony/JiRadar/commit/c6106ad85bad3b52eedb48dead66db07e46c9a55))
+* Fix sonar with multiple projects #JIRADAR-70 ([693d0a2](https://github.com/lewandowski-anthony/JiRadar/commit/693d0a212c0ce58e2175409d89a385fd53a654ef))
+* Fix sonar with multiple projects #JIRADAR-70 ([#74](https://github.com/lewandowski-anthony/JiRadar/issues/74)) ([5658bb6](https://github.com/lewandowski-anthony/JiRadar/commit/5658bb681009c00d9fe3a43e013cefc0379b823c))
+* Sonar coverage upgrade ([5d8f103](https://github.com/lewandowski-anthony/JiRadar/commit/5d8f103bc760df6d3b2f6e0499dd0c5312deca6a))
+* Sonar coverage upgrade ([1c99388](https://github.com/lewandowski-anthony/JiRadar/commit/1c99388712192228b703d2d9b900c5ff05876543))
+* Sonar coverage upgrade ([fb108ea](https://github.com/lewandowski-anthony/JiRadar/commit/fb108ea1718517cd8fb54d0a7413784311233d93))
+* Sonar coverage upgrade ([6fcc6af](https://github.com/lewandowski-anthony/JiRadar/commit/6fcc6af51f2e5b5052f6a952fe47ff1f2caed8a2))
+* Sonar coverage upgrade ([dd58465](https://github.com/lewandowski-anthony/JiRadar/commit/dd584658186abc37259732d9a05dff19d6f8a92f))
+* Sonar coverage upgrade ([73ad433](https://github.com/lewandowski-anthony/JiRadar/commit/73ad43342420b71227e128f8c86ec82547746f39))
+
 ## [1.9.2](https://github.com/lewandowski-anthony/JiRadar/compare/v1.9.1...v1.9.2) (2026-07-18)
 
 
