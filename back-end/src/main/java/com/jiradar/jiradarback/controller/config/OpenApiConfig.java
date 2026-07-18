@@ -20,7 +20,7 @@ import java.util.Map;
 public class OpenApiConfig {
 
 	static {
-		SpringDocUtils.getConfig().addRequestWrapperToIgnore(com.jiradar.jiradarback.core.IssueTrackerService.class);
+		SpringDocUtils.getConfig().addRequestWrapperToIgnore(com.jiradar.jiradarback.core.service.AbstractIssueTrackerService.class);
 	}
 
 	@Bean

@@ -186,7 +186,7 @@ Feature: API - User endpoints
     {
       "user_metrics_by_granularity": [
         {
-          "label": "Sem. 19 - 2026"
+          "label": "Week. 19 - 2026"
         }
       ]
     }
@@ -378,5 +378,26 @@ Feature: API - User endpoints
     """json
     {
       "number_of_review_done": 1
+    }
+    """
+
+  Scenario: We successfully get metrics across a broad date range stretching over thirty days to enforce monthly caching slices
+    Given POST /jira/rest/api/3/search/jql responds with:
+    """json
+    {
+      "issues": [],
+      "startAt": 0,
+      "maxResults": 100,
+      "total": 0,
+      "isLast": true
+    }
+    """
+    When I send a GET request to "/api/v1/tracker/jira/users/me/metrics?projectKeys=SMSUP&startDate=2026-01-01&endDate=2026-03-31"
+    Then the HTTP response status should be 200
+    And the response body contains:
+    """json
+    {
+      "number_of_issue_started": 0,
+      "number_of_issue_done": 0
     }
     """

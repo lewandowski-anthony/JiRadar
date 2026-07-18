@@ -71,6 +71,14 @@ export const es = {
     },
 
     // ---------------------------------------------------------
+    // ---------------------------------------------------------
+    // CUSTOM METRICS
+    // ---------------------------------------------------------
+    customMetrics: {
+        noCustomMetrics: "No se encontraron métricas personalizadas.",
+        title: "Métricas personalizadas"
+    },
+
     // ISSUE PROPERTIES
     // ---------------------------------------------------------
     issue: {
@@ -164,6 +172,7 @@ export const es = {
     tabs: {
         periodic: "Análisis periódico",
         reviews: "Revisiones de código",
+        customMetrics: "Métricas personalizadas",
         workHistory: "Historial de trabajo"
     }
 };

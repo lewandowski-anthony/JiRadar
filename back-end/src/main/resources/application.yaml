@@ -24,6 +24,8 @@ cache:
       maxSize: ${JIRA_USER_CACHE_MAX_SIZE:200}
 
 issue-tracker:
+  metrics:
+
   jira:
     config:
       enabled: ${JIRA_ENABLED:true}

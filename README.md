@@ -87,6 +87,154 @@ The frontend provides user dashboards, telemetry visualization feeds, and pagina
 
 ---
 
+## Custom Metrics Configuration Guide
+
+This guide explains how to configure and extend user performance metrics within the application using **Spring Expression Language (SpEL)**.
+
+---
+
+### 🚀 How It Works
+
+The application dynamically evaluates formulas defined as environment variables against the `UserMetricCalculationService` context.
+
+To prevent runtime failures, a **Fail-Fast validation mechanism** runs during the application bootstrap[cite: 2]. If any formula contains a syntax error or references a non-existent property/method,
+the application will refuse to start and throw an explicit initialization error[cite: 2].
+
+---
+
+### 🛠️ Configuration Format
+
+Custom metrics are loaded via the `issue-tracker.metrics.custom-metrics` configuration prefix[cite: 2]. You can inject them directly into your IntelliJ IDEA Run/Debug Configuration using the *
+*Environment variables** field.
+
+#### IntelliJ Environment Variables String
+
+Copy and paste the following single-line string into your IntelliJ configuration to load **10 distinct custom metrics**:
+
+```text
+ISSUE_TRACKER_METRICS_CUSTOM_METRICS_0_NAME=total-assigned;
+ISSUE_TRACKER_METRICS_CUSTOM_METRICS_0_FORMULA=userIssues.size();
+ISSUE_TRACKER_METRICS_CUSTOM_METRICS_1_NAME=bugs-count;
+ISSUE_TRACKER_METRICS_CUSTOM_METRICS_1_FORMULA=userIssues.?[type.name == 'Bug'].size();
+ISSUE_TRACKER_METRICS_CUSTOM_METRICS_2_NAME=stories-count;
+ISSUE_TRACKER_METRICS_CUSTOM_METRICS_2_FORMULA=userIssues.?[type.name == 'Story'].size();
+ISSUE_TRACKER_METRICS_CUSTOM_METRICS_3_NAME=completion-rate;
+ISSUE_TRACKER_METRICS_CUSTOM_METRICS_3_FORMULA=numberOfIssueStarted > 0 ? (numberOfIssueDone * 100.0 / numberOfIssueStarted) : 0.0;
+ISSUE_TRACKER_METRICS_CUSTOM_METRICS_4_NAME=review-reopen-rate;
+ISSUE_TRACKER_METRICS_CUSTOM_METRICS_4_FORMULA=numberOfReviewDone > 0 ? (numberOfReviewReopened * 100.0 / numberOfReviewDone) : 0.0;
+ISSUE_TRACKER_METRICS_CUSTOM_METRICS_5_NAME=wip-alert;
+ISSUE_TRACKER_METRICS_CUSTOM_METRICS_5_FORMULA=calculateParallelJiraInProgressRate() > 4.0;
+ISSUE_TRACKER_METRICS_CUSTOM_METRICS_6_NAME=clean-delivery-rate;
+ISSUE_TRACKER_METRICS_CUSTOM_METRICS_6_FORMULA=numberOfIssueDone > 0 ? ((numberOfIssueDone - numberOfReviewReopened) * 100.0 / numberOfIssueDone) : 0.0;
+ISSUE_TRACKER_METRICS_CUSTOM_METRICS_7_NAME=bugs-done-count;
+ISSUE_TRACKER_METRICS_CUSTOM_METRICS_7_FORMULA=userIssues.?[type.name == 'Bug' && status.name == 'Done'].size();
+ISSUE_TRACKER_METRICS_CUSTOM_METRICS_8_NAME=has-done-issues;
+ISSUE_TRACKER_METRICS_CUSTOM_METRICS_8_FORMULA=numberOfIssueDone > 0;
+ISSUE_TRACKER_METRICS_CUSTOM_METRICS_9_NAME=review-ratio;
+ISSUE_TRACKER_METRICS_CUSTOM_METRICS_9_FORMULA=numberOfIssueDone > 0 ? (numberOfReviewDone * 1.0 / numberOfIssueDone) : 0.0
+```
+
+### SpEl Writing skills
+
+#### 1. Global Variables and Pre-Computed Counters
+
+These fields return direct numerical values or core objects. You can combine them using mathematical operators or ternary conditions.
+
+| SpEL Field / Property    | Java Type   | Description                                                | Usage Example              |
+|:-------------------------|:------------|:-----------------------------------------------------------|:---------------------------|
+| `startedCount`           | `long`      | Number of issues started during the selected timeframe.    | `startedCount`             |
+| `numberOfIssueStarted`   | `long`      | Shortcut getter for the number of started issues.          | `numberOfIssueStarted > 0` |
+| `doneCount`              | `long`      | Number of issues moved to 'Done' during the timeframe.     | `doneCount`                |
+| `numberOfIssueDone`      | `long`      | Shortcut getter for the number of completed issues.        | `numberOfIssueDone`        |
+| `reopenedCount`          | `long`      | Total number of issue reopens following a code review.     | `reopenedCount`            |
+| `numberOfReviewReopened` | `long`      | Shortcut getter for the number of reopened reviews.        | `numberOfReviewReopened`   |
+| `startedAndDoneCount`    | `long`      | Issues both started AND completed within the same period.  | `startedAndDoneCount`      |
+| `numberOfReviewDone`     | `long`      | Total number of code reviews completed by the user.        | `numberOfReviewDone`       |
+| `range`                  | `DateRange` | The object representing the selected evaluation timeframe. | `range.from()`             |
+
+---
+
+#### 2. Advanced Business Calculation Methods
+
+These methods execute internal algorithms and can be invoked directly using parentheses `()`.
+
+| SpEL Method                              | Return Type           | Description                                             | Usage Example                                |
+|:-----------------------------------------|:----------------------|:--------------------------------------------------------|:---------------------------------------------|
+| `calculateAverageCycleTime()`            | `Duration`            | Average time taken to resolve an issue (Cycle Time).    | `calculateAverageCycleTime().toDays()`       |
+| `calculateAverageReviewTime()`           | `Duration`            | Average time spent by the developer reviewing an issue. | `calculateAverageReviewTime().toHours()`     |
+| `calculateTeamReviewParticipationRate()` | `double`              | User participation rate in team reviews (0.0 to 100.0). | `calculateTeamReviewParticipationRate()`     |
+| `calculateDeliverySuccessRate()`         | `double`              | Delivery success rate (started vs completed issues).    | `calculateDeliverySuccessRate() < 80.0`      |
+| `calculatePingPongReviewRate()`          | `double`              | Code review back-and-forth rate (reopened vs done).     | `calculatePingPongReviewRate()`              |
+| `calculateParallelJiraInProgressRate()`  | `double`              | Average number of parallel active tasks (WIP per day).  | `calculateParallelJiraInProgressRate()`      |
+| `getDoneIssuesTypeDistribution()`        | `Map<String, Double>` | Percentage distribution of completed issue types.       | `getDoneIssuesTypeDistribution().get('Bug')` |
+
+---
+
+#### 3. Raw Data Structures (Lists for Deep Filtering)
+
+These collections allow you to leverage SpEL's projection (`.![...]`) and selection (`.?[...]`) mechanisms to build highly customized filters.
+
+| SpEL List             | Element Type     | Collection Content                                               |
+|:----------------------|:-----------------|:-----------------------------------------------------------------|
+| `userIssues`          | `List<Issue>`    | All issues currently or previously assigned to the active user.  |
+| `devReviewDurations`  | `List<Duration>` | List of all review durations performed specifically by the user. |
+| `teamReviewDurations` | `List<Duration>` | List of all review durations performed across the entire team.   |
+
+##### 💡 Nested Properties Accessible Inside `Issue` Filters
+
+When filtering the `userIssues` list (e.g., `userIssues.?[...]`), you can query the following fields from the underlying `Issue` domain model:
+
+* `key` (`String`): The unique key of the issue (e.g., `PROJ-123`)
+* `type.name` (`String`): The type designation of the issue (e.g., `Bug`, `Story`, `Task`)
+* `status.name` (`String`): The current state of the issue (e.g., `To Do`, `In Progress`, `Done`)
+
+```
+
+---
+
+### 📊 Detailed Metrics Breakdown
+
+| Metric Name               | Description                                                         | SpEL Formula Template                                                                                      | Expected Output Type |
+|:--------------------------|:--------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------|:---------------------|
+| **`total-assigned`**      | Total volume of tickets assigned to the user.                       | `userIssues.size()`                                                                                        | `Integer`            |
+| **`bugs-count`**          | Total number of assigned bugs across all statuses.                  | `userIssues.?[type.name == 'Bug'].size()`                                                                  | `Integer`            |
+| **`stories-count`**       | Total number of assigned user stories.                              | `userIssues.?[type.name == 'Story'].size()`                                                                | `Integer`            |
+| **`completion-rate`**     | Percentage of completed issues relative to started ones.            | `numberOfIssueStarted > 0 ? (numberOfIssueDone * 100.0 / numberOfIssueStarted) : 0.0`                      | `Double`             |
+| **`review-reopen-rate`**  | Reopen rate of code reviews (stability/quality indicator).          | `numberOfReviewDone > 0 ? (numberOfReviewReopened * 100.0 / numberOfReviewDone) : 0.0`                     | `Double`             |
+| **`wip-alert`**           | Boolean flag that turns `true` if parallel active tasks exceed 4.0. | `calculateParallelJiraInProgressRate() > 4.0`                                                              | `Boolean`            |
+| **`clean-delivery-rate`** | Percentage of closed issues delivered without ever being reopened.  | `numberOfIssueDone > 0 ? ((numberOfIssueDone - numberOfReviewReopened) * 100.0 / numberOfIssueDone) : 0.0` | `Double`             |
+| **`bugs-done-count`**     | Specific number of Bugs transitioned to the 'Done' status.          | `userIssues.?[type.name == 'Bug' && status.name == 'Done'].size()`                                         | `Integer`            |
+| **`has-done-issues`**     | Simple boolean flag to check if the user closed any issue.          | `numberOfIssueDone > 0`                                                                                    | `Boolean`            |
+| **`review-ratio`**        | Ratio of performed reviews compared to completed tickets.           | `numberOfIssueDone > 0 ? (numberOfReviewDone * 1.0 / numberOfIssueDone) : 0.0`                             | `Double`             |
+
+---
+
+### 🔒 Security & Performance Features
+
+#### 1. Read-Only Sandbox
+
+The custom evaluation engine leverages SpEL's `SimpleEvaluationContext` configured for read-only data binding[cite: 2]. This strictly prevents malicious formulas from modifying application states,
+accessing unauthorized Java classes, or manipulating system resources.
+
+#### 2. Pre-Compiled Expressions
+
+Formulas are parsed and compiled into memory **once** during the initialization phase or at the root of a query[cite: 2]. When generating periodic historical datasets (e.g., weekly or monthly
+metrics), the pre-compiled expressions are reused over the time-granularity intervals, eliminating high CPU overhead[cite: 2].
+
+#### 3. Graceful Runtime Error Handling
+
+If a formula throws an unexpected exception at runtime (such as an unhandled division by zero on a specific sub-range), the application isolates the failure[cite: 2]. Instead of breaking the entire
+API response, it catches the error locally and returns a structured error message within the response payload[cite: 2]:
+
+```json
+{
+  "name": "faulty-metric",
+  "value": "ERROR: SpelEvaluationException: ..."
+}
+```
+
+---
+
 ## Caching Strategy & Configuration
 
 The application uses a pluggable caching infrastructure managed by `CacheProvider` implementations. This allows swapping telemetry tracking and query-optimization caches between an internal in-memory

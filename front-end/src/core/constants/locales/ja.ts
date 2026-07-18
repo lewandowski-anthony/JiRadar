@@ -71,6 +71,13 @@ export const ja = {
     },
 
     // ---------------------------------------------------------
+    // CUSTOM METRICS
+    // ---------------------------------------------------------
+    customMetrics: {
+        noCustomMetrics: "カスタムメトリクスが見つかりません。",
+        title: "カスタムメトリクス"
+    },
+
     // ISSUE PROPERTIES
     // ---------------------------------------------------------
     issue: {
@@ -164,6 +171,7 @@ export const ja = {
     tabs: {
         periodic: "定期分析",
         reviews: "コードレビュー",
+        customMetrics: "カスタムメトリクス",
         workHistory: "作業履歴"
     }
 };

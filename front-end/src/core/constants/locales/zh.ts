@@ -71,6 +71,13 @@ export const zh = {
     },
 
     // ---------------------------------------------------------
+    // CUSTOM METRICS
+    // ---------------------------------------------------------
+    customMetrics: {
+        noCustomMetrics: "未找到自定义指标。",
+        title: "自定义指标"
+    },
+
     // ISSUE PROPERTIES
     // ---------------------------------------------------------
     issue: {
@@ -164,6 +171,7 @@ export const zh = {
     tabs: {
         periodic: "定期分析",
         reviews: "代码评审",
+        customMetrics: "自定义指标",
         workHistory: "工作历史"
     }
 };

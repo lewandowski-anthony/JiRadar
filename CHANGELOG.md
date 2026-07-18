@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/lewandowski-anthony/JiRadar/compare/v1.6.0...v1.7.0) (2026-07-17)
+
+
+### Features
+
+* Hybrid/Dynamic Custom Metrics Using SpEL - #JIRADAR-31 ([#32](https://github.com/lewandowski-anthony/JiRadar/issues/32)) ([157fa31](https://github.com/lewandowski-anthony/JiRadar/commit/157fa315ec40dbeb52079a3368af93e4c7bc5618))
+
 ## [1.6.0](https://github.com/lewandowski-anthony/JiRadar/compare/v1.5.0...v1.6.0) (2026-07-17)
 
 

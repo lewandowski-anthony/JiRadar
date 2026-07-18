@@ -9,6 +9,7 @@ import { Tabs, Tab } from "@core/components/menus/Tab";
 import { type TranslationKeys } from '@core/constants/locales';
 import { useTranslation } from "@core/hooks/useTranslation";
 import { type DashboardFilters } from '@core/models/dashboard';
+import { CustomMetricsPanel } from '@features/customMetrics/components/CustomMetricsPanel';
 
 export default function Dashboard() {
     const {
@@ -74,6 +75,12 @@ export default function Dashboard() {
                                     );
                                 })}
                             </div>
+                        </Tab>
+                    )}
+
+                    {userMetrics && userMetrics.customMetrics && userMetrics.customMetrics.length > 0 && (
+                        <Tab id="custom-metrics" label={t.tabs.customMetrics} icon="i-custom-icon">
+                            <CustomMetricsPanel customMetrics={userMetrics.customMetrics} />
                         </Tab>
                     )}
 
