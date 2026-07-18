@@ -35,7 +35,7 @@ runs:
           exit 0
         fi
 
-        EXISTING_ISSUE_NUMBER=$(gh issue list --state open --search "$EXPECTED_ISSUE_TITLE" --json number --jq '.[0].number')
+        EXISTING_ISSUE_NUMBER=$(gh issue list --state open --search "in:title \"$EXPECTED_ISSUE_TITLE\"" --json number --jq '.[0].number')
 
         if [ -n "$EXISTING_ISSUE_NUMBER" ] && [ "$EXISTING_ISSUE_NUMBER" != "null" ]; then
           echo "An open tracking issue already exists (Issue #${EXISTING_ISSUE_NUMBER})."
