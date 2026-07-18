@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.9.1](https://github.com/lewandowski-anthony/JiRadar/compare/v1.9.0...v1.9.1) (2026-07-18)
+
+
+### Bug Fixes
+
+* Clean CI logs ([9d1f102](https://github.com/lewandowski-anthony/JiRadar/commit/9d1f1028bf0ce52bed178f4e0774d25344bc006c))
+* Fix issue creation ([221ebb2](https://github.com/lewandowski-anthony/JiRadar/commit/221ebb24dbefdb11b5aa63ca11b2ccc1d2343776))
+* Fix issue creation ([e78fec2](https://github.com/lewandowski-anthony/JiRadar/commit/e78fec22481fb595f5b8c1cd0359aaaa4e847988))
+* Fix issue creation ([0bebcda](https://github.com/lewandowski-anthony/JiRadar/commit/0bebcda6908e713566b062dc6d2d1daea85c5cf2))
+* Remove test workflow ([8daa7b2](https://github.com/lewandowski-anthony/JiRadar/commit/8daa7b2d2d461c4cbe5cb50b439051f808aeead5))
+* Use release please user open CI ([57368d3](https://github.com/lewandowski-anthony/JiRadar/commit/57368d34dbef51c3c45c40253469bb7bf6cb57ce))
+* Use release please user open CI ([d30dc58](https://github.com/lewandowski-anthony/JiRadar/commit/d30dc585ca7fb90e722fe5d653df794be2e7c2dd))
+
 ## [1.9.0](https://github.com/lewandowski-anthony/JiRadar/compare/v1.8.1...v1.9.0) (2026-07-18)
 
 

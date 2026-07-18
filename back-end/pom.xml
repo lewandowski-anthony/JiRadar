@@ -5,7 +5,7 @@
 
     <groupId>com.jiradar</groupId>
     <artifactId>jiradar-back</artifactId>
-    <version>1.9.0</version>
+    <version>1.9.1</version>
     <name>JiRadar Back End</name>
     <description>Back end for JiRadar project</description>
 
