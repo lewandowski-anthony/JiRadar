@@ -26,21 +26,30 @@ runs:
         fi
 
         ACTOR="${{ github.actor }}"
+        EXPECTED_ISSUE_TITLE="[RELEASE] Deployement of ${PR_TITLE}"
         echo "Processing PR #${PR_NUMBER}: ${PR_TITLE}..."
         
         CURRENT_PR_BODY=$(gh pr view $PR_NUMBER --json body --jq '.body')
-        
         if echo "$CURRENT_PR_BODY" | grep -q "Closes #"; then
-          echo "PR #${PR_NUMBER} already has a linked tracking issue. Skipping."
+          echo "PR #${PR_NUMBER} has a linked tracking issue in its body. Skipping."
           exit 0
         fi
 
-        echo "No tracking issue linked to this PR. Creating a new one..."
-        ISSUE_TITLE="[RELEASE] Deployement of ${PR_TITLE}"
+        EXISTING_ISSUE_NUMBER=$(gh issue list --state open --search "$EXPECTED_ISSUE_TITLE" --json number --jq '.[0].number')
+
+        if [ -n "$EXISTING_ISSUE_NUMBER" ] && [ "$EXISTING_ISSUE_NUMBER" != "null" ]; then
+          echo "An open tracking issue already exists (Issue #${EXISTING_ISSUE_NUMBER})."
+          echo "Updating the PR description to re-link it..."
+          NEW_PR_BODY="${CURRENT_PR_BODY}"$'\n\n'"Closes #${EXISTING_ISSUE_NUMBER}"
+          gh pr edit $PR_NUMBER --body "$NEW_PR_BODY"
+          exit 0
+        fi
+
+        echo "No tracking issue found. Creating a new one..."
         ISSUE_BODY="This is an automated tracking issue generated for the Release Pull Request #${PR_NUMBER}. This issue simulates a full delivery lifecycle (Start -> In Progress -> In Review)."
         
         ISSUE_NUMBER=$(gh issue create \
-          --title "$ISSUE_TITLE" \
+          --title "$EXPECTED_ISSUE_TITLE" \
           --body "$ISSUE_BODY" \
           --assignee "$ACTOR" \
           --label "release" | grep -oE '[0-9]+$')
