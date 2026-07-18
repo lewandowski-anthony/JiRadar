@@ -25,12 +25,18 @@ runs:
         distribution: 'temurin'
         cache: 'maven'
 
-    - name: Build, Test and Analyze Back-end
+    - name: Build, Test and Analyze
       shell: bash
       run: |
         cd back-end
-        mvn -B clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-          -Dsonar.projectProperties=sonar-project.properties
+        mvn -B clean verify sonar:sonar \
+          -Dsonar.organization=jiradar \
+          -Dsonar.projectKey=jiradar_jiradar-back \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.sources=src/main/java \
+          -Dsonar.tests=src/test/java \
+          -Dsonar.java.binaries=target/classes \
+          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
       env:
         GITHUB_TOKEN: ${{ github.token }}
         SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
