@@ -4,7 +4,6 @@ import com.jiradar.jiradarback.infrastructure.cache.CacheProvider;
 import com.jiradar.jiradarback.infrastructure.cache.config.AvailableCache;
 import com.jiradar.jiradarback.infrastructure.cache.config.CacheProperties;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Lazy;

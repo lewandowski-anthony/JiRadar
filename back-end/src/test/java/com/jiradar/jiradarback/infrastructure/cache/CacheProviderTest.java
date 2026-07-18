@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 class CacheProviderTest {
 
@@ -75,7 +76,7 @@ class CacheProviderTest {
 	static class MockRedisTestConfig {
 		@Bean
 		public RedisConnectionFactory redisConnectionFactory() {
-			return Mockito.mock(RedisConnectionFactory.class);
+			return mock(RedisConnectionFactory.class);
 		}
 	}
 }

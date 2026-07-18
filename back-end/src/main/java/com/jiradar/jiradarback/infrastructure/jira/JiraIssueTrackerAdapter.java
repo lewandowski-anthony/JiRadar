@@ -14,8 +14,8 @@ import com.jiradar.jiradarback.core.service.AbstractIssueTrackerService;
 import com.jiradar.jiradarback.core.util.PageUtils;
 import com.jiradar.jiradarback.exception.BusinessException;
 import com.jiradar.jiradarback.infrastructure.jira.enums.JiraFieldId;
-import com.jiradar.jiradarback.infrastructure.jira.repository.mapper.JiraUserMapper;
-import com.jiradar.jiradarback.infrastructure.jira.repository.JiraIssueRepository;
+import com.jiradar.jiradarback.infrastructure.jira.gateway.mapper.JiraUserMapper;
+import com.jiradar.jiradarback.infrastructure.jira.gateway.JiraTrackerGateway;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
@@ -36,14 +37,14 @@ public class JiraIssueTrackerAdapter extends AbstractIssueTrackerService {
 
 	private final JiraServiceClient jiraClient;
 	private final JiraUserMapper jiraUserMapper;
-	private final JiraIssueRepository jiraIssueRepository;
+	private final JiraTrackerGateway jiraIssueRepository;
 
 	public JiraIssueTrackerAdapter(
 			CustomMetricsProperties customMetricsProperties,
 			JiraServiceClient jiraClient,
 			JiraUserMapper jiraUserMapper,
 			UserHistoryMapper userHistoryMapper,
-			JiraIssueRepository jiraIssueRepository) {
+			JiraTrackerGateway jiraIssueRepository) {
 
 		super(customMetricsProperties, userHistoryMapper);
 		this.jiraClient = jiraClient;
@@ -65,7 +66,7 @@ public class JiraIssueTrackerAdapter extends AbstractIssueTrackerService {
 	@Override
 	public Optional<Issue> getIssueByKey(String issueKey) {
 		jiraClient.getIssue(issueKey, JiraFieldId.CHANGELOG.name());
-		return jiraIssueRepository.getIssuesForCustomRange(List.of(), LocalDate.now(), LocalDate.now()).stream()
+		return jiraIssueRepository.getIssuesForCustomRange(List.of(), LocalDate.now(ZoneId.systemDefault()), LocalDate.now(ZoneId.systemDefault())).stream()
 				.filter(issue -> issue.getKey().equals(issueKey))
 				.findFirst();
 	}

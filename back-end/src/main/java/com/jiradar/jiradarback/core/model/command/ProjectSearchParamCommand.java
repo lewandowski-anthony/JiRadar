@@ -1,7 +1,5 @@
 package com.jiradar.jiradarback.core.model.command;
 
-import com.jiradar.jiradarback.core.model.enums.TimeGranularity;
-
 import java.time.LocalDate;
 import java.util.List;
 

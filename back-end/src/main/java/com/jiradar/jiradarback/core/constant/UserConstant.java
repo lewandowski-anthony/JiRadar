@@ -1,7 +1,10 @@
 package com.jiradar.jiradarback.core.constant;
 
 import com.jiradar.jiradarback.core.model.issuetracker.User;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class UserConstant {
 
 	public static final String UNASSIGNED_NAME = "Unassigned";
