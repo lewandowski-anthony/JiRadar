@@ -19,7 +19,7 @@ jobs:
       pr: ${{ steps.release.outputs.pr }}
       clean_tag: ${{ steps.format-tag.outputs.version }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Run Release Please
         id: release
@@ -44,7 +44,7 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Link Release PR to an Issue
         uses: ./.github/actions/link-release-issue
@@ -64,7 +64,7 @@ jobs:
       contents: read
       packages: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Login to GHCR
         if: needs.release-please.outputs.release_created == 'true'
@@ -87,7 +87,7 @@ jobs:
       contents: read
       packages: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Login to GHCR
         if: needs.release-please.outputs.release_created == 'true'
