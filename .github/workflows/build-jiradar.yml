@@ -86,7 +86,7 @@ jobs:
           image_tag: ${{ needs.release-please.outputs.clean_tag }}
 
       - name: SonarCloud Back Scan
-        uses: SonarSource/sonarqube-scan-action@v5
+        uses: SonarSource/sonarqube-scan-action@v8
         with:
           args: -Dsonar.modules=back
         env:
@@ -119,7 +119,7 @@ jobs:
           image_tag: ${{ needs.release-please.outputs.clean_tag }}
 
       - name: SonarCloud Front Scan
-        uses: SonarSource/sonarqube-scan-action@v5
+        uses: SonarSource/sonarqube-scan-action@v8
         with:
           args: -Dsonar.modules=front
         env:
