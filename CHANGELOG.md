@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.1](https://github.com/lewandowski-anthony/JiRadar/compare/v1.8.0...v1.8.1) (2026-07-18)
+
+
+### Bug Fixes
+
+* Remove the dependabot-tracker.yml ([9a5eaa9](https://github.com/lewandowski-anthony/JiRadar/commit/9a5eaa9dad0697e87824f932f146b26be32bd4c2))
+
 ## [1.8.0](https://github.com/lewandowski-anthony/JiRadar/compare/v1.7.0...v1.8.0) (2026-07-18)
 
 
