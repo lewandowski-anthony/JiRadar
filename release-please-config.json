@@ -1,8 +1,7 @@
 {
   "packages": {
     ".": {
-      "release-type": "node",
-      "package-name": "jiradar"
+      "release-type": "simple"
     }
   },
   "changelog-path": "CHANGELOG.md",
