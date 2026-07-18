@@ -40,7 +40,8 @@ runs:
     - name: SonarCloud Front Scan
       uses: SonarSource/sonarqube-scan-action@v8
       with:
-        projectBaseDir: './front-end'
+        args: >
+          -Dsonar.projectProperties=front-end/sonar-project.properties
       env:
         SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
 
