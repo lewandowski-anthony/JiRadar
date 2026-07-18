@@ -136,7 +136,7 @@ jobs:
         shell: bash
         run: |
           cd back-end && mvn clean compile test
-          cd ../front-end && npm ci && npm run test -- --coverage --watchAll=false
+          cd ../front-end && npm ci && npm run test -- --coverage
 
       - name: SonarCloud Full Scan
         uses: SonarSource/sonarqube-scan-action@v8
