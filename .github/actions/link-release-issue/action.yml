@@ -1,5 +1,5 @@
 name: 'Link Release PR to Tracking Issue'
-description: 'Automates the creation of a GitHub Issue, triggers workflow transitions, and links it to a Release Pull Request'
+description: 'Automates the creation or update of a GitHub Issue, triggers workflow transitions, and links it to a Release Pull Request'
 
 inputs:
   pr_json:
@@ -12,7 +12,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Create Issue, Simulate Transitions and Link to PR
+    - name: Create or Update Issue, Simulate Transitions and Link to PR
       shell: bash
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
@@ -26,24 +26,38 @@ runs:
         fi
 
         ACTOR="${{ github.actor }}"
-
         echo "Processing PR #${PR_NUMBER}: ${PR_TITLE} triggered by @${ACTOR}"
         
         ISSUE_TITLE="[RELEASE] Deployement of ${PR_TITLE}"
         ISSUE_BODY="This is an automated tracking issue generated for the Release Pull Request #${PR_NUMBER}. This issue simulates a full delivery lifecycle (Start -> In Progress -> In Review)."
         
-        ISSUE_NUMBER=$(gh issue create \
-          --title "$ISSUE_TITLE" \
-          --body "$ISSUE_BODY" \
-          --assignee "$ACTOR" \
-          --label "release" | grep -oE '[0-9]+$')
+        echo "Searching for an existing tracking issue..."
+        EXISTING_ISSUE_NUMBER=$(gh issue list --search "$ISSUE_TITLE in:title state:open" --json number --jq '.[0].number')
+
+        if [ -n "$EXISTING_ISSUE_NUMBER" ] && [ "$EXISTING_ISSUE_NUMBER" != "null" ]; then
+          ISSUE_NUMBER=$EXISTING_ISSUE_NUMBER
+          echo "Found existing tracking Issue #${ISSUE_NUMBER}. Updating description..."
+          gh issue edit $ISSUE_NUMBER --body "$ISSUE_BODY" --assignee "$ACTOR" --label "release"
+          echo "Issue #${ISSUE_NUMBER} successfully updated."
+        else
+          echo "No existing tracking issue found. Creating a new one..."
+          ISSUE_NUMBER=$(gh issue create \
+            --title "$ISSUE_TITLE" \
+            --body "$ISSUE_BODY" \
+            --assignee "$ACTOR" \
+            --label "release" | grep -oE '[0-9]+$')
         
-        echo "Created and Assigned tracking Issue #${ISSUE_NUMBER} to @${ACTOR} (Status: In Progress)"
-        
-        sleep 1
+          echo "Created and Assigned tracking Issue #${ISSUE_NUMBER} to @${ACTOR} (Status: In Progress)"
+          sleep 1
+        fi
 
         CURRENT_PR_BODY=$(gh pr view $PR_NUMBER --json body --jq '.body')
-        NEW_PR_BODY="${CURRENT_PR_BODY}"$'\n\n'"Closes #${ISSUE_NUMBER}"
         
-        gh pr edit $PR_NUMBER --body "$NEW_PR_BODY"
-        echo "Successfully linked Issue #${ISSUE_NUMBER} to PR #${PR_NUMBER} (Status: In Review)"
+        if echo "$CURRENT_PR_BODY" | grep -q "Closes #${ISSUE_NUMBER}"; then
+          echo "PR #${PR_NUMBER} is already linked to Issue #${ISSUE_NUMBER} (Status: In Review)."
+        else
+          echo "Linking Issue #${ISSUE_NUMBER} to PR #${PR_NUMBER}..."
+          NEW_PR_BODY="${CURRENT_PR_BODY}"$'\n\n'"Closes #${ISSUE_NUMBER}"
+          gh pr edit $PR_NUMBER --body "$NEW_PR_BODY"
+          echo "Successfully linked Issue #${ISSUE_NUMBER} to PR #${PR_NUMBER} (Status: In Review)"
+        fi
