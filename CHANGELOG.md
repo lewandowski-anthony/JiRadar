@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.8.0](https://github.com/lewandowski-anthony/JiRadar/compare/v1.7.0...v1.8.0) (2026-07-18)
+
+
+### Features
+
+* Add dependabot.yaml ([47341df](https://github.com/lewandowski-anthony/JiRadar/commit/47341df7b0f98ed7a651398d203f39439021815f))
+* Add ISSUE Creation for RELEASE ([8962c0a](https://github.com/lewandowski-anthony/JiRadar/commit/8962c0adc93942955bc34a6b50b6dc8355476d80))
+* Add ISSUE Creation for RELEASE ([936acae](https://github.com/lewandowski-anthony/JiRadar/commit/936acae4e9074010bdb6dbe37b00194109e1f619))
+* Add ISSUE Creation for RELEASE ([e9ca03b](https://github.com/lewandowski-anthony/JiRadar/commit/e9ca03bdd97aeaa7e524c96ee537f372d51aa7d1))
+
+
+### Bug Fixes
+
+* fix Dependabot package ecosystem ([799e11c](https://github.com/lewandowski-anthony/JiRadar/commit/799e11c398052268049872032449750b4f2a40da))
+* fix Dependabot package ecosystem ([b6debea](https://github.com/lewandowski-anthony/JiRadar/commit/b6debea8961e71e92d0c529dd5ed86349f85bc93))
+* fix Dependabot package ecosystem ([cd37fbf](https://github.com/lewandowski-anthony/JiRadar/commit/cd37fbf98602b3f747b47bd74fce2d03cf54d14a))
+* fix Dependabot package ecosystem ([de013f2](https://github.com/lewandowski-anthony/JiRadar/commit/de013f2a6876d36516b493fc83f521ca7ed34106))
+* fix the CI ([ef9cd7e](https://github.com/lewandowski-anthony/JiRadar/commit/ef9cd7e5c59cc5a5689e38394ccecba591d9a501))
+
 ## [1.7.0](https://github.com/lewandowski-anthony/JiRadar/compare/v1.6.0...v1.7.0) (2026-07-17)
 
 
