@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.0](https://github.com/lewandowski-anthony/JiRadar/compare/v1.8.1...v1.9.0) (2026-07-18)
+
+
+### Features
+
+* Trigger release please ([1595464](https://github.com/lewandowski-anthony/JiRadar/commit/1595464e737fa5d39228337bc26cc9ced480cc32))
+
 ## [1.8.1](https://github.com/lewandowski-anthony/JiRadar/compare/v1.8.0...v1.8.1) (2026-07-18)
 
 
