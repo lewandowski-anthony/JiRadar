@@ -13,7 +13,6 @@ jobs:
       contents: write
       pull-requests: write
       id-token: write
-      packages: write
     outputs:
       release_created: ${{ steps.release.outputs.release_created || 'false' }}
       tag_name: ${{ steps.release.outputs.tag_name || 'latest' }}
@@ -27,9 +26,8 @@ jobs:
         id: release
         uses: googleapis/release-please-action@v5
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
           release-type: simple
-          release-as: 1.8.2
 
       - name: Format Docker Tag
         id: format-tag
@@ -53,7 +51,7 @@ jobs:
         uses: ./.github/actions/link-release-issue
         with:
           pr_json: ${{ needs.release-please.outputs.pr }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.JIRADAR_CI_TOKEN }}
 
       - name: Update Project Versions
         uses: ./.github/actions/update-project-versions
@@ -75,7 +73,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.RELEASE_PLEASE_TOKEN }}
 
       - name: Build & Push Back-end
         uses: ./.github/actions/build-maven
@@ -90,7 +88,7 @@ jobs:
       contents: read
       packages: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Login to GHCR
         if: needs.release-please.outputs.release_created == 'true'
@@ -98,7 +96,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.RELEASE_PLEASE_TOKEN }}
 
       - name: Build & Push Front-end
         uses: ./.github/actions/build-node
