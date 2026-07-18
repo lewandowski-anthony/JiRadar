@@ -1,0 +1,25 @@
+name: 'Dependabot Issue Tracker'
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  link-dependabot:
+    runs-on: ubuntu-latest
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Link Dependabot PR to Tracking Issue
+        uses: ./.github/actions/link-release-issue
+        with:
+          pr_json: |
+            {
+              "number": ${{ github.event.pull_request.number }},
+              "title": "${{ github.event.pull_request.title }}"
+            }
+          github_token: ${{ secrets.GITHUB_TOKEN }}

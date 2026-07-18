@@ -1,0 +1,33 @@
+version: 2
+updates:
+  - package-ecosystem: "maven"
+    directory: "/back-end"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 5
+    groups:
+      maven-dependencies:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+
+  - package-ecosystem: "node"
+    directory: "/front-end"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 5
+    groups:
+      node-dependencies:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 3
