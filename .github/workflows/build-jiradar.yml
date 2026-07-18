@@ -26,7 +26,7 @@ jobs:
         id: release
         uses: googleapis/release-please-action@v5
         with:
-          token: ${{ secrets.JIRADAR_CI_TOKEN }}
+          token: ${{ github.token }}
           release-type: simple
 
       - name: Format Docker Tag
@@ -51,7 +51,7 @@ jobs:
         uses: ./.github/actions/link-release-issue
         with:
           pr_json: ${{ needs.release-please.outputs.pr }}
-          github_token: ${{ secrets.JIRADAR_CI_TOKEN }}
+          github_token: ${{ github.token }}
 
       - name: Update Project Versions
         uses: ./.github/actions/update-project-versions
@@ -73,7 +73,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          password: ${{ github.token }}
 
       - name: Build & Push Back-end
         uses: ./.github/actions/build-maven
@@ -96,7 +96,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          password: ${{ github.token }}
 
       - name: Build & Push Front-end
         uses: ./.github/actions/build-node
