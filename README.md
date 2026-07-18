@@ -8,6 +8,8 @@
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![CI/CD Pipeline](https://github.com/lewandowski-anthony/JiRadar/actions/workflows/build-jiradar.yml/badge.svg)](https://github.com/lewandowski-anthony/JiRadar/actions/workflows/build-jiradar.yml)
 [![Release Version](https://img.shields.io/github/v/release/lewandowski-anthony/jiradar?style=flat-square&color=blue)](https://github.com/lewandowski-anthony/jiradar/releases)
+[![SonarQube Cloud](https://sonarcloud.io/images/project_badges/sonarcloud-highlight.svg)](https://sonarcloud.io/summary/new_code?id=lewandowski-anthony_JiRadar)
+
 ![JiRadar Logo](front-end/public/jiradar_logo.svg)
 
 Jiradar is a full-stack platform designed to extract, process, and analyze project delivery metrics and activity loops from issue-tracking ecosystems like Jira. By evaluating issue transitions and raw
