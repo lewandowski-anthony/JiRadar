@@ -27,6 +27,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           release-type: simple
+          release-as: 1.8.2
 
       - name: Format Docker Tag
         id: format-tag
