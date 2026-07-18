@@ -147,7 +147,7 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v8
         with:
           args: >
-            -Dsonar.organization=lewandowski-anthony
+            -Dsonar.organization=jiradar
             -Dsonar.projectKey=lewandowski-anthony_JiRadar
             -Dsonar.projectName=JiRadar
             -Dsonar.sources=back-end/src/main/java,front-end/src
