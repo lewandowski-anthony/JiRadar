@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.9.2](https://github.com/lewandowski-anthony/JiRadar/compare/v1.9.1...v1.9.2) (2026-07-18)
+
+
+### Bug Fixes
+
+* Enable HUSKY ([40c07ad](https://github.com/lewandowski-anthony/JiRadar/commit/40c07adb903a55893066bc05bfa5953a79197a44))
+* Enable HUSKY ([da24231](https://github.com/lewandowski-anthony/JiRadar/commit/da2423109dee7fd4d242e61e24d1d9ee3d2b24af))
+* test CI/CD issue creation ([c566381](https://github.com/lewandowski-anthony/JiRadar/commit/c56638189d706b11bdb6ad5e7307b29f309e6634))
+
 ## [1.9.1](https://github.com/lewandowski-anthony/JiRadar/compare/v1.9.0...v1.9.1) (2026-07-18)
 
 
