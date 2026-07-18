@@ -33,7 +33,7 @@ runs:
           -Dsonar.projectProperties=sonar-project.properties
       env:
         GITHUB_TOKEN: ${{ github.token }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
 
     - name: Docker Build & Push
       uses: ./.github/actions/docker-build-push
