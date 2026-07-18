@@ -18,7 +18,7 @@ import java.util.Random;
 @RestControllerAdvice
 public class RestExceptionHandler {
 
-	private final static Random RANDOM = new Random();
+	private static final Random RANDOM = new Random();
 
 	@ExceptionHandler(value = Exception.class)
 	public ResponseEntity<@NonNull InternalServerResponseError> handleException(Exception e) {
