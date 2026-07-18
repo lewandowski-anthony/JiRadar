@@ -1,0 +1,49 @@
+name: 'Link Release PR to Tracking Issue'
+description: 'Automates the creation of a GitHub Issue, triggers workflow transitions, and links it to a Release Pull Request'
+
+inputs:
+  pr_json:
+    description: 'The JSON string of the PR output from release-please'
+    required: true
+  github_token:
+    description: 'The GITHUB_TOKEN with issues:write and pull-requests:write permissions'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Create Issue, Simulate Transitions and Link to PR
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+      run: |
+        PR_NUMBER=$(echo '${{ inputs.pr_json }}' | jq '.number')
+        PR_TITLE=$(echo '${{ inputs.pr_json }}' | jq -r '.title')
+        
+        if [ -z "$PR_NUMBER" ] || [ "$PR_NUMBER" = "null" ]; then
+          echo "ERROR: No valid PR number found in pr_json input."
+          exit 1
+        fi
+
+        ACTOR="${{ github.actor }}"
+
+        echo "Processing PR #${PR_NUMBER}: ${PR_TITLE} triggered by @${ACTOR}"
+        
+        ISSUE_TITLE="[RELEASE] Deployement of ${PR_TITLE}"
+        ISSUE_BODY="This is an automated tracking issue generated for the Release Pull Request #${PR_NUMBER}. This issue simulates a full delivery lifecycle (Start -> In Progress -> In Review)."
+        
+        ISSUE_NUMBER=$(gh issue create \
+          --title "$ISSUE_TITLE" \
+          --body "$ISSUE_BODY" \
+          --assignee "$ACTOR" \
+          --label "maintenance" | grep -oE '[0-9]+$')
+        
+        echo "Created and Assigned tracking Issue #${ISSUE_NUMBER} to @${ACTOR} (Status: In Progress)"
+        
+        sleep 1
+
+        CURRENT_PR_BODY=$(gh pr view $PR_NUMBER --json body --jq '.body')
+        NEW_PR_BODY="${CURRENT_PR_BODY}"$'\n\n'"Closes #${ISSUE_NUMBER}"
+        
+        gh pr edit $PR_NUMBER --body "$NEW_PR_BODY"
+        echo "Successfully linked Issue #${ISSUE_NUMBER} to PR #${PR_NUMBER} (Status: In Review)"

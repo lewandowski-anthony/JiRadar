@@ -41,8 +41,16 @@ jobs:
     if: ${{ needs.release-please.outputs.prs_created == 'true' }}
     permissions:
       contents: write
+      issues: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
+
+      - name: Link Release PR to an Issue
+        uses: ./.github/actions/link-release-issue
+        with:
+          pr_json: ${{ needs.release-please.outputs.pr }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update Project Versions
         uses: ./.github/actions/update-project-versions
