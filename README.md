@@ -1,17 +1,95 @@
 # Jiradar - Analytics & Visualization Workspace
 
-[![Java Version](https://img.shields.io/badge/Java-25-orange.svg?style=flat-square&logo=openjdk)](https://openjdk.org/projects/jdk/25/)
-[![Spring Boot](https://img.shields.io/badge/Spring_Boot-4.1.0-brightgreen.svg?style=flat-square&logo=springboot)](https://spring.io/projects/spring-boot)
-[![Node Target](https://img.shields.io/badge/Node.js-v20.x-blue.svg?style=flat-square&logo=nodedotjs)](https://nodejs.org/)
-[![Vite Engine](https://img.shields.io/badge/Vite-6.x-purple.svg?style=flat-square&logo=vite)](https://vite.dev/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38bdf8.svg?style=flat-square&logo=tailwindcss)](https://tailwindcss.com/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
-[![CI/CD Pipeline](https://github.com/lewandowski-anthony/JiRadar/actions/workflows/build-jiradar.yml/badge.svg)](https://github.com/lewandowski-anthony/JiRadar/actions/workflows/build-jiradar.yml)
-[![Release Version](https://img.shields.io/github/v/release/lewandowski-anthony/jiradar?style=flat-square&color=blue)](https://github.com/lewandowski-anthony/jiradar/releases)
-[![SonarCloud](https://img.shields.io/sonar/quality_gate/lewandowski-anthony_JiRadar?server=https%3A%2F%2Fsonarcloud.io&style=flat-square&logo=sonarcloud)](https://sonarcloud.io/summary/new_code?id=lewandowski-anthony_JiRadar)
+<p style="text-align: center;">
+  <img src="front-end/public/jiradar_logo.svg" alt="JiRadar Logo" width="150" />
+</p>
 
+## Project Status 
+<center>
+<table>
+  <thead>
+    <tr>
+      <th>Category</th>
+      <th>Component / Tech</th>
+      <th>Badge</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- GLOBAL BLOCK -->
+    <tr>
+      <td rowspan="3"><b>Global</b></td>
+      <td>CI/CD Pipeline</td>
+      <td><a href="https://github.com/lewandowski-anthony/JiRadar/actions/workflows/build-jiradar.yml"><img src="https://github.com/lewandowski-anthony/JiRadar/actions/workflows/build-jiradar.yml/badge.svg" alt="CI/CD Pipeline"></a></td>
+    </tr>
+    <tr>
+      <td>Release Version</td>
+      <td><a href="https://github.com/lewandowski-anthony/jiradar/releases"><img src="https://img.shields.io/github/v/release/lewandowski-anthony/jiradar?style=flat-square&color=blue" alt="Release Version"></a></td>
+    </tr>
+    <tr>
+      <td>License</td>
+      <td><a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square" alt="License"></a></td>
+    </tr>
+    <!-- BACKEND BLOCK -->
+    <tr>
+      <td rowspan="6"><b>Backend</b></td>
+      <td>Java Version</td>
+      <td><a href="https://openjdk.org/projects/jdk/25/"><img src="https://img.shields.io/badge/Java-25-orange.svg?style=flat-square&logo=openjdk" alt="Java Version"></a></td>
+    </tr>
+    <tr>
+      <td>Spring Boot</td>
+      <td><a href="https://spring.io/projects/spring-boot"><img src="https://img.shields.io/badge/Spring_Boot-4.1.0-brightgreen.svg?style=flat-square&logo=springboot" alt="Spring Boot"></a></td>
+    </tr>
+    <tr>
+      <td>Quality Gate</td>
+      <td><img src="https://sonarcloud.io/api/project_badges/measure?project=jiradar_jiradar-back&metric=alert_status" alt="Quality Gate"></td>
+    </tr>
+    <tr>
+      <td>Code Smells</td>
+      <td><img src="https://sonarcloud.io/api/project_badges/measure?project=jiradar_jiradar-back&metric=code_smells" alt="Code Smells"></td>
+    </tr>
+    <tr>
+      <td>Code Coverage</td>
+      <td><img src="https://sonarcloud.io/api/project_badges/measure?project=jiradar_jiradar-back&metric=coverage" alt="Code Coverage"></td>
+    </tr>
+    <tr>
+      <td>Bugs</td>
+      <td><img src="https://sonarcloud.io/api/project_badges/measure?project=jiradar_jiradar-back&metric=bugs" alt="Bugs"></td>
+    </tr>
+    <!-- FRONTEND BLOCK -->
+    <tr>
+      <td rowspan="7"><b>Frontend</b></td>
+      <td>Node.js</td>
+      <td><a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-v20.x-blue.svg?style=flat-square&logo=nodedotjs" alt="Node Target"></a></td>
+    </tr>
+    <tr>
+      <td>Vite Engine</td>
+      <td><a href="https://vite.dev/"><img src="https://img.shields.io/badge/Vite-6.x-purple.svg?style=flat-square&logo=vite" alt="Vite Engine"></a></td>
+    </tr>
+    <tr>
+      <td>Tailwind CSS</td>
+      <td><a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/Tailwind_CSS-v4-38bdf8.svg?style=flat-square&logo=tailwindcss" alt="Tailwind CSS"></a></td>
+    </tr>
+    <tr>
+      <td>Quality Gate</td>
+      <td><img src="https://sonarcloud.io/api/project_badges/measure?project=jiradar_jiradar-front&metric=alert_status" alt="Quality Gate"></td>
+    </tr>
+    <tr>
+      <td>Code Smells</td>
+      <td><img src="https://sonarcloud.io/api/project_badges/measure?project=jiradar_jiradar-front&metric=code_smells" alt="Code Smells"></td>
+    </tr>
+    <tr>
+      <td>Code Coverage</td>
+      <td><img src="https://sonarcloud.io/api/project_badges/measure?project=jiradar_jiradar-front&metric=coverage" alt="Code Coverage"></td>
+    </tr>
+    <tr>
+      <td>Bugs</td>
+      <td><img src="https://sonarcloud.io/api/project_badges/measure?project=jiradar_jiradar-front&metric=bugs" alt="Bugs"></td>
+    </tr>
+  </tbody>
+</table>
+</center>
 
-![JiRadar Logo](front-end/public/jiradar_logo.svg)
+## Summary
 
 Jiradar is a full-stack platform designed to extract, process, and analyze project delivery metrics and activity loops from issue-tracking ecosystems like Jira. By evaluating issue transitions and raw
 changelog streams, the system provides real-time developer productivity engineering analytics, including flow predictability metrics, cycle times, review behavior metrics, and work-in-progress
