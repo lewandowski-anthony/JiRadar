@@ -4,7 +4,6 @@ import com.jiradar.jiradarback.controller.dto.UserMetricsDto;
 import com.jiradar.jiradarback.core.model.issuetracker.UserMetrics;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 
 import java.time.Duration;
 import java.util.Collections;

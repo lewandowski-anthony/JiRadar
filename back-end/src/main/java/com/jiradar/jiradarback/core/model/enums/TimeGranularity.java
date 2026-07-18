@@ -44,7 +44,7 @@ public enum TimeGranularity {
 		}
 		try {
 			return TimeGranularity.valueOf(value.toUpperCase().trim());
-		} catch (IllegalArgumentException e) {
+		} catch (IllegalArgumentException _) {
 			throw new IllegalArgumentException("Time granularity unsupported : " + value);
 		}
 	}

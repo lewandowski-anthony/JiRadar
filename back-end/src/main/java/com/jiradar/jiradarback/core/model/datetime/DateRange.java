@@ -8,9 +8,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.time.ZoneOffset.UTC;
-
 public record DateRange(ZonedDateTime from, ZonedDateTime to) {
 
 	public boolean contains(ZonedDateTime date) {

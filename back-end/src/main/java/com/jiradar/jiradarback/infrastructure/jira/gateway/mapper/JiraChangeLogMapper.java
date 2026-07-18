@@ -1,4 +1,4 @@
-package com.jiradar.jiradarback.infrastructure.jira.repository.mapper;
+package com.jiradar.jiradarback.infrastructure.jira.gateway.mapper;
 
 import com.jiradar.jiradarback.infrastructure.jira.dto.response.ChangelogItemResponseDto;
 import com.jiradar.jiradarback.infrastructure.jira.dto.response.JiraChangelogResponseDto;
@@ -13,8 +13,6 @@ import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static java.time.ZoneOffset.UTC;
 
 @Mapper(componentModel = "spring", uses = { JiraUserMapper.class, JiraTransitionResolver.class })
 public interface JiraChangeLogMapper {

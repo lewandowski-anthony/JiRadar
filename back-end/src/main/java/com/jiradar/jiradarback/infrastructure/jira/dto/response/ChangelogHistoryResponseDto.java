@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ChangelogHistoryResponseDto {
     private String id;
-	private Long created;;
+	private Long created;
     private UserResponseDto author;
     private List<ChangelogItemResponseDto> items;
 }

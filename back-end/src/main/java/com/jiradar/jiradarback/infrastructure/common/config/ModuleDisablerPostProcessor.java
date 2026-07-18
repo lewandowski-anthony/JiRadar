@@ -31,33 +31,13 @@ public class ModuleDisablerPostProcessor implements BeanDefinitionRegistryPostPr
 		Set<String> beansToRemove = new HashSet<>();
 
 		for (String beanName : beanNames) {
-			BeanDefinition beanDef = registry.getBeanDefinition(beanName);
-			String beanClassName = beanDef.getBeanClassName();
-
-			if (beanClassName != null && beanClassName.startsWith(INFRA_BASE_PACKAGE)) {
-				String remainingPath = beanClassName.substring(INFRA_BASE_PACKAGE.length());
-				int firstDotIndex = remainingPath.indexOf('.');
-				if (firstDotIndex == -1) continue;
-
-				String moduleName = remainingPath.substring(0, firstDotIndex);
-
-				if (COMMON_PACKAGE_MODULE.equals(moduleName)) {
-					continue;
-				}
-
-				String propertyKey = "issue-tracker." + moduleName + ".config.enabled";
-				Boolean isModuleEnabled = environment.getProperty(propertyKey, Boolean.class, true);
-
-				if (!isModuleEnabled) {
-					beansToRemove.add(beanName);
-				}
+			if (shouldRemoveBean(registry.getBeanDefinition(beanName))) {
+				beansToRemove.add(beanName);
 			}
 		}
 
 		for (String beanName : beanNames) {
-			BeanDefinition beanDef = registry.getBeanDefinition(beanName);
-			String factoryBeanName = beanDef.getFactoryBeanName();
-
+			String factoryBeanName = registry.getBeanDefinition(beanName).getFactoryBeanName();
 			if (factoryBeanName != null && beansToRemove.contains(factoryBeanName)) {
 				beansToRemove.add(beanName);
 			}
@@ -66,7 +46,26 @@ public class ModuleDisablerPostProcessor implements BeanDefinitionRegistryPostPr
 		beansToRemove.forEach(registry::removeBeanDefinition);
 	}
 
-	@Override
-	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+	private boolean shouldRemoveBean(BeanDefinition beanDef) {
+		String beanClassName = beanDef.getBeanClassName();
+		if (beanClassName == null || !beanClassName.startsWith(INFRA_BASE_PACKAGE)) {
+			return false;
+		}
+
+		String remainingPath = beanClassName.substring(INFRA_BASE_PACKAGE.length());
+		int firstDotIndex = remainingPath.indexOf('.');
+		if (firstDotIndex == -1) {
+			return false;
+		}
+
+		String moduleName = remainingPath.substring(0, firstDotIndex);
+		if (COMMON_PACKAGE_MODULE.equals(moduleName)) {
+			return false;
+		}
+
+		String propertyKey = "issue-tracker." + moduleName + ".config.enabled";
+		boolean isModuleEnabled = environment.getProperty(propertyKey, Boolean.class, true);
+
+		return !isModuleEnabled;
 	}
 }

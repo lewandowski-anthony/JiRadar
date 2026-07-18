@@ -24,14 +24,14 @@ import java.util.List;
 @RestControllerAdvice
 public class PaginatedResponseAdvice implements ResponseBodyAdvice<Object> {
 
-	public final String ACCESS_CONTROL_EXPOSE_HEADERS = "Access-Control-Expose-Headers";
-	public final String ACCESS_CONTROL_EXPOSE_HEADERS_VALUE = "Link,Page-Number,Page-Size,Total-Elements,Total-Pages,Content-Range";
-	public final String LINK_HEADER = "Link";
-	public final String PAGE_NUMBER_HEADER = "Page-Number";
-	public final String PAGE_SIZE_HEADER = "Page-Size";
-	public final String TOTAL_ELEMENTS_HEADER = "Total-Elements";
-	public final String TOTAL_PAGES_HEADER = "Total-Pages";
-	public final String CONTENT_RANGE_HEADER = "Content-Range";
+	private static final String ACCESS_CONTROL_EXPOSE_HEADERS = "Access-Control-Expose-Headers";
+	private static final String ACCESS_CONTROL_EXPOSE_HEADERS_VALUE = "Link,Page-Number,Page-Size,Total-Elements,Total-Pages,Content-Range";
+	private static final String LINK_HEADER = "Link";
+	private static final String PAGE_NUMBER_HEADER = "Page-Number";
+	private static final String PAGE_SIZE_HEADER = "Page-Size";
+	private static final String TOTAL_ELEMENTS_HEADER = "Total-Elements";
+	private static final String TOTAL_PAGES_HEADER = "Total-Pages";
+	private static final String CONTENT_RANGE_HEADER = "Content-Range";
 
 	@Override
 	public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {

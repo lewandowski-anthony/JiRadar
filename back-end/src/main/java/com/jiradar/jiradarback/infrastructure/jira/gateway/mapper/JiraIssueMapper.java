@@ -1,4 +1,4 @@
-package com.jiradar.jiradarback.infrastructure.jira.repository.mapper;
+package com.jiradar.jiradarback.infrastructure.jira.gateway.mapper;
 
 import com.jiradar.jiradarback.infrastructure.jira.dto.response.JiraIssueResponseDto;
 import com.jiradar.jiradarback.infrastructure.jira.dto.response.SearchEnvelopeResponseDto;
@@ -6,6 +6,7 @@ import com.jiradar.jiradarback.core.model.issuetracker.Issue;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,7 +15,7 @@ public interface JiraIssueMapper {
 
 	default List<Issue> toModelList(List<SearchEnvelopeResponseDto> envelopes) {
 		if (envelopes == null)
-			return null;
+			return new ArrayList<>();
 
 		return envelopes.stream()
 				.filter(env -> env != null && env.getIssues() != null)

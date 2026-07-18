@@ -12,6 +12,7 @@ public class BannerConfig implements Banner {
 
 	@Override
 	public void printBanner(Environment environment, Class<?> sourceClass, PrintStream out) {
+
 		// --- Build & Spring Boot Context ---
 		String appName = environment.getProperty("spring.application.name", "Jiradar Backend");
 		String appVersion = environment.getProperty("application.version", "0.0.1-SNAPSHOT");
@@ -32,7 +33,7 @@ public class BannerConfig implements Banner {
 			InetAddress localHost = InetAddress.getLocalHost();
 			ipAddress = localHost.getHostAddress();
 			hostName = localHost.getHostName();
-		} catch (UnknownHostException e) {
+		} catch (UnknownHostException _) {
 			ipAddress = "127.0.0.1";
 			hostName = "localhost";
 		}
@@ -58,24 +59,25 @@ public class BannerConfig implements Banner {
 
 		// --- SECTION 1 : SYSTEM ARCHITECTURE ---
 		out.println(" \u001B[95m[ System Landscape ]\u001B[0m");
-		out.printf("  ├── \u001B[90mApplication Name :\u001B[0m \u001B[37m%s\u001B[0m\n", appName);
-		out.printf("  ├── \u001B[90mRuntime Platform :\u001B[0m \u001B[37mJava %s (%s)\u001B[0m\n", javaVersion, javaVendor);
-		out.printf("  ├── \u001B[90mOperating System :\u001B[0m \u001B[37m%s (v%s)\u001B[0m\n", osName, osVersion);
-		out.printf("  └── \u001B[90mTimezone Config  :\u001B[0m \u001B[33m%s\u001B[0m\n", defaultTimezone);
+		out.printf("  ├── \u001B[90mApplication Name :\u001B[0m \u001B[37m%s\u001B[0m%n", appName);
+		out.printf("  ├── \u001B[90mRuntime Platform :\u001B[0m \u001B[37mJava %s (%s)\u001B[0m%n", javaVersion, javaVendor);
+		out.printf("  ├── \u001B[90mFramework Platform :\u001B[0m \u001B[37mSpring-Boot %s\u001B[0m%n", springVersion);
+		out.printf("  ├── \u001B[90mOperating System :\u001B[0m \u001B[37m%s (v%s)\u001B[0m%n", osName, osVersion);
+		out.printf("  └── \u001B[90mTimezone Config  :\u001B[0m \u001B[33m%s\u001B[0m%n", defaultTimezone);
 		out.println();
 
 		// --- SECTION 2 : NETWORK & NETWORK BOUNDS ---
 		out.println(" \u001B[96m[ Network Context ]\u001B[0m");
-		out.printf("  ├── \u001B[90mLocal Hostname   :\u001B[0m \u001B[37m%s\u001B[0m\n", hostName);
-		out.printf("  ├── \u001B[90mInternal IP      :\u001B[0m \u001B[37m%s\u001B[0m\n", ipAddress);
-		out.printf("  └── \u001B[90mListening Port   :\u001B[0m \u001B[36m%s\u001B[0m\n", serverPort);
+		out.printf("  ├── \u001B[90mLocal Hostname   :\u001B[0m \u001B[37m%s\u001B[0m%n", hostName);
+		out.printf("  ├── \u001B[90mInternal IP      :\u001B[0m \u001B[37m%s\u001B[0m%n", ipAddress);
+		out.printf("  └── \u001B[90mListening Port   :\u001B[0m \u001B[36m%s\u001B[0m%n", serverPort);
 		out.println();
 
 		// --- SECTION 3 : THIRD PARTY TRACKERS ---
 		out.println(" \u001B[94m[ Tracker Providers ]\u001B[0m");
 		if (isJiraEnabled) {
 			out.println("  └── \u001B[90mJira Integration :\u001B[0m [\u001B[92mEnabled\u001B[0m]");
-			out.printf("      └── \u001B[90mEndpoint URL :\u001B[0m \u001B[36m%s\u001B[0m\n", jiraUrl);
+			out.printf("      └── \u001B[90mEndpoint URL :\u001B[0m \u001B[36m%s\u001B[0m%n", jiraUrl);
 		} else {
 			out.println("  └── \u001B[90mJira Integration :\u001B[0m [\u001B[91mDisabled\u001B[0m]");
 		}
@@ -84,9 +86,9 @@ public class BannerConfig implements Banner {
 		// --- SECTION 4 : STORAGE & PERFORMANCE CACHE ---
 		out.println(" \u001B[93m[ Storage & Performance Cache ]\u001B[0m");
 		if (isCacheEnabled) {
-			out.printf("  └── \u001B[90mCache Management :\u001B[0m [\u001B[92mEnabled\u001B[0m] ── \u001B[90mProvider:\u001B[0m \u001B[33m%s\u001B[0m\n", cacheProvider.toUpperCase());
+			out.printf("  └── \u001B[90mCache Management :\u001B[0m [\u001B[92mEnabled\u001B[0m] ── \u001B[90mProvider:\u001B[0m \u001B[33m%s\u001B[0m%n", cacheProvider.toUpperCase());
 			if ("redis".equalsIgnoreCase(cacheProvider)) {
-				out.printf("      └── \u001B[90mRedis Remote :\u001B[0m \u001B[36m%s:%s\u001B[0m\n", redisHost, redisPort);
+				out.printf("      └── \u001B[90mRedis Remote :\u001B[0m \u001B[36m%s:%s\u001B[0m%n", redisHost, redisPort);
 			} else {
 				out.println("      └── \u001B[90mCaffeine     :\u001B[0m \u001B[37mIn-Memory Storage Topology\u001B[0m");
 			}
@@ -96,7 +98,7 @@ public class BannerConfig implements Banner {
 		out.println();
 
 		// --- FOOTER META ---
-		out.printf("\u001B[92m ✔\u001B[0m \u001B[37mJiRadar v%s\u001B[0m is operational using profile: \u001B[33m%s\u001B[0m\n", appVersion, activeProfiles);
+		out.printf("\u001B[92m ✔\u001B[0m \u001B[37mJiRadar v%s\u001B[0m is operational using profile: \u001B[33m%s\u001B[0m%n", appVersion, activeProfiles);
 		out.println("\u001B[90m ─────────────────────────────────────────────────────────\u001B[0m");
 		out.println();
 	}

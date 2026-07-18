@@ -1,7 +1,9 @@
 package com.jiradar.jiradarback.core.constant;
 
-import java.time.ZoneId;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DateConstant {
 
 	public static final String DATE_TIME_MINUTE_PATTERN = "yyyy-MM-dd HH:mm";

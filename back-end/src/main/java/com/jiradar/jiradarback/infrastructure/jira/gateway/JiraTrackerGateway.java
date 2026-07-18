@@ -1,4 +1,4 @@
-package com.jiradar.jiradarback.infrastructure.jira.repository;
+package com.jiradar.jiradarback.infrastructure.jira.gateway;
 
 import com.jiradar.jiradarback.infrastructure.cache.config.AvailableCache;
 import com.jiradar.jiradarback.infrastructure.jira.JiraServiceClient;
@@ -9,7 +9,7 @@ import com.jiradar.jiradarback.infrastructure.jira.dto.response.JiraChangelogRes
 import com.jiradar.jiradarback.infrastructure.jira.dto.response.JiraIssueResponseDto;
 import com.jiradar.jiradarback.infrastructure.jira.dto.response.SearchEnvelopeResponseDto;
 import com.jiradar.jiradarback.infrastructure.jira.enums.JiraFieldId;
-import com.jiradar.jiradarback.infrastructure.jira.repository.mapper.JiraIssueMapper;
+import com.jiradar.jiradarback.infrastructure.jira.gateway.mapper.JiraIssueMapper;
 import com.jiradar.jiradarback.core.model.issuetracker.Issue;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.ListUtils;
@@ -31,11 +31,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.jiradar.jiradarback.core.constant.DateConstant.DATE_TIME_MINUTE_PATTERN;
-import static java.time.ZoneOffset.UTC;
 
 @Component
 @RequiredArgsConstructor
-public class JiraIssueRepository {
+public class JiraTrackerGateway {
 
     private final JiraServiceClient jiraClient;
     private final JiraIssueMapper issueMapper;

@@ -5,6 +5,7 @@ import com.jiradar.jiradarback.exception.NotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,25 +18,27 @@ import java.util.Random;
 @RestControllerAdvice
 public class RestExceptionHandler {
 
+	private final static Random RANDOM = new Random();
+
 	@ExceptionHandler(value = Exception.class)
-	public ResponseEntity<?> handleException(Exception e) {
+	public ResponseEntity<@NonNull InternalServerResponseError> handleException(Exception e) {
 		String errorCode = generateHex();
 		log.error("Exception caught - code {} : ", errorCode, e);
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new InternalServerResponseError(e.getClass().getSimpleName(), e.getMessage(), errorCode));
 	}
 
 	@ExceptionHandler(value = WebClientResponseException.NotFound.class)
-	public ResponseEntity<?> handleWebClientNotFoundException(WebClientResponseException.NotFound e) {
+	public ResponseEntity<@NonNull ResponseError> handleWebClientNotFoundException(WebClientResponseException.NotFound e) {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseError("Ressource Not Found", e.getMessage()));
 	}
 
 	@ExceptionHandler(value = NotFoundException.class)
-	public ResponseEntity<?> handleNotFoundException(NotFoundException e) {
+	public ResponseEntity<@NonNull ResponseError> handleNotFoundException(NotFoundException e) {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseError("Ressource Not Found", e.getMessage()));
 	}
 
 	@ExceptionHandler(value = BusinessException.class)
-	public ResponseEntity<?> handleBusinessException(BusinessException e) {
+	public ResponseEntity<@NonNull ResponseError> handleBusinessException(BusinessException e) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseError("Business Error", e.getMessage()));
 	}
 
@@ -60,6 +63,6 @@ public class RestExceptionHandler {
 	}
 
 	private static String generateHex() {
-		return String.format("0x%05X", new Random().nextInt(0xFFFFF + 1));
+		return String.format("0x%05X", RANDOM.nextInt(0xFFFFF + 1));
 	}
 }
