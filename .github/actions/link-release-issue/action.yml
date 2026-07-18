@@ -21,7 +21,7 @@ runs:
         PR_TITLE=$(echo '${{ inputs.pr_json }}' | jq -r '.title')
         
         if [ -z "$PR_NUMBER" ] || [ "$PR_NUMBER" = "null" ]; then
-          echo "ERROR: No valid PR number found in pr_json input."
+          echo "::error::No valid PR number found in pr_json input."
           exit 1
         fi
 
@@ -30,8 +30,7 @@ runs:
         
         CURRENT_PR_BODY=$(gh pr view $PR_NUMBER --json body --jq '.body')
         if echo "$CURRENT_PR_BODY" | grep -q "Closes #"; then
-          echo "### Tracking Issue Status" >> $GITHUB_STEP_SUMMARY
-          echo "Issue already linked in PR body. Skipping." >> $GITHUB_STEP_SUMMARY
+          echo "::notice::Issue creation skipped"
           exit 0
         fi
 
@@ -40,9 +39,7 @@ runs:
         if [ -n "$EXISTING_ISSUE_NUMBER" ] && [ "$EXISTING_ISSUE_NUMBER" != "null" ]; then
           NEW_PR_BODY="${CURRENT_PR_BODY}"$'\n\n'"Closes #${EXISTING_ISSUE_NUMBER}"
           gh pr edit $PR_NUMBER --body "$NEW_PR_BODY"
-        
-          echo "### Tracking Issue Status" >> $GITHUB_STEP_SUMMARY
-          echo "An open tracking issue already exists (Issue #${EXISTING_ISSUE_NUMBER}). PR #${PR_NUMBER} has been updated to re-link it." >> $GITHUB_STEP_SUMMARY
+          echo "::notice::Issue creation skipped"
           exit 0
         fi
 
@@ -59,8 +56,5 @@ runs:
         NEW_PR_BODY="${CURRENT_PR_BODY}"$'\n\n'"Closes #${ISSUE_NUMBER}"
         gh pr edit $PR_NUMBER --body "$NEW_PR_BODY"
 
-        echo "### Tracking Issue Status" >> $GITHUB_STEP_SUMMARY
-        echo "New tracking issue created successfully." >> $GITHUB_STEP_SUMMARY
-        echo "* **Issue:** #${ISSUE_NUMBER}" >> $GITHUB_STEP_SUMMARY
-        echo "* **Assignee:** @${ACTOR}" >> $GITHUB_STEP_SUMMARY
-        echo "* **Linked PR:** #${PR_NUMBER}" >> $GITHUB_STEP_SUMMARY
+        ISSUE_LINK="https://github.com/${{ github.repository }}/issues/${ISSUE_NUMBER}"
+        echo "::notice::Issue create : ${ISSUE_LINK}"
