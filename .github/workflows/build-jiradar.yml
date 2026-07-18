@@ -88,9 +88,7 @@ jobs:
       - name: SonarCloud Back Scan
         uses: SonarSource/sonarqube-scan-action@v5
         with:
-          args: >
-            -Dsonar.modules=back
-            -Dsonar.inclusions=back-end/**
+          args: -Dsonar.modules=back
         env:
           GITHUB_TOKEN: ${{ github.token }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -123,9 +121,7 @@ jobs:
       - name: SonarCloud Front Scan
         uses: SonarSource/sonarqube-scan-action@v5
         with:
-          args: >
-            -Dsonar.modules=front
-            -Dsonar.inclusions=front-end/**
+          args: -Dsonar.modules=front
         env:
           GITHUB_TOKEN: ${{ github.token }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
