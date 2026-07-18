@@ -1,6 +1,6 @@
 # Jiradar - Analytics & Visualization Workspace
 
-<p style="text-align: center;">
+<p align="center">
   <img src="front-end/public/jiradar_logo.svg" alt="JiRadar Logo" width="150" />
 </p>
 
