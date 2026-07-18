@@ -13,6 +13,7 @@ jobs:
       contents: write
       pull-requests: write
       id-token: write
+      packages: write
     outputs:
       release_created: ${{ steps.release.outputs.release_created || 'false' }}
       tag_name: ${{ steps.release.outputs.tag_name || 'latest' }}
