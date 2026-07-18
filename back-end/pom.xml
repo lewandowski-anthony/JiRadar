@@ -25,8 +25,9 @@
         <cucumber.version>7.34.4</cucumber.version>
         <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
         <wiremock-standalone.version>3.13.2</wiremock-standalone.version>
-        <argLine></argLine>
         <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
+        <sonar.coverage.exclusions>**/BackEndApplication.java,**/exception/**,**/constant/**,**/*config*/**,**/mapper/**,**/enums/**</sonar.coverage.exclusions>
+        <argLine/>
     </properties>
 
     <dependencyManagement>
