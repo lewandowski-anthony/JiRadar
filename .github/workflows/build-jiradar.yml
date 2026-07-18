@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  JAVA_VERSION: '25'
+  NODE_VERSION: '20'
+
 jobs:
   release-please:
     runs-on: ubuntu-latest
@@ -65,10 +69,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Java 25
+      - name: Set up Java ${{ env.JAVA_VERSION }}
         uses: actions/setup-java@v4
         with:
-          java-version: '25'
+          java-version: ${{ env.JAVA_VERSION }}
           distribution: 'temurin'
 
       - name: Login to GHCR
@@ -109,6 +113,7 @@ jobs:
         with:
           push_image: ${{ needs.release-please.outputs.release_created }}
           image_tag: ${{ needs.release-please.outputs.clean_tag }}
+          node_version: ${{ env.NODE_VERSION }}
 
   sonar-analysis:
     runs-on: ubuntu-latest
@@ -118,17 +123,17 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Java 25
+      - name: Set up Java ${{ env.JAVA_VERSION }}
         uses: actions/setup-java@v4
         with:
-          java-version: '25'
+          java-version: ${{ env.JAVA_VERSION }}
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Set up Node.js
+      - name: Set up Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
           cache-dependency-path: front-end/package-lock.json
 
@@ -142,12 +147,16 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v8
         with:
           args: >
+            -Dsonar.organization=lewandowski-anthony
+            -Dsonar.projectKey=lewandowski-anthony_JiRadar
+            -Dsonar.projectName=JiRadar
             -Dsonar.sources=back-end/src/main/java,front-end/src
             -Dsonar.tests=back-end/src/test/java,front-end/src
             -Dsonar.java.binaries=back-end/target/classes
             -Dsonar.coverage.jacoco.xmlReportPaths=back-end/target/site/jacoco/jacoco.xml
             -Dsonar.javascript.lcov.reportPaths=front-end/coverage/lcov.info
             -Dsonar.exclusions=**/*.spec.ts,**/*.spec.tsx,**/node_modules/**,front-end/src/**/constants/**,.github/**,*.yml,*.yaml
+            -Dsonar.test.exclusions=back-end/src/main/java/**,front-end/src/**
             -Dsonar.cpd.exclusions=front-end/src/**/constants/**
             -Dsonar.test.inclusions=**/*.spec.ts,**/*.spec.tsx
         env:
