@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.1](https://github.com/lewandowski-anthony/JiRadar/compare/v1.11.0...v1.11.1) (2026-07-19)
+
+
+### Bug Fixes
+
+* Fix MF release please ([d535544](https://github.com/lewandowski-anthony/JiRadar/commit/d535544c0430ebeff5d90556b7b3fc9c89baf70b))
+
 ## [1.11.0](https://github.com/lewandowski-anthony/JiRadar/compare/v1.10.0...v1.11.0) (2026-07-19)
 
 
