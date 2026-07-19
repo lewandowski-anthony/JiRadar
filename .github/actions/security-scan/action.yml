@@ -12,43 +12,21 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Run Trivy vulnerability scanner (JSON)
+    - name: Run Trivy vulnerability scanner (Generate Markdown Report)
       uses: aquasecurity/trivy-action@master
       with:
         scan-type: 'fs'
         scan-ref: ${{ inputs.module-path }}
         scanners: 'vuln,secret'
-        format: 'json'
-        output: 'trivy-report.json'
+        format: 'template'
+        template: '__github_markdown__'
+        output: 'trivy-report.md'
         severity: 'HIGH,CRITICAL'
-        exit-code: '0'
 
-    - name: Convert Trivy JSON to Markdown Summary
+    - name: Format final report header
       shell: bash
       run: |
-        if [ ! -f trivy-report.json ]; then
-          echo "Error: trivy-report.json not found."
-          exit 1
-        fi
-
-        jq -r '.Results[]? | 
-          (.Target as $t | .Type as $type | 
-            ((.Vulnerabilities[]? | "| \($t) | \($type) | \(.PkgName // .VulnerabilityID) | \(.Severity) |"),
-             (.Secrets[]? | "| \($t) | \($type) | \(.Title) | \(.Severity) |"))
-          )' trivy-report.json > findings.tmp
-
-        echo "### 🛡️ Trivy Security Report - ${{ inputs.module-name }}" > trivy-report.md
-        echo "" >> trivy-report.md
-
-        if [ -s findings.tmp ]; then
-          echo "| Target | Type | Name / ID | Severity |" >> trivy-report.md
-          echo "| :--- | :--- | :--- | :---: |" >> trivy-report.md
-          cat findings.tmp >> trivy-report.md
-        else
-          echo "🎉 **All good!** No high or critical vulnerabilities/secrets detected." >> trivy-report.md
-        fi
-
-        rm -f findings.tmp
+        sed -i '1i ### 🛡️ Trivy Security Report - ${{ inputs.module-name }}\n' trivy-report.md
 
     - name: Post Trivy Report to PR Comment
       uses: mshick/add-pr-comment@v2
@@ -57,10 +35,14 @@ runs:
         allow-repeats: false
         message-path: 'trivy-report.md'
 
-    - name: Check for vulnerabilities
+    - name: Check and Block PR if findings found
       shell: bash
       run: |
-        if jq -e '.Results[]? | select(.Vulnerabilities != null or .Secrets != null)' trivy-report.json > /dev/null; then
-          echo "Blocking PR: High or Critical security findings detected!"
-          exit 1
+        if grep -q "|" trivy-report.md; then
+          if grep -q "No Vulnerabilities" trivy-report.md && grep -q "No Secrets" trivy-report.md; then
+            echo "All clean!"
+          else
+            echo "❌ Blocking PR: High/Critical Vulnerabilities or Secrets detected!"
+            exit 1
+          fi
         fi
