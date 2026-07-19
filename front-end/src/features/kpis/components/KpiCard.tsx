@@ -8,7 +8,7 @@ interface KpiCardProps {
     borderColor: string;
 }
 
-export function KpiCard({ title, value, description, color, borderColor }: KpiCardProps) {
+export function KpiCard({ title, value, description, color, borderColor }: Readonly<KpiCardProps>) {
     const [showDesc, setShowDesc] = useState(false);
 
     return (
@@ -26,6 +26,7 @@ export function KpiCard({ title, value, description, color, borderColor }: KpiCa
                 <div className="pt-2 border-t border-slate-800/60 mt-2">
 
                     <button
+                        type="button"
                         onClick={() => setShowDesc(!showDesc)}
                         className="w-full flex items-center justify-between text-xs font-medium text-text-muted hover:text-text-main transition-colors focus:outline-none cursor-pointer"
                     >

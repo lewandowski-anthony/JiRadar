@@ -5,16 +5,9 @@ const TabsContext = createContext<{
     setActiveTab: (id: string) => void;
 } | null>(null);
 
-interface TabProps {
-    id: string;
-    label: string;
-    icon?: string;
-    children: React.ReactNode;
-}
-
-export function Tab({ children }: TabProps) {
+export function Tab({ children }: Readonly<{ children: React.ReactNode; [key: string]: any }>) {
     const context = useContext(TabsContext);
-    if (!context) throw new Error('<Tab /> doit être utilisé dans <Tabs />');
+    if (!context) throw new Error('<Tab /> Must be used in <Tabs />');
 
     return <>{children}</>;
 }
@@ -26,15 +19,21 @@ interface TabsProps {
 
 export function Tabs({ children, defaultActiveId }: TabsProps) {
     const validChildren = React.Children.toArray(children).filter(
-        (child): child is ReactElement<TabProps> => React.isValidElement(child)
+        (child): child is ReactElement<{ id: string; label: string; icon?: string; children: React.ReactNode }> =>
+            React.isValidElement(child)
     );
 
     const [activeTab, setActiveTab] = useState(
         defaultActiveId || validChildren[0]?.props.id || ''
     );
 
+    const contextValue = React.useMemo(() => ({
+        activeTab,
+        setActiveTab
+    }), [activeTab]);
+
     return (
-        <TabsContext.Provider value={{ activeTab, setActiveTab }}>
+        <TabsContext.Provider value={contextValue}>
             <div className="space-y-6 w-full">
                 <div className="flex border-b border-slate-800 w-full overflow-x-auto scrollbar-none scroll-smooth snap-x snap-mandatory [-webkit-overflow-scrolling:touch]">
                     {validChildren.map((child) => {
@@ -44,6 +43,7 @@ export function Tabs({ children, defaultActiveId }: TabsProps) {
                         return (
                             <button
                                 key={id}
+                                type="button"
                                 onClick={() => setActiveTab(id)}
                                 className={`px-6 py-3 text-sm font-medium border-b-2 whitespace-nowrap shrink-0 snap-start transition-colors duration-200 ${
                                     isActive

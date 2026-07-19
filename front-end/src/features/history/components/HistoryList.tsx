@@ -13,7 +13,7 @@ export function HistoryList({
                                 historyPage,
                                 onPageChange,
                                 historyLoading,
-                            }: HistoryListProps) {
+                            }: Readonly<HistoryListProps>) {
     const content = historyPage.content || [];
     const t = useTranslation();
 
@@ -100,6 +100,7 @@ export function HistoryList({
                     </div>
                     <div className="flex space-x-2">
                         <button
+                            type="button"
                             onClick={() => onPageChange(number - 1, size)}
                             disabled={number === 0 || historyLoading}
                             data-testid="history-prev-btn"
@@ -108,6 +109,7 @@ export function HistoryList({
                             {t.page.previous}
                         </button>
                         <button
+                            type="button"
                             onClick={() => onPageChange(number + 1, size)}
                             disabled={number === totalPages - 1 || historyLoading}
                             data-testid="history-next-btn"

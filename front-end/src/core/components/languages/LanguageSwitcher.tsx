@@ -29,6 +29,7 @@ export function LanguageSwitcher() {
     return (
         <div className="relative inline-block text-left" ref={dropdownRef}>
             <button
+                type="button"
                 onClick={() => setIsOpen(!isOpen)}
                 className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-cardbg border border-border-subtle hover:bg-cardbg-hover text-sm font-medium text-text-main transition-colors uppercase cursor-pointer"
             >
@@ -42,6 +43,7 @@ export function LanguageSwitcher() {
                 <div className="absolute right-0 mt-2 w-40 rounded-xl bg-cardbg border border-border-subtle shadow-xl z-50 py-1 overflow-hidden transition-colors">
                     {(Object.keys(CHART_LOCALES) as LocaleType[]).map((loc) => (
                         <button
+                            type="button"
                             key={loc}
                             onClick={() => {
                                 changeLocale(loc);

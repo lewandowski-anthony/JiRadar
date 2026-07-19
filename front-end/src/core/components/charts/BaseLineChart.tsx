@@ -35,7 +35,7 @@ export function BaseLineChart({
                                   stepped = false,
                                   maxWidth = 'max-w-2xl',
                                   yMax
-                              }: BaseLineChartProps) {
+                              }: Readonly<BaseLineChartProps>) {
 
     const textColor = getThemeColor('--color-text-muted');
     const gridColor = getThemeColor('--color-chart-grid');

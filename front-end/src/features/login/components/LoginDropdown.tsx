@@ -8,7 +8,7 @@ interface LoginDropdownProps {
     onClose: () => void;
 }
 
-export function LoginDropdown({ isOpen, onClose }: LoginDropdownProps) {
+export function LoginDropdown({ isOpen, onClose }: Readonly<LoginDropdownProps>) {
     const t = useTranslation();
     const { jiraLogin } = useAuth();
     const dropdownRef = useRef<HTMLDivElement>(null);

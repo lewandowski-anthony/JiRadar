@@ -6,7 +6,7 @@ interface CustomMetricsPanelProps {
     customMetrics?: CustomMetricElement[];
 }
 
-export function CustomMetricsPanel({ customMetrics }: CustomMetricsPanelProps) {
+export function CustomMetricsPanel({ customMetrics }: Readonly<CustomMetricsPanelProps>) {
     const t = useTranslation();
 
     if (!customMetrics || customMetrics.length === 0) {
@@ -22,7 +22,7 @@ export function CustomMetricsPanel({ customMetrics }: CustomMetricsPanelProps) {
             {customMetrics.map((metric) => {
                 const { name, value } = metric;
 
-                const formattedTitle = name.replace(/-/g, ' ');
+                const formattedTitle = name.replaceAll(/-/g, ' ');
 
                 let displayValue: string | number = '-';
                 if (value !== undefined && value !== null) {

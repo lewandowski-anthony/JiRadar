@@ -9,7 +9,7 @@ interface DashboardFormProps {
     isLoading: boolean;
 }
 
-export function FormDashboard({ onSubmit, isLoading }: DashboardFormProps) {
+export function FormDashboard({ onSubmit, isLoading }: Readonly<DashboardFormProps>) {
     const t: TranslationKeys = useTranslation();
     const [filters, setFilters] = useState<DashboardFilters>({
         projectKey: '',
@@ -28,7 +28,7 @@ export function FormDashboard({ onSubmit, isLoading }: DashboardFormProps) {
         }));
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!filters.projectKey || filters.projectKey.trim().length < 2) {
             setError(t.error?.projectCodeRequired || "Project code required");

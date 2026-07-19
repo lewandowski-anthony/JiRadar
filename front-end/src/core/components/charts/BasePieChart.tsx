@@ -4,9 +4,9 @@ import {
     Tooltip,
     Legend
 } from 'chart.js';
-import { Doughnut, Pie } from 'react-chartjs-2';
-import type { BaseChartProps } from "@core/models/charts/BaseChartProps";
-import { getThemeColor } from '@core/utils/theme-resolver';
+import {Doughnut, Pie} from 'react-chartjs-2';
+import type {BaseChartProps} from "@core/models/charts/BaseChartProps";
+import {getThemeColor} from '@core/utils/theme-resolver';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -14,7 +14,12 @@ interface BasePieChartProps extends BaseChartProps {
     isDonut?: boolean;
 }
 
-export function BasePieChart({ title, labels, datasets, isDonut = true }: BasePieChartProps) {
+export function BasePieChart({
+        title,
+        labels,
+        datasets,
+        isDonut = true
+    }: Readonly<BasePieChartProps>) {
 
     const textColor = getThemeColor('--color-text-muted');
     const cardBgColor = getThemeColor('--color-cardbg');
@@ -24,7 +29,7 @@ export function BasePieChart({ title, labels, datasets, isDonut = true }: BasePi
         plugins: {
             legend: {
                 position: 'right' as const,
-                labels: { color: textColor, boxWidth: 15 }
+                labels: {color: textColor, boxWidth: 15}
             },
         },
     };
@@ -44,7 +49,7 @@ export function BasePieChart({ title, labels, datasets, isDonut = true }: BasePi
         <div className="bg-cardbg p-6 rounded-xl border border-border-subtle max-w-md mx-auto transition-colors">
             <h2 className="text-xl font-bold text-text-main mb-4">{title}</h2>
             <div className="max-h-[300px] flex justify-center">
-                <ChartComponent options={options} data={data} />
+                <ChartComponent options={options} data={data}/>
             </div>
         </div>
     );

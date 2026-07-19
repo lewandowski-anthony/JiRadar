@@ -78,9 +78,9 @@ export default function Dashboard() {
                         </Tab>
                     )}
 
-                    {userMetrics && userMetrics.customMetrics && userMetrics.customMetrics.length > 0 && (
+                    {(userMetrics?.customMetrics?.length ?? 0) > 0 && (
                         <Tab id="custom-metrics" label={t.tabs.customMetrics} icon="i-custom-icon">
-                            <CustomMetricsPanel customMetrics={userMetrics.customMetrics} />
+                            <CustomMetricsPanel customMetrics={userMetrics?.customMetrics ?? []} />
                         </Tab>
                     )}
 

@@ -3,7 +3,7 @@ import { type LocaleType } from '@core/constants/locales';
 import { getCookie, setCookie } from '@core/utils/cookies';
 import { LocaleContext } from './localContext';
 
-export function LocaleProvider({ children }: { children: React.ReactNode }) {
+export function LocaleProvider({ children }: Readonly<{ children: React.ReactNode }>) {
     const [locale, setLocale] = useState<LocaleType>(() => {
         const saved = getCookie('jiradar_locale') as LocaleType;
         if (saved) return saved;
@@ -23,8 +23,13 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
         setCookie('jiradar_locale', newLocale, 365);
     };
 
+    const contextValue = React.useMemo(() => ({
+        locale,
+        changeLocale
+    }), [locale]);
+
     return (
-        <LocaleContext.Provider value={{ locale, changeLocale }}>
+        <LocaleContext.Provider value={contextValue}>
             {children}
         </LocaleContext.Provider>
     );

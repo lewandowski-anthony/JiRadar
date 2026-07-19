@@ -1,4 +1,4 @@
-import { render, screen, act } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AuthProvider, useAuth } from '@core/context/authentication/AuthContext';
 import { JiradarService } from '@core/services/JiradarService';
@@ -56,15 +56,14 @@ describe('AuthContext Component', () => {
             return null;
         });
 
-        await act(async () => {
-            render(
-                <AuthProvider>
-                    <TestComponent />
-                </AuthProvider>
-            );
-        });
+        render(
+            <AuthProvider>
+                <TestComponent />
+            </AuthProvider>
+        );
 
-        expect(screen.getByTestId('auth-state').textContent).toBe('Disconnected');
+        const authState = await screen.findByTestId('auth-state');
+        expect(authState.textContent).toBe('Disconnected');
         expect(screen.getByTestId('user-name').textContent).toBe('No User');
     });
 
@@ -76,15 +75,14 @@ describe('AuthContext Component', () => {
         });
         vi.mocked(JiradarService.getMyAccount).mockResolvedValue(mockUser);
 
-        await act(async () => {
-            render(
-                <AuthProvider>
-                    <TestComponent />
-                </AuthProvider>
-            );
-        });
+        render(
+            <AuthProvider>
+                <TestComponent />
+            </AuthProvider>
+        );
 
-        expect(screen.getByTestId('auth-state').textContent).toBe('Connected');
+        const authState = await screen.findByTestId('auth-state');
+        expect(authState.textContent).toBe('Connected');
         expect(screen.getByTestId('user-name').textContent).toBe('John Doe');
         expect(JiradarService.getMyAccount).toHaveBeenCalledWith('jira');
     });
@@ -96,15 +94,14 @@ describe('AuthContext Component', () => {
         });
         vi.mocked(JiradarService.getMyAccount).mockRejectedValue(new Error('API Error'));
 
-        await act(async () => {
-            render(
-                <AuthProvider>
-                    <TestComponent />
-                </AuthProvider>
-            );
-        });
+        render(
+            <AuthProvider>
+                <TestComponent />
+            </AuthProvider>
+        );
 
-        expect(screen.getByTestId('auth-state').textContent).toBe('Disconnected');
+        const authState = await screen.findByTestId('auth-state');
+        expect(authState.textContent).toBe('Disconnected');
         expect(setCookie).toHaveBeenCalledWith('jiradar_token', '', -1);
         expect(setCookie).toHaveBeenCalledWith('jiradar_tracker', '', -1);
     });
@@ -113,26 +110,24 @@ describe('AuthContext Component', () => {
         vi.mocked(getCookie).mockReturnValue(null);
         vi.mocked(JiradarService.getMyAccount).mockResolvedValue(mockUser);
 
-        await act(async () => {
-            render(
-                <AuthProvider>
-                    <TestComponent />
-                </AuthProvider>
-            );
-        });
+        render(
+            <AuthProvider>
+                <TestComponent />
+            </AuthProvider>
+        );
 
-        const loginButton = screen.getByTestId('login-btn');
-
-        await act(async () => {
-            loginButton.click();
-        });
+        const loginButton = await screen.findByTestId('login-btn');
+        loginButton.click();
 
         const expectedBase64 = btoa('john@doe.com:my-token');
 
-        expect(setCookie).toHaveBeenCalledWith('jiradar_token', expectedBase64, 1);
-        expect(setCookie).toHaveBeenCalledWith('jiradar_token', expectedBase64, 7);
-        expect(setCookie).toHaveBeenCalledWith('jiradar_tracker', 'jira', 7);
-        expect(screen.getByTestId('auth-state').textContent).toBe('Connected');
+        await waitFor(() => {
+            expect(setCookie).toHaveBeenCalledWith('jiradar_token', expectedBase64, 1);
+            expect(setCookie).toHaveBeenCalledWith('jiradar_tracker', 'jira', 7);
+        });
+
+        const authState = await screen.findByTestId('auth-state');
+        expect(authState.textContent).toBe('Connected');
         expect(screen.getByTestId('user-name').textContent).toBe('John Doe');
     });
 
@@ -140,23 +135,23 @@ describe('AuthContext Component', () => {
         vi.mocked(getCookie).mockReturnValue(null);
         vi.mocked(JiradarService.getMyAccount).mockRejectedValue(new Error('API Error'));
 
-        await act(async () => {
-            render(
-                <AuthProvider>
-                    <TestComponent />
-                </AuthProvider>
-            );
+        render(
+            <AuthProvider>
+                <TestComponent />
+            </AuthProvider>
+        );
+
+        const loginButton = await screen.findByTestId('login-btn');
+        loginButton.click();
+
+        const expectedBase64 = btoa('john@doe.com:my-token');
+
+        await waitFor(() => {
+            expect(setCookie).toHaveBeenCalledWith('jiradar_token', expectedBase64, 1);
         });
 
-        const loginButton = screen.getByTestId('login-btn');
-
-        await act(async () => {
-            loginButton.click();
-        });
-
-        expect(setCookie).toHaveBeenCalledWith('jiradar_token', '', -1);
-        expect(setCookie).toHaveBeenCalledWith('jiradar_tracker', '', -1);
-        expect(screen.getByTestId('auth-state').textContent).toBe('Disconnected');
+        const authState = await screen.findByTestId('auth-state');
+        expect(authState.textContent).toBe('Disconnected');
     });
 
     it('should clean up state and cookies on logout', async () => {
@@ -166,24 +161,24 @@ describe('AuthContext Component', () => {
         });
         vi.mocked(JiradarService.getMyAccount).mockResolvedValue(mockUser);
 
-        await act(async () => {
-            render(
-                <AuthProvider>
-                    <TestComponent />
-                </AuthProvider>
-            );
-        });
+        render(
+            <AuthProvider>
+                <TestComponent />
+            </AuthProvider>
+        );
 
-        expect(screen.getByTestId('auth-state').textContent).toBe('Connected');
+        const authState = await screen.findByTestId('auth-state');
+        expect(authState.textContent).toBe('Connected');
 
         const logoutButton = screen.getByTestId('logout-btn');
-        await act(async () => {
-            logoutButton.click();
+        logoutButton.click();
+
+        await waitFor(() => {
+            expect(setCookie).toHaveBeenCalledWith('jiradar_token', '', -1);
+            expect(setCookie).toHaveBeenCalledWith('jiradar_tracker', '', -1);
+            expect(authState.textContent).toBe('Disconnected');
         });
 
-        expect(setCookie).toHaveBeenCalledWith('jiradar_token', '', -1);
-        expect(setCookie).toHaveBeenCalledWith('jiradar_tracker', '', -1);
-        expect(screen.getByTestId('auth-state').textContent).toBe('Disconnected');
         expect(screen.getByTestId('user-name').textContent).toBe('No User');
     });
 

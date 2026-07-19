@@ -31,6 +31,7 @@ export function Navbar() {
 
             <div className="flex items-center gap-4">
                 <button
+                    type="button"
                     onClick={toggleTheme}
                     className="p-2 rounded-lg bg-main-bg border border-border-subtle text-text-muted hover:text-text-main transition-colors cursor-pointer"
                     aria-label="Toggle theme"
@@ -58,6 +59,7 @@ export function Navbar() {
                                 className="w-9 h-9 rounded-full border bg-border-subtle object-cover"
                             />
                             <button
+                                type="button"
                                 onClick={logout}
                                 className="text-xs font-semibold text-text-muted hover:text-red-400 transition-colors cursor-pointer"
                             >
@@ -67,6 +69,7 @@ export function Navbar() {
                     ) : (
                         <div className="relative">
                             <button
+                                type="button"
                                 onClick={() => setIsLoginOpen(!isLoginOpen)}
                                 className={`flex items-center justify-center w-9 h-9 rounded-full border transition-colors cursor-pointer ${
                                     isLoginOpen

@@ -12,13 +12,14 @@ export function parseDurationToHours(durationStr: string): number {
     if (!durationStr || durationStr === '0m') return 0;
 
     let totalHours = 0;
-    const daysMatch = durationStr.match(/(\d+)d/);
-    const hoursMatch = durationStr.match(/(\d+)h/);
-    const minutesMatch = durationStr.match(/(\d+)m/);
 
-    if (daysMatch) totalHours += parseInt(daysMatch[1], 10) * 24;
-    if (hoursMatch) totalHours += parseInt(hoursMatch[1], 10);
-    if (minutesMatch) totalHours += parseInt(minutesMatch[1], 10) / 60;
+    const daysMatch = /[0-9]+d/.exec(durationStr);
+    const hoursMatch = /[0-9]+h/.exec(durationStr);
+    const minutesMatch = /[0-9]+m/.exec(durationStr);
 
-    return parseFloat(totalHours.toFixed(1));
+    if (daysMatch) totalHours += Number.parseInt(daysMatch[0], 10) * 24;
+    if (hoursMatch) totalHours += Number.parseInt(hoursMatch[0], 10);
+    if (minutesMatch) totalHours += Number.parseInt(minutesMatch[0], 10) / 60;
+
+    return Number.parseFloat(totalHours.toFixed(1));
 }

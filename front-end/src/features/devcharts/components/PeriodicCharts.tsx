@@ -6,7 +6,7 @@ interface PeriodicChartsProps {
     granularityData: PeriodicUserMetricsDto[];
 }
 
-export function PeriodicCharts({ granularityData }: PeriodicChartsProps) {
+export function PeriodicCharts({ granularityData }: Readonly<PeriodicChartsProps>) {
     const labels = granularityData.map((item) => item.label);
     const t = useTranslation();
 

@@ -45,10 +45,10 @@ export const JiradarService = {
         return {
             content: response.data,
             page: {
-                totalPages: parseInt(response.headers['total-pages'] || '1', 10),
-                number: parseInt(response.headers['page-number'] || '0', 10),
-                totalElements: parseInt(response.headers['total-elements'] || '0', 10),
-                size: parseInt(response.headers['page-size'] || '20', 10),
+                totalPages: Number.parseInt(response.headers['total-pages'] || '1', 10),
+                number: Number.parseInt(response.headers['page-number'] || '0', 10),
+                totalElements: Number.parseInt(response.headers['total-elements'] || '0', 10),
+                size: Number.parseInt(response.headers['page-size'] || '20', 10),
             }
         };
     }

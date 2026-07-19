@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {useTranslation} from "@core/hooks/useTranslation.ts";
 
 interface GitHubLoginFormProps {
@@ -8,11 +8,11 @@ interface GitHubLoginFormProps {
     loading: boolean;
 }
 
-export function GitHubLoginForm({ onSuccess, onError, loginFn, loading }: GitHubLoginFormProps) {
+export function GitHubLoginForm({ onSuccess, onError, loginFn, loading }: Readonly<GitHubLoginFormProps>) {
     const [token, setToken] = useState('');
     const t = useTranslation();
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
             await loginFn(token.trim(), 'github');

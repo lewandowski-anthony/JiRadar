@@ -8,12 +8,12 @@ interface JiraLoginFormProps {
     loading: boolean;
 }
 
-export function JiraLoginForm({ onSuccess, onError, loginFn, loading }: JiraLoginFormProps) {
+export function JiraLoginForm({ onSuccess, onError, loginFn, loading }: Readonly<JiraLoginFormProps>) {
     const [email, setEmail] = useState('');
     const [token, setToken] = useState('');
     const t = useTranslation();
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
             await loginFn(email.trim(), token.trim(), 'jira');

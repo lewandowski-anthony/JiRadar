@@ -4,7 +4,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { Tabs, Tab } from './Tab';
 
 describe('Tabs Component System', () => {
-    it('affiche l\'onglet par défaut ou le premier onglet disponible', () => {
+    it('Show first tab by default', () => {
         render(
             <Tabs>
                 <Tab id="first" label="Tab 1">Content One</Tab>
@@ -16,7 +16,7 @@ describe('Tabs Component System', () => {
         expect(screen.queryByText('Content Two')).not.toBeInTheDocument();
     });
 
-    it('permet de basculer d\'onglet lors du clic utilisateur', async () => {
+    it('Change tab on user click', async () => {
         const user = userEvent.setup();
         render(
             <Tabs defaultActiveId="first">
@@ -32,11 +32,11 @@ describe('Tabs Component System', () => {
         expect(screen.queryByText('Content One')).not.toBeInTheDocument();
     });
 
-    it('lève une exception si <Tab /> est instancié sans contexte parent', () => {
+    it('<Tab /> must be used in a parent context', () => {
         const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
         expect(() => render(<Tab id="orphan" label="Orphan">Fail</Tab>)).toThrow(
-            '<Tab /> doit être utilisé dans <Tabs />'
+            '<Tab /> Must be used in <Tabs />'
         );
 
         spy.mockRestore();

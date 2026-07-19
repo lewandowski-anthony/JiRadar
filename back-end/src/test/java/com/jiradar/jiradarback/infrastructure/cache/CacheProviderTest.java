@@ -5,7 +5,6 @@ import com.jiradar.jiradarback.infrastructure.cache.strategy.CaffeineCacheProvid
 import com.jiradar.jiradarback.infrastructure.cache.strategy.NoOpCacheProvider;
 import com.jiradar.jiradarback.infrastructure.cache.strategy.RedisCacheProvider;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.boot.cache.autoconfigure.CacheAutoConfiguration;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cache.CacheManager;

@@ -26,7 +26,7 @@ export function BaseBarChart({
                                  datasets,
                                  maxWidth = 'max-w-2xl',
                                  yMax
-                             }: BaseChartProps) {
+                             }: Readonly<BaseChartProps>) {
 
     const textColor = getThemeColor('--color-text-muted');
     const gridColor = getThemeColor('--color-chart-grid');
