@@ -51,3 +51,7 @@ runs:
         image_name: jiradar-front
         image_tag: ${{ inputs.image_tag }}
         push_image: ${{ inputs.push_image }}
+
+    - name: Security Scan Front-end (Trivy)
+      if: ${{ github.event_name == 'pull_request' }}
+      uses: ./.github/actions/security-scan
