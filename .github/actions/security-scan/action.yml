@@ -1,19 +1,40 @@
 name: 'Security Scan (Trivy)'
-description: 'Scans the repository for high and critical vulnerabilities and posts a summary comment to the PR.'
+description: 'Scans the repository for high and critical vulnerabilities + secrets, and posts a summary comment to the PR.'
+inputs:
+  module-name:
+    description: 'Name of the module being scanned (e.g., back-end, front-end)'
+    required: true
 
 runs:
   using: 'composite'
   steps:
-    - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@v0.36.0
+    - name: Run Trivy vulnerability scanner (JSON)
+      uses: aquasecurity/trivy-action@master
       with:
         scan-type: 'fs'
         scan-ref: '.'
         scanners: 'vuln,secret'
-        format: 'template'
-        template: '__markdown__'
-        output: 'trivy-report.md'
+        format: 'json'
+        output: 'trivy-report.json'
         severity: 'HIGH,CRITICAL'
+
+    - name: Convert Trivy JSON to Markdown Summary
+      shell: bash
+      run: |
+        echo "### 🛡️ Trivy Security Report - ${{ inputs.module-name }}" > trivy-report.md
+        echo "" >> trivy-report.md
+        echo "| Target | Type | Name / ID | Severity |" >> trivy-report.md
+        echo "| :--- | :--- | :--- | :---: |" >> trivy-report.md
+        
+        jq -r '.Results[]? | 
+          (select(.Vulnerabilities != null) | .Target as $t | .Type as $type | .Vulnerabilities[] | "| \($t) | \($type) | \(.PkgName // .VulnerabilityID) | \(.Severity) |"),
+          (select(.Secrets != null) | .Target as $t | .Type as $type | .Secrets[] | "| \($t) | \($type) | \(.Title) | \(.Severity) |")' trivy-report.json >> trivy-report.md
+        
+        if [ $(wc -l < trivy-report.md) -eq 3 ]; then
+          echo "| All Targets | - | 🎉 No vulnerabilities or secrets found | - |" >> trivy-report.md
+          echo "" >> trivy-report.md
+          echo "✅ All checks passed successfully for ${{ inputs.module-name }}." >> trivy-report.md
+        fi
 
     - name: Post Trivy Report to PR Comment
       uses: mshick/add-pr-comment@v2
@@ -25,6 +46,6 @@ runs:
     - name: Check for vulnerabilities
       shell: bash
       run: |
-        if [ -s trivy-report.md ] && grep -q "Vulnerability" trivy-report.md; then
+        if [ -s trivy-report.json ] && jq -e '.Results[]? | select(.Vulnerabilities != null or .Secrets != null)' trivy-report.json > /dev/null; then
           exit 1
         fi

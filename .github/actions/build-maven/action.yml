@@ -52,3 +52,5 @@ runs:
     - name: Security Scan Back-end (Trivy)
       if: ${{ github.event_name == 'pull_request' }}
       uses: ./.github/actions/security-scan
+      with:
+        module-name: "Jiradar Back-end"
