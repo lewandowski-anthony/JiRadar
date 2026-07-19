@@ -33,16 +33,16 @@ runs:
     - name: Build and Push Docker Image
       shell: bash
       run: |
-        echo "::group:: [BUILDING] Docker Image Build (${{ inputs.image_name }}:${{ inputs.image_tag }})"
+        echo "::group::[BUILD] Docker Build image : (${{ inputs.image_name }}:${{ inputs.image_tag }})"
         
         docker buildx build \
-          --context ${{ inputs.context }} \
           --file ${{ inputs.context }}/Dockerfile \
           --platform linux/amd64,linux/arm64 \
           --push=${{ inputs.push_image }} \
           --tag ghcr.io/${{ steps.repo.outputs.name }}/${{ inputs.image_name }}:${{ inputs.image_tag }} \
           --tag ghcr.io/${{ steps.repo.outputs.name }}/${{ inputs.image_name }}:latest \
           --cache-from type=gha \
-          --cache-to type=gha,mode=max .
+          --cache-to type=gha,mode=max \
+          ${{ inputs.context }}
         
         echo "::endgroup::"

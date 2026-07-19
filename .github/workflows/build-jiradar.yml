@@ -46,18 +46,20 @@ jobs:
   update-versions:
     runs-on: ubuntu-latest
     needs: release-please
-    if: ${{ needs.release-please.outputs.prs_created == 'true' || (needs.release-please.outputs.pr != '' && needs.release-please.outputs.pr != 'null') }}
+    if: startsWith(github.head_ref, 'release-please--')
     permissions:
       contents: write
       issues: write
       pull-requests: write
     steps:
       - uses: actions/checkout@v7
+
       - name: Link Release PR to an Issue
         uses: ./.github/actions/link-release-issue
         with:
           pr_json: ${{ needs.release-please.outputs.pr }}
           github_token: ${{ github.token }}
+
       - name: Update Project Versions
         uses: ./.github/actions/update-project-versions
         with:
