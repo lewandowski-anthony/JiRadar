@@ -29,7 +29,7 @@ runs:
       shell: bash
       run: |
         cd back-end
-        mvn -B clean verify sonar:sonar \
+        mvn -B -q -ntp clean verify sonar:sonar \
           -Dsonar.organization=jiradar \
           -Dsonar.projectKey=jiradar_jiradar-back \
           -Dsonar.host.url=https://sonarcloud.io \

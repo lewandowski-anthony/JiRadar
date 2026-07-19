@@ -28,7 +28,7 @@ runs:
         git checkout $PR_BRANCH
         
         cd back-end
-        mvn versions:set -DnewVersion=$NEW_VERSION -DgenerateBackupPoms=false
+        mvn -B -q -ntp versions:set -DnewVersion=$NEW_VERSION -DgenerateBackupPoms=false
         cd ..
         
         cd front-end

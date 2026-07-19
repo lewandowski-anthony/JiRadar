@@ -29,13 +29,13 @@ runs:
       shell: bash
       run: |
         cd front-end
-        npm ci
+        npm ci --silent
 
     - name: Run Tests with Coverage
       shell: bash
       run: |
         cd front-end
-        npm run test -- --coverage
+        npm run test -- --coverage --silent
 
     - name: SonarCloud Front Scan
       uses: SonarSource/sonarqube-scan-action@v8
