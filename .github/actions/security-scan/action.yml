@@ -4,7 +4,7 @@ inputs:
   module-name:
     description: 'Name of the module being scanned (e.g., back-end, front-end)'
     required: true
-  path:
+  module-path:
     description: 'The specific directory to scan'
     required: false
     default: '.'
