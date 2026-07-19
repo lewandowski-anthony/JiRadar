@@ -13,9 +13,9 @@ export function parseDurationToHours(durationStr: string): number {
 
     let totalHours = 0;
 
-    const daysMatch = /[0-9]+d/.exec(durationStr);
-    const hoursMatch = /[0-9]+h/.exec(durationStr);
-    const minutesMatch = /[0-9]+m/.exec(durationStr);
+    const daysMatch = /\b\d+d\b/.exec(durationStr);
+    const hoursMatch = /\b\d+h\b/.exec(durationStr);
+    const minutesMatch = /\b\d+m\b/.exec(durationStr);
 
     if (daysMatch) totalHours += Number.parseInt(daysMatch[0], 10) * 24;
     if (hoursMatch) totalHours += Number.parseInt(hoursMatch[0], 10);

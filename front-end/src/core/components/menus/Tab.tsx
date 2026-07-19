@@ -17,7 +17,7 @@ interface TabsProps {
     defaultActiveId?: string;
 }
 
-export function Tabs({ children, defaultActiveId }: TabsProps) {
+export function Tabs({ children, defaultActiveId }: Readonly<TabsProps>) {
     const validChildren = React.Children.toArray(children).filter(
         (child): child is ReactElement<{ id: string; label: string; icon?: string; children: React.ReactNode }> =>
             React.isValidElement(child)

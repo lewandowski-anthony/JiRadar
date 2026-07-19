@@ -22,7 +22,7 @@ export function CustomMetricsPanel({ customMetrics }: Readonly<CustomMetricsPane
             {customMetrics.map((metric) => {
                 const { name, value } = metric;
 
-                const formattedTitle = name.replaceAll(/-/g, ' ');
+                const formattedTitle = name.replaceAll('-', ' ');
 
                 let displayValue: string | number = '-';
                 if (value !== undefined && value !== null) {
