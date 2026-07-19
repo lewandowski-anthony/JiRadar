@@ -36,6 +36,7 @@ jobs:
         with:
           token: ${{ github.token }}
           release-type: simple
+
       - name: Format Docker Tag
         id: format-tag
         shell: bash
@@ -46,7 +47,7 @@ jobs:
   update-versions:
     runs-on: ubuntu-latest
     needs: release-please
-    if: github.ref == 'refs/heads/main' && needs.release-please.outputs.pr != '' && fromJson(needs.release-please.outputs.pr).id != null
+    if: github.ref == 'refs/heads/main'
     permissions:
       contents: write
       issues: write
