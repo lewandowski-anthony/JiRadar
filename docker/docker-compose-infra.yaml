@@ -1,0 +1,5 @@
+version: '3.8'
+
+include:
+  - path: ./caching/docker-compose-redis.yaml
+  - path: ./ai/docker-compose-ollama.yaml

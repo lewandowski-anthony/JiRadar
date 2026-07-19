@@ -1,0 +1,34 @@
+package com.jiradar.jiradarback.infrastructure.issueTracker.jira.gateway.mapper;
+
+import com.jiradar.jiradarback.infrastructure.issueTracker.jira.dto.response.JiraIssueResponseDto;
+import com.jiradar.jiradarback.infrastructure.issueTracker.jira.dto.response.SearchEnvelopeResponseDto;
+import com.jiradar.jiradarback.core.model.issuetracker.Issue;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Mapper(componentModel = "spring", uses = { JiraChangeLogMapper.class, JiraUserMapper.class, JiraIssueTypeMapper.class })
+public interface JiraIssueMapper {
+
+	default List<Issue> toModelList(List<SearchEnvelopeResponseDto> envelopes) {
+		if (envelopes == null)
+			return new ArrayList<>();
+
+		return envelopes.stream()
+				.filter(env -> env != null && env.getIssues() != null)
+				.flatMap(env -> env.getIssues().stream())
+				.map(this::toModel)
+				.collect(Collectors.toList());
+	}
+
+	@Mapping(target = "key", source = "issueDto.key")
+	@Mapping(target = "projectKey", source = "issueDto.fields.project.key")
+	@Mapping(target = "assignee", source = "issueDto.fields.assignee")
+	@Mapping(target = "summary", source = "issueDto.fields.summary")
+	@Mapping(target = "changes", source = "issueDto.changelog")
+	@Mapping(target = "type", source = "issueDto.fields.issueType")
+	Issue toModel(JiraIssueResponseDto issueDto);
+}

@@ -6,6 +6,9 @@ import com.jiradar.jiradarback.controller.mapper.UserDtoMapper;
 import com.jiradar.jiradarback.controller.dto.UserMetricsDto;
 import com.jiradar.jiradarback.controller.mapper.UserHistoryEventDtoMapper;
 import com.jiradar.jiradarback.controller.mapper.UserMetricsDtoMapper;
+import com.jiradar.jiradarback.core.model.issuetracker.UserMetrics;
+import com.jiradar.jiradarback.infrastructure.ai.common.model.response.DeveloperAnalystResult;
+import com.jiradar.jiradarback.infrastructure.ai.service.AnalysisService;
 import org.springframework.web.bind.annotation.PathVariable;
 import com.jiradar.jiradarback.core.factory.IssueTrackerFactory;
 import com.jiradar.jiradarback.core.model.command.ProjectSearchParamCommand;
@@ -24,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -34,6 +38,7 @@ public class UserController {
 	private final UserMetricsDtoMapper userMetricsDtoMapper;
 	private final UserDtoMapper userDtoMapper;
 	private final UserHistoryEventDtoMapper userHistoryEventDtoMapper;
+	private final AnalysisService analysisService;
 	private final IssueTrackerFactory issueTrackerFactory;
 
 	@GetMapping("/me")
@@ -56,6 +61,22 @@ public class UserController {
 						new ProjectSearchParamCommand(projectKeys, startDate, endDate), TimeGranularity.fromString(historyGranularity)
 				)
 		);
+	}
+
+	@GetMapping("/me/metrics/analysis")
+	@Operation(summary = "${openapi.endpoint.user.metrics.summary}", description = "${openapi.endpoint.user.metrics.description}")
+	public Optional<DeveloperAnalystResult> getDeveloperAnalysis(
+
+			@PathVariable("issueTracker") String issueTracker,
+			@RequestParam List<String> projectKeys,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+			@RequestParam(required = false) String historyGranularity) {
+
+		UserMetrics userMetrics = issueTrackerFactory.getService(issueTracker).getMetrics(
+				new ProjectSearchParamCommand(projectKeys, startDate, endDate), TimeGranularity.fromString(historyGranularity)
+		);
+		return analysisService.analyzeDeveloperProfile(userMetrics, "en");
 	}
 
 	@GetMapping("/me/history")

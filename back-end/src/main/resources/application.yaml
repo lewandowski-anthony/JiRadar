@@ -23,6 +23,20 @@ cache:
       ttl: ${JIRA_USER_CACHE_TTL:2h}
       maxSize: ${JIRA_USER_CACHE_MAX_SIZE:200}
 
+jiradar:
+  ai:
+    provider: ${JIRADAR_AI_PROVIDER:none}
+    ollama:
+      base-url: ${OLLAMA_BASE_URL:}
+      model-name: ${OLLAMA_MODEL_NAME:ollama-1.0}
+    gemini:
+      api-key: ${GEMINI_API_KEY:}
+      model-name: ${GEMINI_MODEL_NAME:gemini-1.5-pro}
+    vertex:
+      project-id: ${GCP_PROJECT_ID:}
+      location: ${GCP_LOCATION:europe-west1}
+      model-name: ${GCP_MODEL_NAME:gemini-1.5-pro}
+
 issue-tracker:
   metrics:
 

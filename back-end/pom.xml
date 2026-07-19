@@ -26,6 +26,7 @@
         <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
         <wiremock-standalone.version>3.13.2</wiremock-standalone.version>
         <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
+        <langchain4j.version>1.17.2</langchain4j.version>
         <sonar.coverage.exclusions>**/BackEndApplication.java,**/exception/**,**/constant/**,**/*config*/**,**/mapper/**,**/enums/**</sonar.coverage.exclusions>
         <argLine/>
     </properties>
@@ -36,6 +37,13 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
                 <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>dev.langchain4j</groupId>
+                <artifactId>langchain4j-bom</artifactId>
+                <version>${langchain4j.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -57,6 +65,29 @@
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-commons</artifactId>
+        </dependency>
+
+        <!-- ======================================================================= -->
+        <!-- AI modules                                                              -->
+        <!-- ======================================================================= -->
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-vertex-ai-gemini</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-google-genai</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-ollama</artifactId>
         </dependency>
 
         <!-- ======================================================================= -->
