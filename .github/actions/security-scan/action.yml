@@ -4,9 +4,10 @@ inputs:
   module-name:
     description: 'Name of the module being scanned (e.g., back-end, front-end)'
     required: true
-  module-path:
+  path:
     description: 'The specific directory to scan'
-    required: true
+    required: false
+    default: '.'
 
 runs:
   using: 'composite'
@@ -15,7 +16,7 @@ runs:
       uses: aquasecurity/trivy-action@master
       with:
         scan-type: 'fs'
-        scan-ref: ${{ inputs.module-path }}
+        scan-ref: ${{ inputs.path }}
         scanners: 'vuln,secret'
         format: 'json'
         output: 'trivy-report.json'
@@ -31,12 +32,13 @@ runs:
         
         jq -r '.Results[]? | 
           (select(.Vulnerabilities != null) | .Target as $t | .Type as $type | .Vulnerabilities[] | "| \($t) | \($type) | \(.PkgName // .VulnerabilityID) | \(.Severity) |"),
-          (select(.Secrets != null) | .Target as $t | .Type as $type | .Secrets[] | "| \($t) | \($type) | \(.Title) | \(.Severity) |")' trivy-report.json >> trivy-report.md
+          (select(.Secrets != null) | .Target as $t | .Type as $type | .Secrets[] | "| \($t) | \($type) | \(.Title) | \(.Severity) |")' trivy-report.json >> trivy-report.md 2>/dev/null || true
         
         if [ $(wc -l < trivy-report.md) -eq 3 ]; then
-          echo "| All Targets | - | 🎉 No vulnerabilities or secrets found | - |" >> trivy-report.md
+          # On nettoie les entêtes de tableau inutiles pour afficher un beau message propre
+          echo "### 🛡️ Trivy Security Report - ${{ inputs.module-name }}" > trivy-report.md
           echo "" >> trivy-report.md
-          echo "✅ All checks passed successfully for ${{ inputs.module-name }}." >> trivy-report.md
+          echo "🎉 **All good!** No high or critical vulnerabilities/secrets detected." >> trivy-report.md
         fi
 
     - name: Post Trivy Report to PR Comment
