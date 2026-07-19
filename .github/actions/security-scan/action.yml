@@ -4,9 +4,10 @@ inputs:
   module-name:
     description: 'Name of the module being scanned (e.g., back-end, front-end)'
     required: true
-  module-path:
+  path:
     description: 'The specific directory to scan'
-    required: true
+    required: false
+    default: '.'
 
 runs:
   using: 'composite'
@@ -15,30 +16,39 @@ runs:
       uses: aquasecurity/trivy-action@master
       with:
         scan-type: 'fs'
-        scan-ref: ${{ inputs.module-path }}
+        scan-ref: ${{ inputs.path }}
         scanners: 'vuln,secret'
         format: 'json'
         output: 'trivy-report.json'
         severity: 'HIGH,CRITICAL'
+        exit-code: '0'
 
     - name: Convert Trivy JSON to Markdown Summary
       shell: bash
       run: |
+        if [ ! -f trivy-report.json ]; then
+          echo "Error: trivy-report.json not found."
+          exit 1
+        fi
+
+        jq -r '.Results[]? | 
+          (.Target as $t | .Type as $type | 
+            ((.Vulnerabilities[]? | "| \($t) | \($type) | \(.PkgName // .VulnerabilityID) | \(.Severity) |"),
+             (.Secrets[]? | "| \($t) | \($type) | \(.Title) | \(.Severity) |"))
+          )' trivy-report.json > findings.tmp
+
         echo "### 🛡️ Trivy Security Report - ${{ inputs.module-name }}" > trivy-report.md
         echo "" >> trivy-report.md
-        echo "| Target | Type | Name / ID | Severity |" >> trivy-report.md
-        echo "| :--- | :--- | :--- | :---: |" >> trivy-report.md
-        
-        jq -r '.Results[]? | 
-          (select(.Vulnerabilities != null) | .Target as $t | .Type as $type | .Vulnerabilities[] | "| \($t) | \($type) | \(.PkgName // .VulnerabilityID) | \(.Severity) |"),
-          (select(.Secrets != null) | .Target as $t | .Type as $type | .Secrets[] | "| \($t) | \($type) | \(.Title) | \(.Severity) |")' trivy-report.json >> trivy-report.md 2>/dev/null || true
-        
-        if [ $(wc -l < trivy-report.md) -eq 3 ]; then
-          # On nettoie les entêtes de tableau inutiles pour afficher un beau message propre
-          echo "### 🛡️ Trivy Security Report - ${{ inputs.module-name }}" > trivy-report.md
-          echo "" >> trivy-report.md
+
+        if [ -s findings.tmp ]; then
+          echo "| Target | Type | Name / ID | Severity |" >> trivy-report.md
+          echo "| :--- | :--- | :--- | :---: |" >> trivy-report.md
+          cat findings.tmp >> trivy-report.md
+        else
           echo "🎉 **All good!** No high or critical vulnerabilities/secrets detected." >> trivy-report.md
         fi
+
+        rm -f findings.tmp
 
     - name: Post Trivy Report to PR Comment
       uses: mshick/add-pr-comment@v2
@@ -50,6 +60,7 @@ runs:
     - name: Check for vulnerabilities
       shell: bash
       run: |
-        if [ -s trivy-report.json ] && jq -e '.Results[]? | select(.Vulnerabilities != null or .Secrets != null)' trivy-report.json > /dev/null; then
+        if jq -e '.Results[]? | select(.Vulnerabilities != null or .Secrets != null)' trivy-report.json > /dev/null; then
+          echo "Blocking PR: High or Critical security findings detected!"
           exit 1
         fi
