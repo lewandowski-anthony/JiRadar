@@ -16,9 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/tracker/{issueTracker}/issues")
 public class IssueController {
 
-	// FAKE AWS KEY TO TEST TRIVY
-	public static final String AWS_SECRET_ACCESS_KEY = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY";
-
 	private final IssueDtoMapper issueDtoMapper;
 
 	private final IssueTrackerFactory issueTrackerFactory;
