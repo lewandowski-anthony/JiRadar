@@ -16,7 +16,7 @@ runs:
       uses: aquasecurity/trivy-action@master
       with:
         scan-type: 'fs'
-        scan-ref: ${{ inputs.path }}
+        scan-ref: ${{ inputs.module-path }}
         scanners: 'vuln,secret'
         format: 'json'
         output: 'trivy-report.json'
