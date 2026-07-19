@@ -4,10 +4,9 @@ inputs:
   module-name:
     description: 'Name of the module being scanned (e.g., back-end, front-end)'
     required: true
-  path:
+  module-path:
     description: 'The specific directory to scan'
-    required: false
-    default: '.'
+    required: true
 
 runs:
   using: 'composite'
@@ -16,7 +15,7 @@ runs:
       uses: aquasecurity/trivy-action@master
       with:
         scan-type: 'fs'
-        scan-ref: ${{ inputs.path }}
+        scan-ref: ${{ inputs.module-path }}
         scanners: 'vuln,secret'
         format: 'json'
         output: 'trivy-report.json'

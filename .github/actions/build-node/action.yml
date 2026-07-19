@@ -65,4 +65,4 @@ runs:
       uses: ./.github/actions/security-scan
       with:
         module-name: "Jiradar Front-end"
-        module-path: "./front-end"
+        module-path: "front-end"
