@@ -1,5 +1,5 @@
 name: 'Security Scan (Trivy)'
-description: 'Scans the repository for high and critical vulnerabilities + secrets, and posts a summary comment to the PR.'
+description: 'Scans a specific directory for high and critical vulnerabilities, configurations, and secrets, then posts a comment to the PR.'
 inputs:
   module-name:
     description: 'Name of the module being scanned (e.g., back-end, front-end)'
@@ -12,37 +12,118 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Run Trivy vulnerability scanner (Generate Markdown Report)
+    - name: Run Vulnerability/Secrets/Config Scan
       uses: aquasecurity/trivy-action@master
       with:
         scan-type: 'fs'
         scan-ref: ${{ inputs.module-path }}
-        scanners: 'vuln,secret'
-        format: 'template'
-        template: '__github_markdown__'
-        output: 'trivy-report.md'
+        format: 'json'
+        output: 'trivy-results.json'
         severity: 'HIGH,CRITICAL'
+        ignore-unfixed: false
+        scanners: 'vuln,config,secret'
 
-    - name: Format final report header
-      shell: bash
-      run: |
-        sed -i '1i ### 🛡️ Trivy Security Report - ${{ inputs.module-name }}\n' trivy-report.md
-
-    - name: Post Trivy Report to PR Comment
-      uses: mshick/add-pr-comment@v2
-      if: always()
+    - name: Comment on PR with Findings
+      uses: actions/github-script@v7
       with:
-        allow-repeats: false
-        message-path: 'trivy-report.md'
+        script: |
+          const fs = require('fs');
+          const path = 'trivy-results.json';
+          if (!fs.existsSync(path)) {
+            core.warning('No results to post');
+            return;
+          }
 
-    - name: Check and Block PR if findings found
-      shell: bash
-      run: |
-        if grep -q "|" trivy-report.md; then
-          if grep -q "No Vulnerabilities" trivy-report.md && grep -q "No Secrets" trivy-report.md; then
-            echo "All clean!"
-          else
-            echo "❌ Blocking PR: High/Critical Vulnerabilities or Secrets detected!"
-            exit 1
-          fi
-        fi
+          const data = JSON.parse(fs.readFileSync(path, 'utf8'));
+          let comment = `# 🛡️ Trivy Security Report - ${{ inputs.module-name }}\n\n`;
+          const now = new Date();
+          comment += `**Date:** ${now.toISOString().split('T')[0]} \n`;
+          comment += `**Branch:** ${context.payload.pull_request ? context.payload.pull_request.head.ref : context.ref} \n\n`;
+
+          let total = 0, vulns = 0, misconfigs = 0, secrets = 0;
+          for (const r of data.Results || []) {
+            if (r.Vulnerabilities) vulns += r.Vulnerabilities.length;
+            if (r.Misconfigurations) misconfigs += r.Misconfigurations.length;
+            if (r.Secrets) secrets += r.Secrets.length;
+          }
+          total = vulns + misconfigs + secrets;
+
+          comment += '| Category | Count |\n';
+          comment += '|----------|-------|\n';
+          comment += `| Vulnerabilities | ${vulns} |\n`;
+          comment += `| Misconfigurations | ${misconfigs} |\n`;
+          comment += `| Secrets | ${secrets} |\n`;
+          comment += `| **Total Issues** | **${total}** |\n\n`;
+
+          if (total === 0) {
+            comment += '🎉 **All good!** No high or critical vulnerabilities/secrets/misconfigurations detected.';
+          } else {
+            comment += '⚠️ **Security issues detected.** Review details below.\n\n';
+
+            for (const r of data.Results || []) {
+              const hasIssues = (r.Vulnerabilities?.length || 0) + (r.Misconfigurations?.length || 0) + (r.Secrets?.length || 0);
+              if (!hasIssues) continue;
+
+              comment += `## Target: \`${r.Target}\`\n`;
+
+              if (r.Vulnerabilities?.length) {
+                comment += `### Vulnerabilities\n| Severity | Package | Version | CVE |\n|----------|---------|---------|-----|\n`;
+                for (const v of r.Vulnerabilities.slice(0, 10)) {
+                  comment += `| ${v.Severity} | ${v.PkgName} | ${v.InstalledVersion} | ${v.VulnerabilityID} |\n`;
+                }
+                if (r.Vulnerabilities.length > 10) comment += `*...and ${r.Vulnerabilities.length - 10} more*\n`;
+              }
+
+              if (r.Misconfigurations?.length) {
+                comment += `\n### Misconfigurations\n| Severity | ID | Message |\n|----------|----|---------|\n`;
+                for (const m of r.Misconfigurations.slice(0, 5)) {
+                  comment += `| ${m.Severity} | ${m.ID} | ${(m.Message || '').substring(0, 50)}... |\n`;
+                }
+                if (r.Misconfigurations.length > 5) comment += `*...and ${r.Misconfigurations.length - 5} more*\n`;
+              }
+
+              if (r.Secrets?.length) {
+                comment += `\n### Secrets\n| Rule | Match |\n|------|-------|\n`;
+                for (const s of r.Secrets.slice(0, 5)) {
+                  comment += `| ${s.RuleID} | \`${(s.Match || '').substring(0, 30)}...\` |\n`;
+                }
+                if (r.Secrets.length > 5) comment += `*...and ${r.Secrets.length - 5} more*\n`;
+              }
+
+              comment += '\n---\n';
+            }
+            comment += '\n**Please address these issues before merging.**\n';
+          }
+
+          comment += '\n_Scan by [Trivy](https://github.com/aquasecurity/trivy)_';
+
+          if (context.eventName === 'pull_request') {
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const uniqueHeader = `# 🛡️ Trivy Security Report - ${{ inputs.module-name }}`;
+            const existing = comments.find(c => c.body.startsWith(uniqueHeader));
+          
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body: comment
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment
+              });
+            }
+          }
+
+          if (total > 0) {
+            core.setFailed(`Blocking PR: ${total} high or critical security findings detected in ${{ inputs.module-name }}!`);
+          }
