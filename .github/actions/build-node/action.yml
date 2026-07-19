@@ -44,6 +44,14 @@ runs:
       env:
         SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
 
+    - name: Build Front-end Application
+      shell: bash
+      run: |
+        cd front-end
+        npm run build
+      env:
+        VITE_APP_BASE_URL: '/'
+
     - name: Docker Build & Push
       uses: ./.github/actions/docker-build-push
       with:
