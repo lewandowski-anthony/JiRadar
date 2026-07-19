@@ -63,18 +63,15 @@ jobs:
     name: Security Scan (Trivy)
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'pull_request' }}
+    permissions:
+      pull-requests: write
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
 
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@v0.36.0
-        with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'table'
-          exit-code: '1'
-          severity: 'HIGH,CRITICAL'
+      - name: Execute Security Action
+        uses: ./.github/actions/security-scan
 
   build-back:
     runs-on: ubuntu-latest

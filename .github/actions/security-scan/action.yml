@@ -1,0 +1,29 @@
+name: 'Security Scan (Trivy)'
+description: 'Scans the repository for high and critical vulnerabilities and posts a summary comment to the PR.'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'template'
+        template: '__markdown__'
+        output: 'trivy-report.md'
+        severity: 'HIGH,CRITICAL'
+
+    - name: Post Trivy Report to PR Comment
+      uses: mshick/add-pr-comment@v2
+      if: always()
+      with:
+        allow-repeats: false
+        message-path: 'trivy-report.md'
+
+    - name: Check for vulnerabilities
+      shell: bash
+      run: |
+        if [ -s trivy-report.md ] && grep -q "Vulnerability" trivy-report.md; then
+          exit 1
+        fi
