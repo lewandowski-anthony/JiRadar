@@ -29,13 +29,13 @@ runs:
       shell: bash
       run: |
         cd front-end
-        npm ci
+        npm ci --silent
 
     - name: Run Tests with Coverage
       shell: bash
       run: |
         cd front-end
-        npm run test -- --coverage
+        npm run test -- --coverage --silent
 
     - name: SonarCloud Front Scan
       uses: SonarSource/sonarqube-scan-action@v8
@@ -44,6 +44,14 @@ runs:
       env:
         SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
 
+    - name: Build Front-end Application
+      shell: bash
+      run: |
+        cd front-end
+        npm run build
+      env:
+        VITE_APP_BASE_URL: '/'
+
     - name: Docker Build & Push
       uses: ./.github/actions/docker-build-push
       with:
@@ -51,3 +59,10 @@ runs:
         image_name: jiradar-front
         image_tag: ${{ inputs.image_tag }}
         push_image: ${{ inputs.push_image }}
+
+    - name: Security Scan Front-end (Trivy)
+      if: ${{ github.event_name == 'pull_request' }}
+      uses: ./.github/actions/security-scan
+      with:
+        module-name: "Jiradar Front-end"
+        module-path: "front-end"

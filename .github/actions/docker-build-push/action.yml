@@ -31,14 +31,18 @@ runs:
         echo "name=${GITHUB_REPOSITORY,,}" >> $GITHUB_OUTPUT
 
     - name: Build and Push Docker Image
-      uses: docker/build-push-action@v5
-      with:
-        context: ${{ inputs.context }}
-        file: ${{ inputs.context }}/Dockerfile
-        platforms: linux/amd64,linux/arm64
-        push: ${{ inputs.push_image == 'true' }}
-        tags: |
-          ghcr.io/${{ steps.repo.outputs.name }}/${{ inputs.image_name }}:${{ inputs.image_tag }}
-          ghcr.io/${{ steps.repo.outputs.name }}/${{ inputs.image_name }}:latest
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
+      shell: bash
+      run: |
+        echo "::group::[BUILD] Docker Build image : (${{ inputs.image_name }}:${{ inputs.image_tag }})"
+        
+        docker buildx build \
+          --file ${{ inputs.context }}/Dockerfile \
+          --platform linux/amd64,linux/arm64 \
+          --push=${{ inputs.push_image }} \
+          --tag ghcr.io/${{ steps.repo.outputs.name }}/${{ inputs.image_name }}:${{ inputs.image_tag }} \
+          --tag ghcr.io/${{ steps.repo.outputs.name }}/${{ inputs.image_name }}:latest \
+          --cache-from type=gha \
+          --cache-to type=gha,mode=max \
+          ${{ inputs.context }}
+        
+        echo "::endgroup::"

@@ -29,7 +29,7 @@ runs:
       shell: bash
       run: |
         cd back-end
-        mvn -B clean verify sonar:sonar \
+        mvn -B -q -ntp clean verify sonar:sonar \
           -Dsonar.organization=jiradar \
           -Dsonar.projectKey=jiradar_jiradar-back \
           -Dsonar.host.url=https://sonarcloud.io \
@@ -48,3 +48,10 @@ runs:
         image_name: jiradar-back
         image_tag: ${{ inputs.image_tag }}
         push_image: ${{ inputs.push_image }}
+
+    - name: Security Scan Back-end (Trivy)
+      if: ${{ github.event_name == 'pull_request' }}
+      uses: ./.github/actions/security-scan
+      with:
+        module-name: "Jiradar Back-end"
+        module-path: "back-end"
