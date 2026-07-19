@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.11.0](https://github.com/lewandowski-anthony/JiRadar/compare/v1.10.0...v1.11.0) (2026-07-19)
+
+
+### Features
+
+* Add trivy scan ([#78](https://github.com/lewandowski-anthony/JiRadar/issues/78)) ([0c73ee4](https://github.com/lewandowski-anthony/JiRadar/commit/0c73ee4af58ad43d091a1bef0108dd5698266c6b))
+
+
+### Bug Fixes
+
+* Clean README.md ([e57941f](https://github.com/lewandowski-anthony/JiRadar/commit/e57941f3421dff4561fdf9455477ee18ce38e666))
+* Fix MF release please ([fdc3efc](https://github.com/lewandowski-anthony/JiRadar/commit/fdc3efc0d5cfef4d101826b850bc0a36671f970c))
+* Fix MF release please ([ae8a63c](https://github.com/lewandowski-anthony/JiRadar/commit/ae8a63c5d6cc8d46e0f698e47568061e0805c510))
+* Fix sonar issues ([477c1b2](https://github.com/lewandowski-anthony/JiRadar/commit/477c1b223564a76be297b3fb97f7b24b199df836))
+* Fix sonar issues ([97e7958](https://github.com/lewandowski-anthony/JiRadar/commit/97e7958d178488e9f230c2d1db0ef6f54fbe93af))
+* Fix sonar issues #JIRADAR-70 ([#75](https://github.com/lewandowski-anthony/JiRadar/issues/75)) ([bdf3191](https://github.com/lewandowski-anthony/JiRadar/commit/bdf319126d99f89f5bd7304d2596b5a9296cbe56))
+* Fix sonar with multiple projects #JIRADAR-70 ([3634954](https://github.com/lewandowski-anthony/JiRadar/commit/363495428a82727789e7d4661a023dce73108ce4))
+* Fix sonar with multiple projects #JIRADAR-70 ([5cb7bf9](https://github.com/lewandowski-anthony/JiRadar/commit/5cb7bf98c99a1885f1e3221bbd48418431df6810))
+* Fix sonar with multiple projects #JIRADAR-70 ([50bbc16](https://github.com/lewandowski-anthony/JiRadar/commit/50bbc168187f67d87de692f24dd6bf3079adc019))
+* Fix sonar with multiple projects #JIRADAR-70 ([9bd3132](https://github.com/lewandowski-anthony/JiRadar/commit/9bd3132408d0391b1a307a2c641c41b41d3df06b))
+
 ## [1.10.0](https://github.com/lewandowski-anthony/JiRadar/compare/v1.9.2...v1.10.0) (2026-07-18)
 
 
