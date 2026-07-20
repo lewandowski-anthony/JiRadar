@@ -39,11 +39,11 @@ public class BannerConfig implements Banner {
 		}
 
 		// --- Modules Context ---
-		boolean isJiraEnabled = Boolean.parseBoolean(environment.getProperty("issue-tracker.jira.config.enabled", "true"));
-		String jiraUrl = environment.getProperty("issue-tracker.jira.config.url", "http://localhost:8080");
+		boolean isJiraEnabled = Boolean.parseBoolean(environment.getProperty("jiradar.issue-tracker.jira.config.enabled", "true"));
+		String jiraUrl = environment.getProperty("jiradar.issue-tracker.jira.config.url", "http://localhost:8080");
 
-		boolean isCacheEnabled = Boolean.parseBoolean(environment.getProperty("cache.enabled", "true"));
-		String cacheProvider = environment.getProperty("cache.provider", "caffeine");
+		boolean isCacheEnabled = Boolean.parseBoolean(environment.getProperty("jiradar.cache.enabled", "true"));
+		String cacheProvider = environment.getProperty("jiradar.cache.provider", "caffeine");
 		String redisHost = environment.getProperty("spring.data.redis.host", "localhost");
 		String redisPort = environment.getProperty("spring.data.redis.port", "6379");
 

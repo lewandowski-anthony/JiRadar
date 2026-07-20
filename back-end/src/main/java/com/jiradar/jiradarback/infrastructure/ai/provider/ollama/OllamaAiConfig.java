@@ -1,4 +1,4 @@
-package com.jiradar.jiradarback.infrastructure.ai.ollama;
+package com.jiradar.jiradarback.infrastructure.ai.provider.ollama;
 
 import com.jiradar.jiradarback.infrastructure.ai.DeveloperAnalyzer;
 import dev.langchain4j.model.chat.ChatModel;
@@ -34,11 +34,4 @@ public class OllamaAiConfig {
                 .timeout(Duration.ofMinutes(3))
                 .build();
     }
-
-	@Bean
-	public DeveloperAnalyzer developerAnalyzer(ChatModel chatModel) {
-		return AiServices.builder(DeveloperAnalyzer.class)
-				.chatModel(chatModel)
-				.build();
-	}
 }

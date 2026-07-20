@@ -1,4 +1,4 @@
-package com.jiradar.jiradarback.infrastructure.ai.gemini;
+package com.jiradar.jiradarback.infrastructure.ai.provider.gemini;
 
 import com.jiradar.jiradarback.infrastructure.ai.DeveloperAnalyzer;
 import dev.langchain4j.model.chat.ChatModel;
@@ -25,13 +25,6 @@ public class GeminiAiConfig {
                 .apiKey(apiKey)
                 .modelName(modelName)
 				.logRequestsAndResponses(true)
-                .build();
-    }
-
-    @Bean
-    public DeveloperAnalyzer developerAnalyzer(ChatModel chatModel) {
-        return AiServices.builder(DeveloperAnalyzer.class)
-                .chatModel(chatModel)
                 .build();
     }
 }

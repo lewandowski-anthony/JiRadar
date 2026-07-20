@@ -43,7 +43,7 @@ class CacheProviderTest {
 
 	@Test
 	void shouldLoadRedisWhenConfigured() {
-		contextRunner.withPropertyValues("cache.provider=redis")
+		contextRunner.withPropertyValues("jiradar.cache.provider=redis")
 				.run(context -> {
 					assertThat(context).hasSingleBean(RedisCacheProvider.class);
 					assertThat(context).doesNotHaveBean(CaffeineCacheProvider.class);
@@ -58,7 +58,7 @@ class CacheProviderTest {
 
 	@Test
 	void shouldLoadNoOpWhenCacheIsDisabled() {
-		contextRunner.withPropertyValues("cache.enabled=false")
+		contextRunner.withPropertyValues("jiradar.cache.enabled=false")
 				.run(context -> {
 					assertThat(context).hasSingleBean(NoOpCacheProvider.class);
 					assertThat(context).doesNotHaveBean(CaffeineCacheProvider.class);
