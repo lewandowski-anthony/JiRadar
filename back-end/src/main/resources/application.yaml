@@ -12,28 +12,43 @@ spring:
       port: ${SPRING_DATA_REDIS_PORT:6379}
       password: ${SPRING_DATA_REDIS_PASSWORD:}
 
-cache:
-  enabled: ${CACHE_ENABLED:true}
-  provider: ${CACHE_PROVIDER:caffeine}
-  specs:
-    JIRA_METRICS_CACHE:
-      ttl: ${JIRA_METRICS_CACHE_TTL:15m}
-      maxSize: ${JIRA_METRICS_CACHE_MAX_SIZE:1000}
-    JIRA_USER_CACHE:
-      ttl: ${JIRA_USER_CACHE_TTL:2h}
-      maxSize: ${JIRA_USER_CACHE_MAX_SIZE:200}
+jiradar:
+  cache:
+    enabled: ${CACHE_ENABLED:true}
+    provider: ${CACHE_PROVIDER:caffeine}
+    specs:
+      JIRA_METRICS_CACHE:
+        ttl: ${JIRA_METRICS_CACHE_TTL:15m}
+        maxSize: ${JIRA_METRICS_CACHE_MAX_SIZE:1000}
+      JIRA_USER_CACHE:
+        ttl: ${JIRA_USER_CACHE_TTL:2h}
+        maxSize: ${JIRA_USER_CACHE_MAX_SIZE:200}
 
-issue-tracker:
-  metrics:
+  ai:
+    provider: ${JIRADAR_AI_PROVIDER:none}
+    ollama:
+      base-url: ${OLLAMA_BASE_URL:}
+      model-name: ${OLLAMA_MODEL_NAME:ollama-1.0}
+    gemini:
+      api-key: ${GEMINI_API_KEY:}
+      model-name: ${GEMINI_MODEL_NAME:gemini-1.5-pro}
+    vertex:
+      project-id: ${GCP_PROJECT_ID:}
+      location: ${GCP_LOCATION:europe-west1}
+      model-name: ${GCP_MODEL_NAME:gemini-1.5-pro}
 
-  jira:
-    config:
-      enabled: ${JIRA_ENABLED:true}
-      url: ${JIRA_URL:http://localhost:8080}
-      statuses:
-        start-development: ${JIRA_STATUS_START_DEV:In Progress,En cours}
-        request-review: ${JIRA_STATUS_REQUEST_REVIEW:In Review,Peer Review}
-        done: ${JIRA_STATUS_DONE:Done,Terminé,Validé}
+  issue-tracker:
+    metrics:
+
+    jira:
+      config:
+        enabled: ${JIRA_ENABLED:true}
+        url: ${JIRA_URL:http://localhost:8080}
+        statuses:
+          start-development: ${JIRA_STATUS_START_DEV:In Progress,En cours}
+          request-review: ${JIRA_STATUS_REQUEST_REVIEW:In Review,Peer Review}
+          done: ${JIRA_STATUS_DONE:Done,Terminé,Validé}
+
 
 springdoc:
   show-actuator: false

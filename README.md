@@ -325,8 +325,8 @@ solution and a distributed external cluster.
 
 The system switches providers dynamically via environment variables or configuration setups:
 
-* **Caffeine (In-Memory):** The default local strategy (`cache.provider=caffeine`), using high-performance local caches with short default lifecycles.
-* **Redis/Valkey (Distributed):** An externalized distributed caching option (`cache.provider=redis`), routing JSON-serialized payloads through a dedicated key-value infrastructure layer.
+* **Caffeine (In-Memory):** The default local strategy (`jiradar.cache.provider=caffeine`), using high-performance local caches with short default lifecycles.
+* **Redis/Valkey (Distributed):** An externalized distributed caching option (`jiradar.cache.provider=redis`), routing JSON-serialized payloads through a dedicated key-value infrastructure layer.
 
 | Environment Variable Overrides | Default value | For mode |
 |:-------------------------------|:--------------|:---------|

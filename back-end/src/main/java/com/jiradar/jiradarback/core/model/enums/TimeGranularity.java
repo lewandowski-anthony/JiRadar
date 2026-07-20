@@ -32,6 +32,16 @@ public enum TimeGranularity {
 		return this.adjuster.apply(period).truncatedTo(ChronoUnit.DAYS);
 	}
 
+	public ZonedDateTime getFromNow(long amount) {
+		ZonedDateTime now = ZonedDateTime.now();
+		return switch (this) {
+			case DAY   -> now.minusDays(amount);
+			case WEEK  -> now.minusWeeks(amount);
+			case MONTH -> now.minusMonths(amount);
+			case YEAR  -> now.minusYears(amount);
+		};
+	}
+
 	public String toLabel(ZonedDateTime date) {
 		return this == WEEK
 			   ? "Week. " + date.format(this.formatter)

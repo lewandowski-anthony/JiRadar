@@ -1,9 +1,9 @@
 version: '3.8'
 
+include:
+  - path: docker-compose-infra.yaml
+
 services:
-  # -----------------------------------------------------------------
-  # BACK-END (Spring Boot)
-  # -----------------------------------------------------------------
   back:
     build:
       context: ../back-end
@@ -18,12 +18,23 @@ services:
       - JIRA_STATUS_START_DEV=In Progress,En cours
       - JIRA_STATUS_REQUEST_REVIEW=In Review,Peer Review
       - JIRA_STATUS_DONE=Done,Terminé,Validé
+      - CACHE_PROVIDER=${CACHE_PROVIDER:-redis}
+      - SPRING_DATA_REDIS_HOST=${SPRING_DATA_REDIS_HOST:-valkey}
+      - SPRING_DATA_REDIS_PORT=${SPRING_DATA_REDIS_PORT:-6379}
+      - JIRADAR_AI_PROVIDER=${JIRADAR_AI_PROVIDER:-ollama}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://ollama:11434}
+      - OLLAMA_MODEL_NAME=${OLLAMA_MODEL_NAME:-ollama-1.0}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - GEMINI_MODEL_NAME=${GEMINI_MODEL_NAME:-gemini-1.5-pro}
+      - GCP_PROJECT_ID=${GCP_PROJECT_ID:-}
+      - GCP_LOCATION=${GCP_LOCATION:-europe-west1}
+      - GCP_MODEL_NAME=${GCP_MODEL_NAME:-gemini-1.5-pro}
+    depends_on:
+      - valkey
+      - ollama
     networks:
       - jiradar-network
 
-  # -----------------------------------------------------------------
-  # FRONT-END (React + Vite + Nginx)
-  # -----------------------------------------------------------------
   front:
     build:
       context: ../front-end
