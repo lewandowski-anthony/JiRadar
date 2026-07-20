@@ -32,14 +32,14 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/tracker/{issueTracker}/users")
+@RequestMapping("/api/v1/tracker/{issueTracker}/users/me/history")
 @Tag(name = "User History", description = "${openapi.endpoint.user.tag.description}")
 public class UserHistoryController {
 
 	private final UserHistoryEventDtoMapper userHistoryEventDtoMapper;
 	private final IssueTrackerFactory issueTrackerFactory;
 
-	@GetMapping("/me/history")
+	@GetMapping
 	@Operation(summary = "${openapi.endpoint.user.history.summary}", description = "${openapi.endpoint.user.history.description}")
 	public Page<@NonNull UserHistoryEventDto> getDeveloperHistory(
 			@RequestParam List<String> projectKeys,

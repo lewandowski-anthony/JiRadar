@@ -1,4 +1,4 @@
-package com.jiradar.jiradarback.infrastructure.issueTracker.jira;
+package com.jiradar.jiradarback.infrastructure.issueTracker.jira.adapter;
 
 import com.jiradar.jiradarback.common.config.CustomMetricsProperties;
 import com.jiradar.jiradarback.core.mapper.UserHistoryMapper;
@@ -13,6 +13,7 @@ import com.jiradar.jiradarback.core.model.issuetracker.UserMetrics;
 import com.jiradar.jiradarback.core.service.AbstractIssueTrackerService;
 import com.jiradar.jiradarback.core.util.PageUtils;
 import com.jiradar.jiradarback.exception.BusinessException;
+import com.jiradar.jiradarback.infrastructure.issueTracker.jira.JiraServiceClient;
 import com.jiradar.jiradarback.infrastructure.issueTracker.jira.enums.JiraFieldId;
 import com.jiradar.jiradarback.infrastructure.issueTracker.jira.gateway.mapper.JiraUserMapper;
 import com.jiradar.jiradarback.infrastructure.issueTracker.jira.gateway.JiraTrackerGateway;

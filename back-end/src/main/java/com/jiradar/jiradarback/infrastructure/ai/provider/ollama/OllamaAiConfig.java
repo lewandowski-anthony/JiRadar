@@ -1,37 +1,37 @@
 package com.jiradar.jiradarback.infrastructure.ai.provider.ollama;
 
-import com.jiradar.jiradarback.infrastructure.ai.DeveloperAnalyzer;
-import dev.langchain4j.model.chat.ChatModel;
-import dev.langchain4j.model.chat.request.ResponseFormat;
-import dev.langchain4j.model.chat.request.ResponseFormatType;
-import dev.langchain4j.model.ollama.OllamaChatModel;
-import dev.langchain4j.service.AiServices;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
+import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.ollama.OllamaChatModel;
+import org.springframework.ai.ollama.api.OllamaApi;
+import org.springframework.ai.ollama.api.OllamaChatOptions;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import java.time.Duration;
 
 @Configuration
 @ConditionalOnProperty(name = "jiradar.ai.provider", havingValue = "ollama")
+@RequiredArgsConstructor
 public class OllamaAiConfig {
 
-    @Value("${jiradar.ai.ollama.base-url}")
-    private String baseUrl;
+	private final OllamaProperties ollamaProperties;
 
-    @Value("${jiradar.ai.ollama.model-name}")
-    private String modelName;
+	@Bean
+	public ChatClient ollamaChatClient() {
+		OllamaApi ollamaApi = OllamaApi.builder()
+				.baseUrl(ollamaProperties.getBaseUrl())
+				.build();
 
-    @Bean
-    public ChatModel chatLanguageModel() {
-        return OllamaChatModel.builder()
-                .baseUrl(baseUrl)
-                .modelName(modelName)
-				.logRequests(true)
-				.responseFormat(ResponseFormat.builder().type(ResponseFormatType.JSON).build())
-				.logResponses(true)
-                .temperature(0.2)
-                .timeout(Duration.ofMinutes(3))
-                .build();
-    }
+		ChatModel chatModel = OllamaChatModel.builder()
+				.ollamaApi(ollamaApi)
+				.options(OllamaChatOptions.builder()
+						.model(ollamaProperties.getModelName())
+						.temperature(0.2)
+						.build())
+				.build();
+
+		return ChatClient.create(chatModel);
+	}
 }

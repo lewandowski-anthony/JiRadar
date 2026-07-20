@@ -32,15 +32,14 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/tracker/{issueTracker}/users")
+@RequestMapping("/api/v1/tracker/{issueTracker}/users/me/metrics")
 @Tag(name = "User Metrics", description = "${openapi.endpoint.user.tag.description}")
 class UserMetricsController {
 
 	private final UserMetricsDtoMapper userMetricsDtoMapper;
-	private final DeveloperAnalysisUseCase developerAnalysisService;
 	private final IssueTrackerFactory issueTrackerFactory;
 
-	@GetMapping("/me/metrics")
+	@GetMapping
 	@Operation(summary = "${openapi.endpoint.user.metrics.summary}", description = "${openapi.endpoint.user.metrics.description}")
 	public UserMetricsDto getDeveloperPerformance(
 			@PathVariable("issueTracker") String issueTracker,
@@ -54,21 +53,5 @@ class UserMetricsController {
 						new ProjectSearchParamCommand(projectKeys, startDate, endDate), TimeGranularity.fromString(historyGranularity)
 				)
 		);
-	}
-
-	@GetMapping("/me/metrics/analysis")
-	@Operation(summary = "${openapi.endpoint.user.metrics.summary}", description = "${openapi.endpoint.user.metrics.description}")
-	public Optional<DeveloperAnalystResult> getDeveloperAnalysis(
-
-			@PathVariable("issueTracker") String issueTracker,
-			@RequestParam List<String> projectKeys,
-			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-			@RequestParam(required = false) String historyGranularity) {
-
-		UserMetrics userMetrics = issueTrackerFactory.getService(issueTracker).getMetrics(
-				new ProjectSearchParamCommand(projectKeys, startDate, endDate), TimeGranularity.fromString(historyGranularity)
-		);
-		return developerAnalysisService.analyzeDeveloperProfile(userMetrics, "en");
 	}
 }

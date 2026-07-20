@@ -47,6 +47,10 @@ public class BannerConfig implements Banner {
 		String redisHost = environment.getProperty("spring.data.redis.host", "localhost");
 		String redisPort = environment.getProperty("spring.data.redis.port", "6379");
 
+		// --- AI Context ---
+		String aiProvider = environment.getProperty("jiradar.ai.provider");
+		boolean isAiEnabled = aiProvider != null && !aiProvider.isBlank();
+
 		// --- LOGO PRINT ---
 		out.println("\u001B[92m     ██╗██╗██████╗  █████╗ ██████╗  █████╗ ██████╗ ");
 		out.println("     ██║██║██╔══██╗██╔══██╗██╔══██╗██╔══██╗██╔══██╗");
@@ -83,7 +87,35 @@ public class BannerConfig implements Banner {
 		}
 		out.println();
 
-		// --- SECTION 4 : STORAGE & PERFORMANCE CACHE ---
+		// --- SECTION 4 : ARTIFICIAL INTELLIGENCE ---
+		out.println(" \u001B[91m[ Artificial Intelligence ]\u001B[0m");
+		if (isAiEnabled) {
+			String normalizedProvider = aiProvider.toLowerCase();
+			String modelName = environment.getProperty("jiradar.ai." + normalizedProvider + ".model-name", "N/A");
+
+			out.printf("  └── \u001B[90mAI Engine        :\u001B[0m [\u001B[92mEnabled\u001B[0m] ── \u001B[90mProvider:\u001B[0m \u001B[33m%s\u001B[0m%n", normalizedProvider.toUpperCase());
+			out.printf("      ├── \u001B[90mTarget Model :\u001B[0m \u001B[35m%s\u001B[0m%n", modelName);
+
+			switch (normalizedProvider) {
+			case "vertex" -> {
+				String projectId = environment.getProperty("jiradar.ai.vertex.project-id", "N/A");
+				String location = environment.getProperty("jiradar.ai.vertex.location", "europe-west1");
+				out.printf("      └── \u001B[90mGCP Context  :\u001B[0m \u001B[36m%s\u001B[0m (%s)%n", projectId, location);
+			}
+			case "ollama" -> {
+				String baseUrl = environment.getProperty("jiradar.ai.ollama.base-url", "http://localhost:11434");
+				out.printf("      └── \u001B[90mHost URL     :\u001B[0m \u001B[36m%s\u001B[0m%n", baseUrl);
+			}
+			case "gemini" -> out.println("      └── \u001B[90mAuth Mode    :\u001B[0m \u001B[37mDirect Gemini API Key\u001B[0m");
+			case "openai" -> out.println("      └── \u001B[90mAuth Mode    :\u001B[0m \u001B[37mOpenAI Bearer Token\u001B[0m");
+			default -> out.println("      └── \u001B[90mCustom Engine:\u001B[0m \u001B[37mGeneric Provider Configured\u001B[0m");
+			}
+		} else {
+			out.println("  └── \u001B[90mAI Engine        :\u001B[0m [\u001B[91mDisabled\u001B[0m] (No provider set via 'jiradar.ai.provider')");
+		}
+		out.println();
+
+		// --- SECTION 5 : STORAGE & PERFORMANCE CACHE ---
 		out.println(" \u001B[93m[ Storage & Performance Cache ]\u001B[0m");
 		if (isCacheEnabled) {
 			out.printf("  └── \u001B[90mCache Management :\u001B[0m [\u001B[92mEnabled\u001B[0m] ── \u001B[90mProvider:\u001B[0m \u001B[33m%s\u001B[0m%n", cacheProvider.toUpperCase());

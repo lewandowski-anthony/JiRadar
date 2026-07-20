@@ -1,30 +1,38 @@
 package com.jiradar.jiradarback.infrastructure.ai.provider.gemini;
 
-import com.jiradar.jiradarback.infrastructure.ai.DeveloperAnalyzer;
-import dev.langchain4j.model.chat.ChatModel;
-import dev.langchain4j.model.google.genai.GoogleGenAiChatModel;
-import dev.langchain4j.service.AiServices;
-import org.springframework.beans.factory.annotation.Value;
+import com.google.genai.Client;
+import lombok.RequiredArgsConstructor;
+import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.google.genai.GoogleGenAiChatModel;
+import org.springframework.ai.google.genai.GoogleGenAiChatOptions;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConditionalOnProperty(name = "jiradar.ai.provider", havingValue = "gemini")
+@RequiredArgsConstructor
 public class GeminiAiConfig {
 
-    @Value("${jiradar.ai.gemini.api-key}")
-    private String apiKey;
-
-    @Value("${jiradar.ai.gemini.model-name:gemini-1.5-pro}")
-    private String modelName;
+    private final GeminiProperties geminiProperties;
 
     @Bean
-    public ChatModel chatModel() {
-        return GoogleGenAiChatModel.builder()
-                .apiKey(apiKey)
-                .modelName(modelName)
-				.logRequestsAndResponses(true)
+    public ChatClient geminiChatClient() {
+        Client genAiClient = Client.builder()
+                .apiKey(geminiProperties.getApiKey())
                 .build();
+
+        GoogleGenAiChatOptions options = GoogleGenAiChatOptions.builder()
+                .model(geminiProperties.getModelName())
+                .temperature(0.2)
+                .build();
+
+        ChatModel chatModel = GoogleGenAiChatModel.builder()
+                .genAiClient(genAiClient)
+                .options(options)
+                .build();
+
+        return ChatClient.create(chatModel);
     }
 }

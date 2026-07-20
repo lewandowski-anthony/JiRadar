@@ -1,9 +1,11 @@
-package com.jiradar.jiradarback.infrastructure.ai.vertex;
+package com.jiradar.jiradarback.infrastructure.ai.provider.vertex;
 
-import com.jiradar.jiradarback.infrastructure.ai.DeveloperAnalyzer;
-import dev.langchain4j.model.chat.ChatModel;
-import dev.langchain4j.model.vertexai.gemini.VertexAiGeminiChatModel;
-import dev.langchain4j.service.AiServices;
+import com.google.genai.Client;
+import lombok.RequiredArgsConstructor;
+import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.google.genai.GoogleGenAiChatModel;
+import org.springframework.ai.google.genai.GoogleGenAiChatOptions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -11,31 +13,29 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConditionalOnProperty(name = "jiradar.ai.provider", havingValue = "vertex")
+@RequiredArgsConstructor
 public class VertexAiConfig {
 
-    @Value("${jiradar.ai.vertex.project-id}")
-    private String projectId;
+	private final VertexProperties vertexProperties;
 
-    @Value("${jiradar.ai.vertex.location}")
-    private String location;
+	@Bean
+	public ChatClient vertexAiChatClient() {
+		Client genAiClient = Client.builder()
+				.project(vertexProperties.getProjectId())
+				.location(vertexProperties.getLocation())
+				.vertexAI(true)
+				.build();
 
-    @Value("${jiradar.ai.vertex.model-name:gemini-1.5-pro}")
-    private String modelName;
+		GoogleGenAiChatOptions options = GoogleGenAiChatOptions.builder()
+				.model(vertexProperties.getModelName())
+				.temperature(0.2)
+				.build();
 
-    @Bean
-    public ChatModel chatLanguageModel() {
-        return VertexAiGeminiChatModel.builder()
-                .project(projectId)
-                .location(location)
-                .modelName(modelName)
-                .temperature(0.2f)
-                .build();
-    }
+		ChatModel chatModel = GoogleGenAiChatModel.builder()
+				.genAiClient(genAiClient)
+				.options(options)
+				.build();
 
-    @Bean
-    public DeveloperAnalyzer developerAnalyzer(ChatModel chatLanguageModel) {
-        return AiServices.builder(DeveloperAnalyzer.class)
-                .chatModel(chatLanguageModel)
-                .build();
-    }
+		return ChatClient.create(chatModel);
+	}
 }
