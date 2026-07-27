@@ -15,7 +15,7 @@ public class AiPromptGateway {
 
 	private final ObjectProvider<@NonNull ChatClient> aiProviderChatClient;
 
-	public <I, R> R execute(I input, Function<ChatClient, R> action) {
+	public <R> R execute(Function<ChatClient, R> action) {
 		ChatClient chatClient = aiProviderChatClient.getIfAvailable();
 
 		if (chatClient == null) {

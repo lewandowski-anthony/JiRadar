@@ -12,14 +12,11 @@ import com.jiradar.jiradarback.infrastructure.ai.common.model.enums.DeveloperTit
 import com.jiradar.jiradarback.infrastructure.ai.common.model.response.DeveloperAnalystResult;
 import com.jiradar.jiradarback.infrastructure.ai.gateway.AiPromptGateway;
 import com.jiradar.jiradarback.infrastructure.ai.service.DeveloperAnalysisUseCase;
-import com.jiradar.jiradarback.infrastructure.cache.config.AvailableCache;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static com.jiradar.jiradarback.infrastructure.ai.constant.DeveloperAnalysisConstants.PARAM_AVAILABLE_TITLES;
@@ -29,7 +26,6 @@ import static com.jiradar.jiradarback.infrastructure.ai.constant.DeveloperAnalys
 import static com.jiradar.jiradarback.infrastructure.ai.constant.DeveloperAnalysisConstants.SYSTEM_PROMPT;
 import static com.jiradar.jiradarback.infrastructure.ai.constant.DeveloperAnalysisConstants.USER_PROMPT_TEMPLATE;
 import static com.jiradar.jiradarback.infrastructure.cache.config.AvailableCache.DEVELOPER_ANALYSIS;
-import static com.jiradar.jiradarback.infrastructure.cache.config.AvailableCache.DEVELOPER_ANALYSIS_CACHE;
 
 @Service
 @Slf4j
@@ -59,7 +55,7 @@ public class DeveloperAnalysisService implements DeveloperAnalysisUseCase {
 
 		String titlesWithDescriptions = DeveloperTitle.getFormattedTitlesWithDescriptions();
 
-		DeveloperAnalystResult result = aiPromptGateway.execute(user, chatClient ->
+		DeveloperAnalystResult result = aiPromptGateway.execute(chatClient ->
 				chatClient.prompt()
 						.system(SYSTEM_PROMPT)
 						.user(userSpec -> userSpec
