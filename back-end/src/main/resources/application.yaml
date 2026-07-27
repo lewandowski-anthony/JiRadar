@@ -13,6 +13,10 @@ spring:
       password: ${SPRING_DATA_REDIS_PASSWORD:}
 
 jiradar:
+  feature:
+    flags:
+      ai-analysis:
+        enabled: false
   cache:
     enabled: ${CACHE_ENABLED:true}
     provider: ${CACHE_PROVIDER:caffeine}

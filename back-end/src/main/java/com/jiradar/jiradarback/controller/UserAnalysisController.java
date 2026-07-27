@@ -10,6 +10,7 @@ import com.jiradar.jiradarback.infrastructure.ai.service.DeveloperAnalysisUseCas
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,14 +23,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/tracker/{issueTracker}/users/me/analysis")
-@Tag(name = "User Management", description = "${openapi.endpoint.user.tag.description}")
+@Tag(name = "AI Analysis Management", description = "${openapi.endpoint.ai.analysis.tag.description}")
+@ConditionalOnProperty(name = "jiradar.feature.flags.ai-analysis.enabled", havingValue = "true")
 class UserAnalysisController {
 
 	private final IssueTrackerFactory issueTrackerFactory;
 	private final DeveloperAnalysisUseCase developerAnalysisService;
 
 	@GetMapping
-	@Operation(summary = "${openapi.endpoint.user.metrics.analysis.summary}", description = "${openapi.endpoint.user.metrics.analysis.description}")
+	@Operation(summary = "${openapi.endpoint.ai.analysis.summary}", description = "${openapi.endpoint.ai.analysis.description}")
 	public Optional<DeveloperAnalystResult> getDeveloperAnalysis(
 			@PathVariable("issueTracker") String issueTracker,
 			@RequestParam List<String> projectKeys,
