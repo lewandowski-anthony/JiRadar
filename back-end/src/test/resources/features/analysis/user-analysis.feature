@@ -12,7 +12,30 @@ Feature: API - Developer AI Analysis Endpoint
     """
 
   Scenario: We request developer AI analysis with valid parameters
-    Given the AI Gateway responds with profile summary "Solid developer performance." and title "BUG_FIXER"
+    Given the AI Gateway responds with:
+    """json
+    {
+      "profile_summary": "Solid developer performance.",
+      "qualities": ["Quality 1"],
+      "improvements": ["Improvement 1"],
+      "assigned_title": "BUG_FIXER",
+      "technical_velocity_score": 80,
+      "team_collaboration_score": 85,
+      "delivery_reliability_score": 90,
+      "global_agility_score": 88,
+      "primary_bottleneck": "None",
+      "main_focus_for_next_sprint": "Focus",
+      "concrete_action_plan": ["Action 1"],
+      "long_term_growth_track": "Growth",
+      "peer_coaching_recommendation": "Coaching",
+      "key_metric_interpretations": {
+        "throughput": "Good",
+        "cycle_time": "Fast",
+        "review_participation": "Active"
+      },
+      "predicted_risks_if_unchanged": ["Risk 1"]
+    }
+    """
     And POST /jira/rest/api/3/search/jql responds with:
     """json
     {
@@ -59,25 +82,25 @@ Feature: API - Developer AI Analysis Endpoint
     And the response body contains:
     """json
     {
-      "profileSummary": "Solid developer performance.",
+      "profile_summary": "Solid developer performance.",
       "qualities": ["Quality 1"],
       "improvements": ["Improvement 1"],
-      "assignedTitle": "BUG_FIXER",
-      "technicalVelocityScore": 80,
-      "teamCollaborationScore": 85,
-      "deliveryReliabilityScore": 90,
-      "globalAgilityScore": 88,
-      "primaryBottleneck": "None",
-      "mainFocusForNextSprint": "Focus",
-      "concreteActionPlan": ["Action 1"],
-      "longTermGrowthTrack": "Growth",
-      "peerCoachingRecommendation": "Coaching",
-      "keyMetricInterpretations": {
+      "assigned_title": "BUG_FIXER",
+      "technical_velocity_score": 80,
+      "team_collaboration_score": 85,
+      "delivery_reliability_score": 90,
+      "global_agility_score": 88,
+      "primary_bottleneck": "None",
+      "main_focus_for_next_sprint": "Focus",
+      "concrete_action_plan": ["Action 1"],
+      "long_term_growth_track": "Growth",
+      "peer_coaching_recommendation": "Coaching",
+      "key_metric_interpretations": {
         "throughput": "Good",
-        "cycleTime": "Fast",
-        "reviewParticipation": "Active"
+        "cycle_time": "Fast",
+        "review_participation": "Active"
       },
-      "predictedRisksIfUnchanged": ["Risk 1"]
+      "predicted_risks_if_unchanged": ["Risk 1"]
     }
     """
 
