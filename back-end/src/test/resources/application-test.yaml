@@ -1,4 +1,8 @@
 jiradar:
+  feature:
+    flags:
+      ai-analysis:
+        enabled: true
   issue-tracker:
     jira:
       config:
