@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.0](https://github.com/lewandowski-anthony/JiRadar/compare/v1.11.1...v1.12.0) (2026-07-27)
+
+
+### Features
+
+* Add AI Powered Metrics Analysis - #JIRADAR-82 ([#83](https://github.com/lewandowski-anthony/JiRadar/issues/83)) ([074f339](https://github.com/lewandowski-anthony/JiRadar/commit/074f339059d2c98e22f0d5f58e3f78a2e4af374a))
+
 ## [1.11.1](https://github.com/lewandowski-anthony/JiRadar/compare/v1.11.0...v1.11.1) (2026-07-19)
 
 
