@@ -12,7 +12,8 @@ Feature: API - Developer AI Analysis Endpoint
     """
 
   Scenario: We request developer AI analysis with valid parameters
-    Given POST /jira/rest/api/3/search/jql responds with:
+    Given the AI Gateway responds with profile summary "Solid developer performance." and title "BUG_FIXER"
+    And POST /jira/rest/api/3/search/jql responds with:
     """json
     {
       "issues": [
@@ -58,8 +59,25 @@ Feature: API - Developer AI Analysis Endpoint
     And the response body contains:
     """json
     {
-      "profile_summary": "Solid developer performance.",
-      "assigned_title": "BUG_FIXER"
+      "profileSummary": "Solid developer performance.",
+      "qualities": ["Quality 1"],
+      "improvements": ["Improvement 1"],
+      "assignedTitle": "BUG_FIXER",
+      "technicalVelocityScore": 80,
+      "teamCollaborationScore": 85,
+      "deliveryReliabilityScore": 90,
+      "globalAgilityScore": 88,
+      "primaryBottleneck": "None",
+      "mainFocusForNextSprint": "Focus",
+      "concreteActionPlan": ["Action 1"],
+      "longTermGrowthTrack": "Growth",
+      "peerCoachingRecommendation": "Coaching",
+      "keyMetricInterpretations": {
+        "throughput": "Good",
+        "cycleTime": "Fast",
+        "reviewParticipation": "Active"
+      },
+      "predictedRisksIfUnchanged": ["Risk 1"]
     }
     """
 
