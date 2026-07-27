@@ -7,7 +7,7 @@ import org.springframework.cache.support.NoOpCacheManager;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConditionalOnProperty(name = "cache.enabled", havingValue = "false")
+@ConditionalOnProperty(name = "jiradar.cache.enabled", havingValue = "false")
 public class NoOpCacheProvider implements CacheProvider {
 
 	@Override

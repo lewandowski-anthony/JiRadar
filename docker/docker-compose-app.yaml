@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  back:
+    build:
+      context: ../back-end
+      dockerfile: Dockerfile
+    container_name: jiradar-back
+    ports:
+      - "8080:8080"
+    environment:
+      - JAVA_OPTS=-Xmx512m
+      - JIRA_ENABLED=true
+      - JIRA_URL=https://company.atlassian.net
+      - JIRA_STATUS_START_DEV=In Progress,En cours
+      - JIRA_STATUS_REQUEST_REVIEW=In Review,Peer Review
+      - JIRA_STATUS_DONE=Done,Terminé,Validé
+      - CACHE_PROVIDER=${CACHE_PROVIDER:-caffeine}
+      - SPRING_DATA_REDIS_HOST=${SPRING_DATA_REDIS_HOST:-localhost}
+      - SPRING_DATA_REDIS_PORT=${SPRING_DATA_REDIS_PORT:-6379}
+      - JIRADAR_AI_PROVIDER=${JIRADAR_AI_PROVIDER:-none}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://localhost:11434}
+      - OLLAMA_MODEL_NAME=${OLLAMA_MODEL_NAME:-ollama-1.0}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - GEMINI_MODEL_NAME=${GEMINI_MODEL_NAME:-gemini-1.5-pro}
+      - GCP_PROJECT_ID=${GCP_PROJECT_ID:-}
+      - GCP_LOCATION=${GCP_LOCATION:-europe-west1}
+      - GCP_MODEL_NAME=${GCP_MODEL_NAME:-gemini-1.5-pro}
+    networks:
+      - jiradar-network
+
+  front:
+    build:
+      context: ../front-end
+      dockerfile: Dockerfile
+    container_name: jiradar-front
+    ports:
+      - "80:80"
+    environment:
+      - BACKEND_URL=http://localhost:8080
+    depends_on:
+      - back
+    networks:
+      - jiradar-network
+
+networks:
+  jiradar-network:
+    driver: bridge
