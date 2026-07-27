@@ -71,23 +71,23 @@ The application exposes standard REST resources under `/api/v1/tracker/{issueTra
 
 ## Configuration & Environment Variables
 
-System parameters are managed within `application.properties` or `application.yml`. Core external integration properties map to the prefix `issue-tracker.jira.config`.
+System parameters are managed within `application.properties` or `application.yml`. Core external integration properties map to the prefix `jiradar.issue-tracker.jira.config`.
 
 ### Properties Reference
 
 ```properties
 # Module Lifecycle Controls
-issue-tracker.jira.config.enabled=true
+jiradar.issue-tracker.jira.config.enabled=true
 
 # Remote Connection Details
-issue-tracker.jira.config.url=[https://your-company.atlassian.net](https://your-company.atlassian.net)
-issue-tracker.jira.config.user=automation-account@company.com
-issue-tracker.jira.config.token=ATATT3xFf...
+jiradar.issue-tracker.jira.config.url=[https://your-company.atlassian.net](https://your-company.atlassian.net)
+jiradar.issue-tracker.jira.config.user=automation-account@company.com
+jiradar.issue-tracker.jira.config.token=ATATT3xFf...
 
 # Status Mapping Assignments (Matches workflow labels in issue tracker)
-issue-tracker.jira.config.statuses.startDevelopment=In Progress,Selected for Development
-issue-tracker.jira.config.statuses.requestReview=In Review,Peer Review
-issue-tracker.jira.config.statuses.done=Done,Closed,Resolved
+jiradar.issue-tracker.jira.config.statuses.startDevelopment=In Progress,Selected for Development
+jiradar.issue-tracker.jira.config.statuses.requestReview=In Review,Peer Review
+jiradar.issue-tracker.jira.config.statuses.done=Done,Closed,Resolved
 ```
 
 ---

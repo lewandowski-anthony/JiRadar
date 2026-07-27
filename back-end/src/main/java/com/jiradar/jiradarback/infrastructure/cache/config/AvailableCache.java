@@ -12,7 +12,8 @@ public enum AvailableCache {
 
 	JIRA_METRICS_CACHE(AvailableCache.JIRA_METRICS, TimeUnit.MINUTES, 5L),
 	JIRA_ISSUE_CACHE(AvailableCache.JIRA_ISSUE, TimeUnit.MINUTES, 5L),
-	JIRA_USER_CACHE(AvailableCache.JIRA_USER, TimeUnit.DAYS, 1L);
+	JIRA_USER_CACHE(AvailableCache.JIRA_USER, TimeUnit.DAYS, 1L),
+	DEVELOPER_ANALYSIS_CACHE(AvailableCache.DEVELOPER_ANALYSIS, TimeUnit.MINUTES, 30L);
 
 	private final String cacheName;
 	private final TimeUnit cacheRetentionTimeUnit;
@@ -21,4 +22,5 @@ public enum AvailableCache {
 	public static final String JIRA_METRICS = "JIRA_METRICS_CACHE";
 	public static final String JIRA_USER = "JIRA_USER_CACHE";
 	public static final String JIRA_ISSUE = "JIRA_ISSUE_CACHE";
+	public static final String DEVELOPER_ANALYSIS = "DEVELOPER_ANALYSIS_CACHE";
 }

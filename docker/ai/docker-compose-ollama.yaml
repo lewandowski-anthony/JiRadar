@@ -1,0 +1,39 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: jiradar-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    restart: unless-stopped
+    networks:
+      - jiradar-network
+
+  webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: jiradar-ollama-webui
+    ports:
+      - "3000:8080"
+    environment:
+      - HTTPS_PROXY=http://host.docker.internal:3128
+      - OLLAMA_BASE_URL=http://ollama:11434
+    volumes:
+      - webui-data:/app/backend/data
+    depends_on:
+      - ollama
+    restart: unless-stopped
+    networks:
+      - jiradar-network
+
+volumes:
+  ollama-data:
+    driver: local
+  webui-data:
+    driver: local
+
+networks:
+  jiradar-network:
+    driver: bridge

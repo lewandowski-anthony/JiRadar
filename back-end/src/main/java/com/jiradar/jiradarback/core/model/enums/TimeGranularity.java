@@ -1,6 +1,7 @@
 package com.jiradar.jiradarback.core.model.enums;
 
 import java.time.DayOfWeek;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -30,6 +31,16 @@ public enum TimeGranularity {
 
 	public ZonedDateTime getEndOfPeriod(ZonedDateTime period) {
 		return this.adjuster.apply(period).truncatedTo(ChronoUnit.DAYS);
+	}
+
+	public ZonedDateTime getFromNow(long amount) {
+		ZonedDateTime now = ZonedDateTime.now(ZoneId.systemDefault());
+		return switch (this) {
+			case DAY   -> now.minusDays(amount);
+			case WEEK  -> now.minusWeeks(amount);
+			case MONTH -> now.minusMonths(amount);
+			case YEAR  -> now.minusYears(amount);
+		};
 	}
 
 	public String toLabel(ZonedDateTime date) {
