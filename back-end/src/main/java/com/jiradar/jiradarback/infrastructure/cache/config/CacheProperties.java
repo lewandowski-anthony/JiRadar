@@ -12,7 +12,7 @@ import java.util.Map;
 @Configuration
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "cache")
+@ConfigurationProperties(prefix = "jiradar.cache")
 public class CacheProperties {
 
 	private Map<String, CacheSpec> specs = new HashMap<>();

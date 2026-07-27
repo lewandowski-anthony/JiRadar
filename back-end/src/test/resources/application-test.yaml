@@ -1,10 +1,15 @@
-issue-tracker:
-  jira:
-    config:
-      url: http://localhost:8089/jira
-  github:
-    config:
-        url: http://localhost:8089/github
-  trello:
-    api:
-      url: http://localhost:8089/trello
+jiradar:
+  feature:
+    flags:
+      ai-analysis:
+        enabled: true
+  issue-tracker:
+    jira:
+      config:
+        url: http://localhost:8089/jira
+    github:
+      config:
+          url: http://localhost:8089/github
+    trello:
+      api:
+        url: http://localhost:8089/trello

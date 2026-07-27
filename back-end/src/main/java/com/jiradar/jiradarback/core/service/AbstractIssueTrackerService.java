@@ -66,6 +66,14 @@ public abstract class AbstractIssueTrackerService {
     public abstract UserMetrics getMetrics(ProjectSearchParamCommand command, TimeGranularity historyGranularity);
 
     /**
+     * Calculates and aggregates global activity metrics for the authenticated user within a specified timeframe.
+     *
+     * @param command            the parameters containing targeted project keys, start date, and end date.
+     * @return a {@link UserMetrics} object aggregating the computed user productivity data.
+     */
+    public abstract UserMetrics getMetrics(ProjectSearchParamCommand command);
+
+    /**
      * Generates a paginated history timeline of all relevant status changes and review events triggered by the user.
      *
      * @param command  the parameters containing targeted project keys, start date, and end date.

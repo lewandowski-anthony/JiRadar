@@ -4,7 +4,7 @@
   <img src="front-end/public/jiradar_logo.svg" alt="JiRadar Logo" width="150" />
 </p>
 
-## Project Status 
+## Project Status
 <center>
 <table>
   <thead>
@@ -83,7 +83,7 @@
     </tr>
     <tr>
       <td>Bugs</td>
-      <td><img src="https://sonarcloud.io/api/project_badges/measure?project=jiradar_jiradar-front&metric=bugs" alt="Bugs"></td>
+      <td><img src="https://sonarcloud.io/api/project_badges/measure?project=jiradar_jiradar-bugs" alt="Bugs"></td>
     </tr>
   </tbody>
 </table>
@@ -91,9 +91,7 @@
 
 ## Summary
 
-Jiradar is a full-stack platform designed to extract, process, and analyze project delivery metrics and activity loops from issue-tracking ecosystems like Jira. By evaluating issue transitions and raw
-changelog streams, the system provides real-time developer productivity engineering analytics, including flow predictability metrics, cycle times, review behavior metrics, and work-in-progress
-indexes.
+Jiradar is a full-stack platform designed to extract, process, and analyze project delivery metrics and activity loops from issue-tracking ecosystems like Jira. By evaluating issue transitions and raw changelog streams, the system provides real-time developer productivity engineering analytics, including flow predictability metrics, cycle times, review behavior metrics, and work-in-progress indexes.
 
 The repository is managed as a unified multi-module structure comprising a Java-based Spring Boot backend engine, a React frontend client application, and global automated verification workflows.
 
@@ -110,8 +108,7 @@ The system is split into two isolated, micro-architectured layers that collabora
 └── front-end/               # React client application utilizing feature modules
 ```
 
-A global validation mechanism is enforced on code pushes via Git hooks. The pre-push hook acts as a quality gate ensuring that both modules pass strict criteria before code can be published to remote
-servers:
+A global validation mechanism is enforced on code pushes via Git hooks. The pre-push hook acts as a quality gate ensuring that both modules pass strict criteria before code can be published to remote servers:
 
 1. Compiles the Spring Boot backend environment and runs integration testing cycles.
 2. Triggers the frontend unit testing coverage engine to ensure strict thresholds are met.
@@ -168,6 +165,61 @@ The frontend provides user dashboards, telemetry visualization feeds, and pagina
 
 ---
 
+## AI Developer Analysis (Experimental Feature)
+
+> [!WARNING]
+> The AI Developer Analysis feature is currently under active development, experimental, and not fully tested. The associated feature flag is **disabled by default** (`jiradar.feature.flags.ai-analysis.enabled=false`).
+
+Jiradar includes an AI-driven developer analysis module designed to synthesize activity metrics into actionable coaching insights, performance scores, and personalized growth recommendations.
+
+### Key Capabilities
+
+* **Multi-Provider Support:** Pluggable AI integration via Spring AI, supporting local or cloud models:
+    * **Ollama:** Local model orchestration (e.g., Llama 3.1).
+    * **Google Gemini:** Direct API key connection.
+    * **Google Vertex AI:** Enterprise GCP AI integration.
+* **Metric Synthesis:** Generates qualitative summaries, strength identification, operational bottlenecks, and recommended focus areas for upcoming sprints.
+* **Deterministic Scoring:** Evaluates scores (0–100) across technical velocity, team collaboration, delivery reliability, and global agility.
+* **Dedicated Caching:** AI analysis results are cached (`DEVELOPER_ANALYSIS_CACHE`) to avoid unnecessary prompt calls and manage quota consumption.
+
+### Enabling the AI Analysis Module
+
+To enable the experimental endpoint (`/api/v1/tracker/{issueTracker}/users/me/analysis`), update your `application.yaml` or set the following environment variables:
+
+```yaml
+jiradar:
+  feature:
+    flags:
+      ai-analysis:
+        enabled: true
+  ai:
+    provider: ${JIRADAR_AI_PROVIDER:ollama} # Supported options: ollama, gemini, vertex, none
+```
+
+#### Provider Environment Configuration Example
+
+```bash
+# Enable the AI feature flag
+export JIRADAR_FEATURE_FLAGS_AI_ANALYSIS_ENABLED=true
+
+# Choose and configure an AI provider
+export JIRADAR_AI_PROVIDER=gemini
+export GEMINI_API_KEY=your-api-key-here
+export GEMINI_MODEL_NAME=gemini-1.5-pro
+```
+
+When deploying locally with Ollama using Docker, you can run the dedicated stack and inject a `.gguf` model using the helper script:
+
+```bash
+# Launch Ollama and Open WebUI stack
+docker compose -f docker/ai/docker-compose-ollama.yaml up -d
+
+# Inject and register a local model into Ollama
+./docker/ai/inject_model.sh --file /path/to/model.gguf --model llama3.1
+```
+
+---
+
 ## Custom Metrics Configuration Guide
 
 This guide explains how to configure and extend user performance metrics within the application using **Spring Expression Language (SpEL)**.
@@ -178,15 +230,13 @@ This guide explains how to configure and extend user performance metrics within 
 
 The application dynamically evaluates formulas defined as environment variables against the `UserMetricCalculationService` context.
 
-To prevent runtime failures, a **Fail-Fast validation mechanism** runs during the application bootstrap[cite: 2]. If any formula contains a syntax error or references a non-existent property/method,
-the application will refuse to start and throw an explicit initialization error[cite: 2].
+To prevent runtime failures, a **Fail-Fast validation mechanism** runs during the application bootstrap. If any formula contains a syntax error or references a non-existent property/method, the application will refuse to start and throw an explicit initialization error.
 
 ---
 
 ### 🛠️ Configuration Format
 
-Custom metrics are loaded via the `issue-tracker.metrics.custom-metrics` configuration prefix[cite: 2]. You can inject them directly into your IntelliJ IDEA Run/Debug Configuration using the *
-*Environment variables** field.
+Custom metrics are loaded via the `jiradar.issue-tracker.metrics.custom-metrics` configuration prefix. You can inject them directly into your IntelliJ IDEA Run/Debug Configuration using the **Environment variables** field.
 
 #### IntelliJ Environment Variables String
 
@@ -269,8 +319,6 @@ When filtering the `userIssues` list (e.g., `userIssues.?[...]`), you can query 
 * `type.name` (`String`): The type designation of the issue (e.g., `Bug`, `Story`, `Task`)
 * `status.name` (`String`): The current state of the issue (e.g., `To Do`, `In Progress`, `Done`)
 
-```
-
 ---
 
 ### 📊 Detailed Metrics Breakdown
@@ -294,18 +342,15 @@ When filtering the `userIssues` list (e.g., `userIssues.?[...]`), you can query 
 
 #### 1. Read-Only Sandbox
 
-The custom evaluation engine leverages SpEL's `SimpleEvaluationContext` configured for read-only data binding[cite: 2]. This strictly prevents malicious formulas from modifying application states,
-accessing unauthorized Java classes, or manipulating system resources.
+The custom evaluation engine leverages SpEL's `SimpleEvaluationContext` configured for read-only data binding. This strictly prevents malicious formulas from modifying application states, accessing unauthorized Java classes, or manipulating system resources.
 
 #### 2. Pre-Compiled Expressions
 
-Formulas are parsed and compiled into memory **once** during the initialization phase or at the root of a query[cite: 2]. When generating periodic historical datasets (e.g., weekly or monthly
-metrics), the pre-compiled expressions are reused over the time-granularity intervals, eliminating high CPU overhead[cite: 2].
+Formulas are parsed and compiled into memory **once** during the initialization phase or at the root of a query. When generating periodic historical datasets (e.g., weekly or monthly metrics), the pre-compiled expressions are reused over the time-granularity intervals, eliminating high CPU overhead.
 
 #### 3. Graceful Runtime Error Handling
 
-If a formula throws an unexpected exception at runtime (such as an unhandled division by zero on a specific sub-range), the application isolates the failure[cite: 2]. Instead of breaking the entire
-API response, it catches the error locally and returns a structured error message within the response payload[cite: 2]:
+If a formula throws an unexpected exception at runtime (such as an unhandled division by zero on a specific sub-range), the application isolates the failure. Instead of breaking the entire API response, it catches the error locally and returns a structured error message within the response payload:
 
 ```json
 {
@@ -318,15 +363,14 @@ API response, it catches the error locally and returns a structured error messag
 
 ## Caching Strategy & Configuration
 
-The application uses a pluggable caching infrastructure managed by `CacheProvider` implementations. This allows swapping telemetry tracking and query-optimization caches between an internal in-memory
-solution and a distributed external cluster.
+The application uses a pluggable caching infrastructure managed by `CacheProvider` implementations. This allows swapping telemetry tracking and query-optimization caches between an internal in-memory solution and a distributed external cluster.
 
 ### Cache Providers
 
 The system switches providers dynamically via environment variables or configuration setups:
 
-* **Caffeine (In-Memory):** The default local strategy (`cache.provider=caffeine`), using high-performance local caches with short default lifecycles.
-* **Redis/Valkey (Distributed):** An externalized distributed caching option (`cache.provider=redis`), routing JSON-serialized payloads through a dedicated key-value infrastructure layer.
+* **Caffeine (In-Memory):** The default local strategy (`jiradar.cache.provider=caffeine`), using high-performance local caches with short default lifecycles.
+* **Redis/Valkey (Distributed):** An externalized distributed caching option (`jiradar.cache.provider=redis`), routing JSON-serialized payloads through a dedicated key-value infrastructure layer.
 
 | Environment Variable Overrides | Default value | For mode |
 |:-------------------------------|:--------------|:---------|
@@ -338,21 +382,23 @@ The system switches providers dynamically via environment variables or configura
 
 Custom retention times (TTL) and maximum entry bounds can be overwritten via `application.yaml` configurations or explicit environment injects:
 
-| Cache Context Key    | Default Fallback TTL | Default Max Size | Environment Variable Overrides                           |
-|:---------------------|:---------------------|:-----------------|:---------------------------------------------------------|
-| `JIRA_METRICS_CACHE` | 15 Minutes           | 1000             | `JIRA_METRICS_CACHE_TTL` / `JIRA_METRICS_CACHE_MAX_SIZE` |
-| `JIRA_USER_CACHE`    | 2 Hours              | 200              | `JIRA_USER_CACHE_TTL` / `JIRA_USER_CACHE_MAX_SIZE`       |
+| Cache Context Key          | Default Fallback TTL | Default Max Size | Environment Variable Overrides                           |
+|:---------------------------|:---------------------|:-----------------|:---------------------------------------------------------|
+| `JIRA_METRICS_CACHE`       | 15 Minutes           | 1000             | `JIRA_METRICS_CACHE_TTL` / `JIRA_METRICS_CACHE_MAX_SIZE` |
+| `JIRA_USER_CACHE`          | 2 Hours              | 200              | `JIRA_USER_CACHE_TTL` / `JIRA_USER_CACHE_MAX_SIZE`       |
+| `DEVELOPER_ANALYSIS_CACHE` | 30 Minutes           | 200              | N/A                                                      |
 
-### Redis Deployment Matrix
+### Redis & Infrastructure Deployment Matrix
 
-To run the application environment utilizing the decoupled distributed caching architecture, launch the workspace using the extended compose manifest:
+To run the application environment utilizing the decoupled distributed caching architecture or modular infrastructure, use the target compose manifests under `docker/`:
 
 ```bash
-docker compose -f docker/docker-compose-redis.yaml up --build
-```
+# Run caching layer only (Valkey & RedisInsight)
+docker compose -f docker/caching/docker-compose-redis.yaml up -d
 
-This bundle provisions a Valkey 8.0 core service instance mapping to port `6379`, attaches a RedisInsight telemetry dashboard console mapping to port `8001`, and reconfigures the backend layer
-variables smoothly.
+# Run all infrastructure services (Redis + Ollama)
+docker compose -f docker/docker-compose-infra.yaml up -d
+```
 
 ---
 
@@ -383,18 +429,15 @@ Both frontend and backend modules feature multi-stage production-ready container
 
 The backend relies on an optimized multi-stage build structure utilizing a layer extraction mechanism to achieve rapid startup overhead and lean image footprints:
 
-* **Build Phase:** Extracts compiled archive artifacts (`target/jiradar-back-*.jar`) into standard operational layered segments (`lib`, standalone application dependencies, class resources) using
-  Spring Boot's internal tool index properties.
-* **Runtime Environment:** Runs on an isolated, non-root system configuration context (`spring:spring` safe user space) using an Eclipse Temurin Java 25 Alpine foundation. This layer loads raw
-  dependencies externally via the decoupled layer manager, optimizing system caches.
+* **Build Phase:** Extracts compiled archive artifacts (`target/jiradar-back-*.jar`) into standard operational layered segments (`lib`, standalone application dependencies, class resources) using Spring Boot's internal tool index properties.
+* **Runtime Environment:** Runs on an isolated, non-root system configuration context (`spring:spring` safe user space) using an Eclipse Temurin Java 25 Alpine foundation. This layer loads raw dependencies externally via the decoupled layer manager, optimizing system caches.
 
 #### 2. Frontend App UI Layer (`front-end/Dockerfile`)
 
 The client UI workspace builds on a split Node environment mapping directly into high-availability distribution endpoints:
 
 * **Compilation Phase:** Spins up a Node Alpine framework layer to install pristine project dependencies and execute code compilation blocks (`npm run build`).
-* **Distribution Phase:** Moves built visual bundles (`dist/`) directly into a high-performance Nginx web server layout container. An injection runtime hook (`docker/entrypoint.sh`) dynamically builds
-  configuration property matrices (`config.js`) from target environment variables (`JIRADAR_BACKEND_URL`), keeping compiled code separate from backend locations.
+* **Distribution Phase:** Moves built visual bundles (`dist/`) directly into a high-performance Nginx web server layout container. An injection runtime hook (`docker/entrypoint.sh`) dynamically builds configuration property matrices (`config.js`) from target environment variables (`JIRADAR_BACKEND_URL`), keeping compiled code separate from backend locations.
 
 ### Complete Ecosystem Automation (Docker Compose)
 
@@ -402,6 +445,9 @@ The global container stack can be fully orchestrated locally or through automate
 
 ```yaml
 version: '3.8'
+
+include:
+  - path: docker-compose-infra.yaml
 
 services:
   back:
@@ -418,6 +464,11 @@ services:
       - JIRA_STATUS_START_DEV=In Progress,En cours
       - JIRA_STATUS_REQUEST_REVIEW=In Review,Peer Review
       - JIRA_STATUS_DONE=Done,Terminé,Validé
+      - CACHE_PROVIDER=${CACHE_PROVIDER:-redis}
+      - SPRING_DATA_REDIS_HOST=${SPRING_DATA_REDIS_HOST:-valkey}
+      - SPRING_DATA_REDIS_PORT=${SPRING_DATA_REDIS_PORT:-6379}
+      - JIRADAR_AI_PROVIDER=${JIRADAR_AI_PROVIDER:-ollama}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://ollama:11434}
 
   front:
     build:
@@ -440,28 +491,22 @@ services:
 
 The server is structured following Clean Architecture domains to isolate infrastructural adjustments from core metrics logic:
 
-* **Presentation Layer (`controller`)**: Exposes versioned REST components under `/api/v1/tracker/{issueTracker}/...`. It handles structural payload casing transparently using an automatic servlet
-  interception filter (`OncePerRequestFilter`) to unify naming conversions between frontend interfaces and Java models.
+* **Presentation Layer (`controller`)**: Exposes versioned REST components under `/api/v1/tracker/{issueTracker}/...`. It handles structural payload casing transparently using an automatic servlet interception filter (`OncePerRequestFilter`) to unify naming conversions between frontend interfaces and Java models.
 * **Domain Layer (`core`)**: Formulates rich calculation models such as `UserMetricCalculationService` to compute specific metrics:
     * **Average Cycle Time:** The duration separating an issue's initialization in development from its transition into a finalized status state.
     * **Average Review Time:** Elapsed duration spent strictly inside peer review workflow labels.
     * **Delivery Success Rate:** The ratio of issues started that successfully transitioned to finished within the selected timeframe.
     * **WIP Parallel Index:** A daily work-in-progress assessment factor measuring concurrent open tickets allocated to an active engineer profile.
-* **Infrastructure Layer (`infrastructure`)**: Standardizes vendor connection adapters like `JiraIssueTrackerAdapter` and abstracts performance optimization structures into decoupled caching modules
-  via the `CacheProvider` interface contract.
+* **Infrastructure Layer (`infrastructure`)**: Standardizes vendor connection adapters like `JiraIssueTrackerAdapter`, integrates AI LLM clients via Spring AI (`infrastructure/ai`), and abstracts performance optimization structures into decoupled caching modules via the `CacheProvider` interface contract.
 
 ### 2. Frontend Client (React 19 & Tailwind CSS 4)
 
 The application handles visual rendering dynamically through reactive components, hooks, and context structures built on Vite:
 
-* **Core Framework Elements (`core`)**: Context systems such as `AuthContext` manage credentials and sessions, while `LocaleProvider` implements multilingual switches. Shared utilities handle API
-  clients (`apiClient`) and normalized naming conversions.
-* **Dashboard Engine (`features/dashboard`)**: Orchestrates unified filter inputs (`FormDashboard`) and orchestrates layout widgets allowing users to query project data, restrict date fields, and
-  configure timeline periodic groupings (Daily, Weekly, Monthly, Yearly).
-* **Metrics Visualization (`features/devcharts`)**: Integrates Chart.js wrapped structures via `react-chartjs-2` to render multi-dimensional performance representations for timeline indicators and
-  workload allocation charts.
-* **Audit Trails List (`features/history`)**: Implements asynchronous paginated views, processing metadata headers mapped directly from server pagination boundaries (Page Number, Size, Total Elements,
-  and Total Pages).
+* **Core Framework Elements (`core`)**: Context systems such as `AuthContext` manage credentials and sessions, while `LocaleProvider` implements multilingual switches. Shared utilities handle API clients (`apiClient`) and normalized naming conversions.
+* **Dashboard Engine (`features/dashboard`)**: Orchestrates unified filter inputs (`FormDashboard`) and orchestrates layout widgets allowing users to query project data, restrict date fields, and configure timeline periodic groupings (Daily, Weekly, Monthly, Yearly).
+* **Metrics Visualization (`features/devcharts`)**: Integrates Chart.js wrapped structures via `react-chartjs-2` to render multi-dimensional performance representations for timeline indicators and workload allocation charts.
+* **Audit Trails List (`features/history`)**: Implements asynchronous paginated views, processing metadata headers mapped directly from server pagination boundaries (Page Number, Size, Total Elements, and Total Pages).
 
 ---
 
@@ -475,8 +520,7 @@ Backend coverage profiles are generated using the `jacoco-maven-plugin` configur
 
 ### Frontend Testing Matrix
 
-The client framework delegates automated testing workflows to Vitest executing inside virtualized `jsdom` document spaces. It relies on a structural statement filter constraint enforcing an absolute
-80% coverage requirement across functional code regions, explicitly omitting structural types or configuration modules:
+The client framework delegates automated testing workflows to Vitest executing inside virtualized `jsdom` document spaces. It relies on a structural statement filter constraint enforcing an absolute 80% coverage requirement across functional code regions, explicitly omitting structural types or configuration modules:
 
 | Target Category | Code Coverage Threshold Constraint |
 |:----------------|:-----------------------------------|
