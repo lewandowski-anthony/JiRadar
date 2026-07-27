@@ -38,7 +38,7 @@ class UserAnalysisController {
 		TimeGranularity timeGranularity = TimeGranularity.valueOf(historyGranularity);
 		User currentUser = issueTrackerFactory.getService(issueTracker).getMyself();
 		UserMetrics userMetrics = issueTrackerFactory.getService(issueTracker)
-				.getMetrics(ProjectSearchParamCommand.fromGranularity(projectKeys, timeGranularity, 1), timeGranularity);
+				.getMetrics(ProjectSearchParamCommand.fromGranularity(projectKeys, timeGranularity, 1));
 
 		return developerAnalysisService.getUserAnalyse(currentUser, userMetrics, timeGranularity);
 	}

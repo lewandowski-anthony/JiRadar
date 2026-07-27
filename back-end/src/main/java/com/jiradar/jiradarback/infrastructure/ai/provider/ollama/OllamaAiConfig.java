@@ -28,7 +28,7 @@ public class OllamaAiConfig {
 				.ollamaApi(ollamaApi)
 				.options(OllamaChatOptions.builder()
 						.model(ollamaProperties.getModelName())
-						.temperature(0.2)
+						.temperature(0.0)
 						.build())
 				.build();
 

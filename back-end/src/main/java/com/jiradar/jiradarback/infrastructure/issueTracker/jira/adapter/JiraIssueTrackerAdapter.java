@@ -73,6 +73,11 @@ public class JiraIssueTrackerAdapter extends AbstractIssueTrackerService {
 	}
 
 	@Override
+	public UserMetrics getMetrics(ProjectSearchParamCommand command) {
+		return getMetrics(command, null);
+	}
+
+	@Override
 	public UserMetrics getMetrics(ProjectSearchParamCommand command, TimeGranularity historyGranularity) {
 		List<Issue> allIssues = fetchIssuesForRange(command.projectKeys(), command.startDate(), command.endDate());
 

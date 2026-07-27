@@ -1,10 +1,11 @@
 package com.jiradar.jiradarback.infrastructure.ai.common.properties;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
+@AllArgsConstructor
 public abstract class AiProperties {
     private String modelName;
 }

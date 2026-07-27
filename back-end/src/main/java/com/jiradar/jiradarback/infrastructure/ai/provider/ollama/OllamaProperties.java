@@ -4,10 +4,17 @@ import com.jiradar.jiradarback.infrastructure.ai.common.properties.AiProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.ConstructorBinding;
 
 @Getter
-@AllArgsConstructor
 @ConfigurationProperties(prefix = "jiradar.ai.ollama")
 public class OllamaProperties extends AiProperties {
-	private String baseUrl;
+
+	private final String baseUrl;
+
+	@ConstructorBinding
+	public OllamaProperties(String baseUrl, String modelName) {
+		super(modelName);
+		this.baseUrl = baseUrl;
+	}
 }

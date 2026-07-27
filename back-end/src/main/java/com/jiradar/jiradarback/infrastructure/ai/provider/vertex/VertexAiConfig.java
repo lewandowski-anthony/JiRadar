@@ -28,7 +28,7 @@ public class VertexAiConfig {
 
 		GoogleGenAiChatOptions options = GoogleGenAiChatOptions.builder()
 				.model(vertexProperties.getModelName())
-				.temperature(0.2)
+				.temperature(0.0)
 				.build();
 
 		ChatModel chatModel = GoogleGenAiChatModel.builder()

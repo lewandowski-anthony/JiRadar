@@ -1,5 +1,6 @@
 package com.jiradar.jiradarback.infrastructure.ai.common.model.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.jiradar.jiradarback.infrastructure.ai.common.model.enums.DeveloperTitle;
 
 import java.util.List;
@@ -19,6 +20,13 @@ public record DeveloperAnalystResult(
 		List<String> concreteActionPlan,
 		String longTermGrowthTrack,
 		String peerCoachingRecommendation,
-		Map<String, String> keyMetricInterpretations,
+		KeyMetricInterpretations keyMetricInterpretations,
 		List<String> predictedRisksIfUnchanged
-) {}
+) {
+
+	public record KeyMetricInterpretations(
+			String throughput,
+			String cycleTime,
+			String reviewParticipation
+	) {}
+}
