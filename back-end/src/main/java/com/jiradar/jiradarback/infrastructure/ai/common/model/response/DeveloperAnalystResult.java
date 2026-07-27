@@ -1,10 +1,8 @@
 package com.jiradar.jiradarback.infrastructure.ai.common.model.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.jiradar.jiradarback.infrastructure.ai.common.model.enums.DeveloperTitle;
 
 import java.util.List;
-import java.util.Map;
 
 public record DeveloperAnalystResult(
 		String profileSummary,

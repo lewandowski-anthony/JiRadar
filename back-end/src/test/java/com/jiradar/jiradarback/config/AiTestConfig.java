@@ -2,17 +2,17 @@ package com.jiradar.jiradarback.config;
 
 import com.jiradar.jiradarback.infrastructure.ai.common.model.enums.DeveloperTitle;
 import com.jiradar.jiradarback.infrastructure.ai.common.model.response.DeveloperAnalystResult;
-import org.mockito.Mockito;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import java.util.function.Consumer;
 
 @TestConfiguration
 public class AiTestConfig {
@@ -20,9 +20,9 @@ public class AiTestConfig {
 	@Bean
 	@Primary
 	public ChatClient mockChatClient() {
-		ChatClient mockClient = Mockito.mock(ChatClient.class);
-		ChatClient.ChatClientRequestSpec requestSpec = Mockito.mock(ChatClient.ChatClientRequestSpec.class);
-		ChatClient.CallResponseSpec callSpec = Mockito.mock(ChatClient.CallResponseSpec.class);
+		ChatClient mockClient = mock(ChatClient.class);
+		ChatClient.ChatClientRequestSpec requestSpec = mock(ChatClient.ChatClientRequestSpec.class);
+		ChatClient.CallResponseSpec callSpec = mock(ChatClient.CallResponseSpec.class);
 
 		DeveloperAnalystResult dummyResult = new DeveloperAnalystResult(
 				"Solid developer performance.",

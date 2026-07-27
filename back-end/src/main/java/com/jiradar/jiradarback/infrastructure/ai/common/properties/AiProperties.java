@@ -2,7 +2,6 @@ package com.jiradar.jiradarback.infrastructure.ai.common.properties;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 @AllArgsConstructor
