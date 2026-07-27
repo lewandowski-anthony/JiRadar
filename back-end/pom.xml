@@ -236,6 +236,7 @@
                                 <exclude>com/jiradar/jiradarback/core/constant/**</exclude>
                                 <exclude>com/jiradar/jiradarback/infrastructure/jira/dto/response/**</exclude>
                                 <exclude>com/jiradar/jiradarback/controller/mapper/**</exclude>
+                                <exclude>com/jiradar/jiradarback/infrastructure/issueTracker/jira/dto/**</exclude>
                             </excludes>
                         </configuration>
                     </execution>
