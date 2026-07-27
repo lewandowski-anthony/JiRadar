@@ -8,7 +8,10 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface DeveloperAnalystResultDtoMapper {
 
-	@Mapping(target = "assignedTitle", source = "assignedTitle.name")
+	@Mapping(
+			target = "assignedTitle",
+			expression = "java(domain.assignedTitle() != null ? domain.assignedTitle().name() : null)"
+	)
 	DeveloperAnalystResultDto toDto(DeveloperAnalystResult domain);
 
 	DeveloperAnalystResultDto.KeyMetricInterpretationsDto toKeyMetricInterpretationsDto(
