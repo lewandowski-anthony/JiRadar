@@ -28,6 +28,7 @@
         <wiremock-standalone.version>3.13.2</wiremock-standalone.version>
         <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
         <langchain4j.version>1.17.2</langchain4j.version>
+        <netty-bom.version>4.2.16.Final</netty-bom.version>
         <sonar.coverage.exclusions>**/BackEndApplication.java,**/exception/**,**/constant/**,**/*config*/**,**/mapper/**,**/enums/**</sonar.coverage.exclusions>
         <argLine/>
     </properties>
@@ -45,6 +46,13 @@
                 <groupId>org.springframework.ai</groupId>
                 <artifactId>spring-ai-bom</artifactId>
                 <version>${spring-ai.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-bom</artifactId>
+                <version>${netty-bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
