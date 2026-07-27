@@ -1,13 +1,15 @@
 package com.jiradar.jiradarback.controller;
 
+import com.jiradar.jiradarback.controller.dto.DeveloperAnalystResultDto;
+import com.jiradar.jiradarback.controller.mapper.DeveloperAnalystResultDtoMapper;
 import com.jiradar.jiradarback.core.factory.IssueTrackerFactory;
 import com.jiradar.jiradarback.core.model.command.ProjectSearchParamCommand;
 import com.jiradar.jiradarback.core.model.enums.TimeGranularity;
 import com.jiradar.jiradarback.core.model.issuetracker.User;
 import com.jiradar.jiradarback.core.model.issuetracker.UserMetrics;
-import com.jiradar.jiradarback.infrastructure.ai.common.model.response.DeveloperAnalystResult;
 import com.jiradar.jiradarback.infrastructure.ai.service.DeveloperAnalysisUseCase;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -29,12 +31,18 @@ class UserAnalysisController {
 
 	private final IssueTrackerFactory issueTrackerFactory;
 	private final DeveloperAnalysisUseCase developerAnalysisService;
+	private final DeveloperAnalystResultDtoMapper developerAnalystResultDtoMapper;
 
 	@GetMapping
 	@Operation(summary = "${openapi.endpoint.ai.analysis.summary}", description = "${openapi.endpoint.ai.analysis.description}")
-	public Optional<DeveloperAnalystResult> getDeveloperAnalysis(
+	public Optional<DeveloperAnalystResultDto> getDeveloperAnalysis(
+			@Parameter(description = "${openapi.endpoint.user.param.tracker}")
 			@PathVariable("issueTracker") String issueTracker,
+
+			@Parameter(description = "${openapi.endpoint.ai.analysis.param.projectKeys}")
 			@RequestParam List<String> projectKeys,
+
+			@Parameter(description = "${openapi.endpoint.ai.analysis.param.historyGranularity}")
 			@RequestParam String historyGranularity) {
 
 		TimeGranularity timeGranularity = TimeGranularity.valueOf(historyGranularity);
@@ -42,6 +50,7 @@ class UserAnalysisController {
 		UserMetrics userMetrics = issueTrackerFactory.getService(issueTracker)
 				.getMetrics(ProjectSearchParamCommand.fromGranularity(projectKeys, timeGranularity, 1));
 
-		return developerAnalysisService.getUserAnalyse(currentUser, userMetrics, timeGranularity);
+		return developerAnalysisService.getUserAnalyse(currentUser, userMetrics, timeGranularity)
+				.map(developerAnalystResultDtoMapper::toDto);
 	}
 }

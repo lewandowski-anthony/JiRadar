@@ -1,7 +1,7 @@
 package com.jiradar.jiradarback.config;
 
+import com.jiradar.jiradarback.infrastructure.ai.common.model.DeveloperAnalystResult;
 import com.jiradar.jiradarback.infrastructure.ai.common.model.enums.DeveloperTitle;
-import com.jiradar.jiradarback.infrastructure.ai.common.model.response.DeveloperAnalystResult;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;

@@ -1,4 +1,4 @@
-package com.jiradar.jiradarback.infrastructure.ai.common.model.response;
+package com.jiradar.jiradarback.infrastructure.ai.common.model;
 
 import com.jiradar.jiradarback.infrastructure.ai.common.model.enums.DeveloperTitle;
 
