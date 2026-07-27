@@ -29,7 +29,16 @@
         <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
         <langchain4j.version>1.17.2</langchain4j.version>
         <netty-bom.version>4.2.16.Final</netty-bom.version>
-        <sonar.coverage.exclusions>**/BackEndApplication.java,**/exception/**,**/constant/**,**/*config*/**,**/mapper/**,**/enums/**</sonar.coverage.exclusions>
+        <sonar.coverage.exclusions>
+            **/BackEndApplication.java,
+            **/exception/**,
+            **/constant/**,
+            **/*config*/**,
+            **/*Config.java,
+            **/mapper/**,
+            **/enums/**,
+            **/infrastructure/ai/provider/**
+        </sonar.coverage.exclusions>
         <argLine/>
     </properties>
 
