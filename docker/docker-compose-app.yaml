@@ -16,8 +16,8 @@ services:
       - JIRA_STATUS_REQUEST_REVIEW=In Review,Peer Review
       - JIRA_STATUS_DONE=Done,Terminé,Validé
       - CACHE_PROVIDER=${CACHE_PROVIDER:-caffeine}
-      - SPRING_DATA_REDIS_HOST=${SPRING_DATA_REDIS_HOST:-localhost}
-      - SPRING_DATA_REDIS_PORT=${SPRING_DATA_REDIS_PORT:-6379}
+      - REDIS_HOST=${REDIS_HOST:-localhost}
+      - REDIS_PORT=${REDIS_PORT:-6379}
       - JIRADAR_AI_PROVIDER=${JIRADAR_AI_PROVIDER:-none}
       - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://localhost:11434}
       - OLLAMA_MODEL_NAME=${OLLAMA_MODEL_NAME:-ollama-1.0}

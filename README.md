@@ -375,8 +375,8 @@ The system switches providers dynamically via environment variables or configura
 | Environment Variable Overrides | Default value | For mode |
 |:-------------------------------|:--------------|:---------|
 | `CACHE_PROVIDER`               | `caffeine`    | /        |
-| `SPRING_DATA_REDIS_HOST`       | `localhost`   | redis    |
-| `SPRING_DATA_REDIS_PORT`       | `6379`        | redis    |
+| `REDIS_HOST`       | `localhost`   | redis    |
+| `REDIS_PORT`       | `6379`        | redis    |
 
 ### System Specifications & Tuning Properties
 
@@ -465,8 +465,8 @@ services:
       - JIRA_STATUS_REQUEST_REVIEW=In Review,Peer Review
       - JIRA_STATUS_DONE=Done,Terminé,Validé
       - CACHE_PROVIDER=${CACHE_PROVIDER:-redis}
-      - SPRING_DATA_REDIS_HOST=${SPRING_DATA_REDIS_HOST:-valkey}
-      - SPRING_DATA_REDIS_PORT=${SPRING_DATA_REDIS_PORT:-6379}
+      - REDIS_HOST=${REDIS_HOST:-valkey}
+      - REDIS_PORT=${REDIS_PORT:-6379}
       - JIRADAR_AI_PROVIDER=${JIRADAR_AI_PROVIDER:-ollama}
       - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://ollama:11434}
 

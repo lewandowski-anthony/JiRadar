@@ -6,11 +6,6 @@ spring:
     name: Jiradar Back
   jackson:
     property-naming-strategy: SNAKE_CASE
-  data:
-    redis:
-      host: ${SPRING_DATA_REDIS_HOST:localhost}
-      port: ${SPRING_DATA_REDIS_PORT:6379}
-      password: ${SPRING_DATA_REDIS_PASSWORD:}
 
 jiradar:
   feature:
@@ -20,6 +15,11 @@ jiradar:
   cache:
     enabled: ${CACHE_ENABLED:true}
     provider: ${CACHE_PROVIDER:caffeine}
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: ${REDIS_DATABASE:0}
     specs:
       JIRA_METRICS_CACHE:
         ttl: ${JIRA_METRICS_CACHE_TTL:15m}
