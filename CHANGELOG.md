@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.13.0](https://github.com/lewandowski-anthony/JiRadar/compare/v1.12.0...v1.13.0) (2026-08-03)
+
+
+### Features
+
+* Add screenshots to markdown ([3458157](https://github.com/lewandowski-anthony/JiRadar/commit/34581571abd61c55cc03da380fa1750765eeb7f9))
+* Improve coverage ([9f7af9c](https://github.com/lewandowski-anthony/JiRadar/commit/9f7af9cf5a12c989832518cd24fd500557a1aa46))
+* Improve coverage ([a2199fd](https://github.com/lewandowski-anthony/JiRadar/commit/a2199fdd25cb2c474ae106f1d61a1402f4e42f1f))
+
+
+### Bug Fixes
+
+* Fix CI/CD ([69c7b14](https://github.com/lewandowski-anthony/JiRadar/commit/69c7b1417fc4db2788b35f6f9293e818b3d197e0))
+* Remove the Redis started to avoid error on launch ([9dffd6c](https://github.com/lewandowski-anthony/JiRadar/commit/9dffd6c0cdc3183700cdc9b588b488afeda00240))
+* Remove the Redis started to avoid error on launch ([909e151](https://github.com/lewandowski-anthony/JiRadar/commit/909e151834345acfc0e73414a09ae001e8c3d907))
+
 ## [1.12.0](https://github.com/lewandowski-anthony/JiRadar/compare/v1.11.1...v1.12.0) (2026-07-27)
 
 
