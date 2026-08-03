@@ -91,6 +91,12 @@
 
 ## Summary
 
+
+<p align="center">
+  <img src="assets/jiradar_screenshot_charts.png" alt="JiRadar Screenshot" />
+  <img src="assets/jiradar_screenshot_metrics.png" alt="JiRadar Screenshot" />
+</p>
+
 Jiradar is a full-stack platform designed to extract, process, and analyze project delivery metrics and activity loops from issue-tracking ecosystems like Jira. By evaluating issue transitions and raw changelog streams, the system provides real-time developer productivity engineering analytics, including flow predictability metrics, cycle times, review behavior metrics, and work-in-progress indexes.
 
 The repository is managed as a unified multi-module structure comprising a Java-based Spring Boot backend engine, a React frontend client application, and global automated verification workflows.
