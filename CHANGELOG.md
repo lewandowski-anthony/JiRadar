@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.2](https://github.com/lewandowski-anthony/JiRadar/compare/v1.13.1...v1.13.2) (2026-08-07)
+
+
+### Bug Fixes
+
+* Fix error on permission front Dockerfile ([687c97b](https://github.com/lewandowski-anthony/JiRadar/commit/687c97b304b2c5adc2c17781cc87411a9a26d611))
+
 ## [1.13.1](https://github.com/lewandowski-anthony/JiRadar/compare/v1.13.0...v1.13.1) (2026-08-03)
 
 
