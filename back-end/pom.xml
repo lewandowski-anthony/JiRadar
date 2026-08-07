@@ -21,7 +21,7 @@
         <guava.version>33.6.0-jre</guava.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <springdoc-openapi-starter-webmvc-ui.version>3.0.3</springdoc-openapi-starter-webmvc-ui.version>
+        <springdoc-openapi-starter-webmvc-ui.version>3.1.0</springdoc-openapi-starter-webmvc-ui.version>
         <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
         <cucumber.version>7.34.6</cucumber.version>
         <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
